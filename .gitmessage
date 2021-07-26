@@ -7,20 +7,16 @@
 
 # Issue Tracker Number or URL
 
-# --- COMMIT END ---
-# Type can be
+# --- COMMIT TYPE  ---
 #   feat    : adding, removing, changing features
 #   fix     : bug fix
 #   refactor: refactoring production code
 #   style   : formatting, missing semi colons, etc; no code change
 #   docs    : changes to documentation
-#   test    : adding or refactoring tests
-#             no production code change
-#   chore   : updating grunt tasks etc
-#             no production code change
+#   file    : changes to files
+#   chore   : updating grunt tasks etc; no code change
 # ------------------
-# Remember
-#   1. Capitalize the subject line
+#   1. Capitalize the subject line (except TYPE)
 #   2. Use the imperative mood in the subject line
 #   3. Do not end the subject line with a period
 #   4. Separate subject from body with a blank line
