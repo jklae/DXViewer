@@ -1,10 +1,15 @@
 #pragma once
 
+// Console window is displayed in debug mode.
+#ifdef _DEBUG
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+#endif
+
 #include <cassert>
 #include <WindowsX.h>
 #include <typeinfo>
 
-#include "DX12DrawingApp.h" // this includes IDX12App, DX12DefaultApp.h
+#include "DX12DrawingApp.h" // This includes IDX12App, DX12DefaultApp.h
 
 class Win32App
 {
@@ -21,7 +26,7 @@ private:
     const int kWidth;
     const int kHeight;
 
-    HWND mhMainWnd = nullptr; // main window handle
+    HWND mhMainWnd = nullptr; // Main window handle
 
     void Update();
     void Draw();
