@@ -131,6 +131,7 @@ void Win32App::InitDirectX()
 
 	// Just call it once.
 	assert(dxApp == nullptr);
+	//std::make_unique<DX12App> adxApp_;
 
 	dxApp = std::make_unique<DX12App>(kWidth, kHeight, mhMainWnd);
 }
@@ -140,8 +141,6 @@ void Win32App::CreateObjects(const int count, const float scale)
 	// Call after directx init
 	assert(dxApp != nullptr);
 
-	dxApp.reset();
-	dxApp = std::make_unique<DX12App>(kWidth, kHeight, mhMainWnd);
 	dxApp->Initialize(count, scale);
 	
 }
@@ -196,3 +195,8 @@ void Win32App::OnMouseMove(WPARAM btnState, int x, int y)
 	}
 }
 
+
+HWND Win32App::GetMhMainWnd()
+{
+	return mhMainWnd;
+}

@@ -169,6 +169,7 @@ protected:
 public:
     DX12App(const int kWidth, const int kHeight, const HWND mhMainWnd);
     ~DX12App();
+    DX12App(const DX12App& dxApp);
 
     void CreateObjects(const int count, const float scale);
 

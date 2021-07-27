@@ -42,5 +42,7 @@ public:
 	int Run();
     void InitDirectX();
     void CreateObjects(const int count, const float scale);
+
+    HWND GetMhMainWnd();
 };
 
