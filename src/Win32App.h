@@ -15,6 +15,12 @@ class Win32App
 {
 private:
     static Win32App* instanceForProc;
+    const int kWidth;
+    const int kHeight;
+    HWND mhMainWnd = nullptr; // Main window handle
+    std::unique_ptr<DX12App> dxApp = nullptr;
+
+    POINT mLastMousePos;
 
     // Convenience overrides for handling mouse input.
     void OnMouseDown(WPARAM btnState, int x, int y);
@@ -23,19 +29,9 @@ private:
 
     bool InitMainWindow(HINSTANCE hInstance);
 
-    const int kWidth;
-    const int kHeight;
-
-    HWND mhMainWnd = nullptr; // Main window handle
-
     void Update();
     void Draw();
 
-
-    std::unique_ptr<DX12App> dxApp = nullptr;
-
-
-    POINT mLastMousePos;
 
 public:
     Win32App(const int kWidth, const int KHeight);
