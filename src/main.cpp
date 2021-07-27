@@ -7,6 +7,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 {
     Win32App winApp(800, 600);
     winApp.Initialize(hInstance);
+
+    //DX12App dxapp
+
     winApp.InitDirectX();
     winApp.CreateObjects(50, 0.02f);
 

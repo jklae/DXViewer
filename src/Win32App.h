@@ -27,8 +27,6 @@ private:
     void OnMouseUp(WPARAM btnState, int x, int y);
     void OnMouseMove(WPARAM btnState, int x, int y);
 
-    bool InitMainWindow(HINSTANCE hInstance);
-
     void Update();
     void Draw();
 

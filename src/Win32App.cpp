@@ -3,7 +3,7 @@
 
 using namespace std;
 
-// static variable is used to put the proc function into the class.
+// Static variable is used to put the proc function into the class.
 Win32App* Win32App::instanceForProc = nullptr;
 Win32App* Win32App::GetinstanceForProc()
 {
@@ -30,8 +30,39 @@ bool Win32App::Initialize(HINSTANCE hInstance)
 	// Just call it once.
 	assert(mhMainWnd == nullptr);
 
-	if (!InitMainWindow(hInstance))
+	WNDCLASS wc;
+	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.lpfnWndProc = MainWndProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.hInstance = hInstance;
+	wc.hIcon = LoadIcon(0, IDI_APPLICATION);
+	wc.hCursor = LoadCursor(0, IDC_ARROW);
+	wc.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
+	wc.lpszMenuName = 0;
+	wc.lpszClassName = L"MainWnd";
+
+	if (!RegisterClass(&wc))
+	{
+		MessageBox(0, L"RegisterClass Failed.", 0, 0);
 		return false;
+	}
+
+
+	mhMainWnd = CreateWindow(L"MainWnd", L"d3d App",
+		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
+		CW_USEDEFAULT, CW_USEDEFAULT, kWidth, kHeight,
+		0, 0, hInstance, 0);
+
+	if (!mhMainWnd)
+	{
+		MessageBox(0, L"CreateWindow Failed.", 0, 0);
+		return false;
+	}
+
+	ShowWindow(mhMainWnd, SW_SHOW);
+	UpdateWindow(mhMainWnd);
+
 
 	return true;
 }
@@ -66,47 +97,6 @@ LRESULT Win32App::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-
-
-
-
-bool Win32App::InitMainWindow(HINSTANCE hInstance)
-{
-	WNDCLASS wc;
-	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = MainWndProc;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
-	wc.hInstance = hInstance;
-	wc.hIcon = LoadIcon(0, IDI_APPLICATION);
-	wc.hCursor = LoadCursor(0, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
-	wc.lpszMenuName = 0;
-	wc.lpszClassName = L"MainWnd";
-
-	if (!RegisterClass(&wc))
-	{
-		MessageBox(0, L"RegisterClass Failed.", 0, 0);
-		return false;
-	}
-
-
-	mhMainWnd = CreateWindow(L"MainWnd", L"d3d App",
-		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
-		CW_USEDEFAULT, CW_USEDEFAULT, kWidth, kHeight,
-		0, 0, hInstance, 0);
-
-	if (!mhMainWnd)
-	{
-		MessageBox(0, L"CreateWindow Failed.", 0, 0);
-		return false;
-	}
-
-	ShowWindow(mhMainWnd, SW_SHOW);
-	UpdateWindow(mhMainWnd);
-
-	return true;
-}
 
 
 int Win32App::Run()
