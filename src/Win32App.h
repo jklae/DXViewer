@@ -9,7 +9,7 @@
 #include <WindowsX.h>
 #include <typeinfo>
 
-#include "DX12DefaultApp.h"
+#include "DX12App.h"
 
 class Win32App
 {
@@ -32,7 +32,7 @@ private:
     void Draw();
 
 
-    std::unique_ptr<DX12DefaultApp> dxApp = nullptr;
+    std::unique_ptr<DX12App> dxApp = nullptr;
 
 
     POINT mLastMousePos;

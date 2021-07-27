@@ -3,7 +3,7 @@
 #include "dx12header.h"
 
 
-class DX12DefaultApp
+class DX12App
 {
 protected:
 
@@ -170,8 +170,8 @@ protected:
 
 
 public:
-    DX12DefaultApp(const int kWidth, const int kHeight, const HWND mhMainWnd);
-    ~DX12DefaultApp();
+    DX12App(const int kWidth, const int kHeight, const HWND mhMainWnd);
+    ~DX12App();
 
     void CreateObjects(const int count, const float scale);
 

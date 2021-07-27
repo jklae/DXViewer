@@ -1,15 +1,15 @@
 #pragma once
-#include "DX12DefaultApp.h"
+#include "DX12App.h"
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 
-DX12DefaultApp::DX12DefaultApp(const int kWidth, const int kHeight, const HWND mhMainWnd)
+DX12App::DX12App(const int kWidth, const int kHeight, const HWND mhMainWnd)
 	:kWidth(kWidth), kHeight(kHeight), mhMainWnd(mhMainWnd)
 {
 }
 
-DX12DefaultApp::~DX12DefaultApp()
+DX12App::~DX12App()
 {
 	if (md3dDevice != nullptr)
 		FlushCommandQueue();
@@ -25,7 +25,7 @@ DX12DefaultApp::~DX12DefaultApp()
 		mUploadBuffer->Unmap(0, nullptr);
 }
 
-void DX12DefaultApp::CreateObjects(const int count, const float scale)
+void DX12App::CreateObjects(const int count, const float scale)
 {
 	const int totalCount = static_cast<size_t>(count * count * count);
 	constantBuffer.reserve(totalCount);
@@ -57,7 +57,7 @@ void DX12DefaultApp::CreateObjects(const int count, const float scale)
 	}
 }
 
-bool DX12DefaultApp::Initialize(const int count, const float scale)
+bool DX12App::Initialize(const int count, const float scale)
 {
 	CheckMSAA();
 	CreateDevice();
@@ -87,7 +87,7 @@ bool DX12DefaultApp::Initialize(const int count, const float scale)
 }
 
 #pragma region Init1
-void DX12DefaultApp::CheckMSAA()
+void DX12App::CheckMSAA()
 {
 	// Check 4X MSAA quality support for our back buffer format.
 	// All Direct3D 11 capable devices support 4X MSAA for all render 
@@ -98,7 +98,7 @@ void DX12DefaultApp::CheckMSAA()
 	m4xMsaaQuality = 0;
 }
 
-void DX12DefaultApp::CreateDevice()
+void DX12App::CreateDevice()
 {
 	// DXGIFactory is used for swapchain interface creation and adapter enumeration.
 	CreateDXGIFactory1(IID_PPV_ARGS(&mdxgiFactory));
@@ -107,13 +107,13 @@ void DX12DefaultApp::CreateDevice()
 	D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&md3dDevice));
 }
 
-void DX12DefaultApp::CreateFence()
+void DX12App::CreateFence()
 {
 	// Fence
 	md3dDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence));
 }
 
-void DX12DefaultApp::CreateCommandQueueAllocatorList()
+void DX12App::CreateCommandQueueAllocatorList()
 {
 	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
 	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
@@ -134,7 +134,7 @@ void DX12DefaultApp::CreateCommandQueueAllocatorList()
 	mCommandList->Close();
 }
 
-void DX12DefaultApp::CreateSwapChain()
+void DX12App::CreateSwapChain()
 {
 	DXGI_SWAP_CHAIN_DESC sd;
 	sd.BufferDesc.Width = kWidth;
@@ -157,7 +157,7 @@ void DX12DefaultApp::CreateSwapChain()
 	mdxgiFactory->CreateSwapChain(mCommandQueue.Get(), &sd, mSwapChain.GetAddressOf());
 }
 
-void DX12DefaultApp::CreateDescriptorHeap()
+void DX12App::CreateDescriptorHeap()
 {
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
 	rtvHeapDesc.NumDescriptors = SwapChainBufferCount;
@@ -174,7 +174,7 @@ void DX12DefaultApp::CreateDescriptorHeap()
 	md3dDevice->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf()));
 }
 
-void DX12DefaultApp::CreateRTV()
+void DX12App::CreateRTV()
 {
 	mRtvDescriptorSize = md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV); // RTV
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle(mRtvHeap->GetCPUDescriptorHandleForHeapStart());
@@ -187,7 +187,7 @@ void DX12DefaultApp::CreateRTV()
 	}
 }
 
-void DX12DefaultApp::CreateDSV()
+void DX12App::CreateDSV()
 {
 	// Create the depth/stencil buffer and view.
 	D3D12_RESOURCE_DESC depthStencilDesc;
@@ -218,7 +218,7 @@ void DX12DefaultApp::CreateDSV()
 		D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE));
 }
 
-void DX12DefaultApp::SetViewport()
+void DX12App::SetViewport()
 {
 	mScreenViewport.TopLeftX = 0.0f;
 	mScreenViewport.TopLeftY = 0.0f;
@@ -228,21 +228,21 @@ void DX12DefaultApp::SetViewport()
 	mScreenViewport.MaxDepth = 1.0f;
 }
 
-void DX12DefaultApp::SetScissorRectangle()
+void DX12App::SetScissorRectangle()
 {
 	mScissorRect = { 0, 0, kWidth, kHeight };
 }
 #pragma endregion
 
 #pragma region Init2
-void DX12DefaultApp::CreateProjMatrix()
+void DX12App::CreateProjMatrix()
 {
 	// Compute the projection matrix.
 	XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * 3.14f, static_cast<float>(kWidth) / kHeight, 1.0f, 1000.0f);
 	XMStoreFloat4x4(&mProj, P);
 }
 
-void DX12DefaultApp::CreateVertexIndexBuffer()
+void DX12App::CreateVertexIndexBuffer()
 {
 	// 2, 3
 	std::vector<Vertex> vertices =
@@ -302,7 +302,7 @@ void DX12DefaultApp::CreateVertexIndexBuffer()
 	IndexCount = (UINT)indices.size();
 }
 
-void DX12DefaultApp::CreateConstantBuffer()
+void DX12App::CreateConstantBuffer()
 {
 	// 6
 	CreateConstantBufferViewHeap();
@@ -311,7 +311,7 @@ void DX12DefaultApp::CreateConstantBuffer()
 	CreateRootSignature();
 }
 
-void DX12DefaultApp::CreateConstantBufferViewHeap()
+void DX12App::CreateConstantBufferViewHeap()
 {
 	// 6-4
 	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
@@ -322,7 +322,7 @@ void DX12DefaultApp::CreateConstantBufferViewHeap()
 	md3dDevice->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&mCbvHeap));
 }
 
-void DX12DefaultApp::CreateUploadBuffer()
+void DX12App::CreateUploadBuffer()
 {
 	UINT mElementByteSize = ComputeBufferByteSize<ConstantBuffer>();
 
@@ -334,7 +334,7 @@ void DX12DefaultApp::CreateUploadBuffer()
 	mUploadBuffer->Map(0, nullptr, reinterpret_cast<void**>(&mMappedData));
 }
 
-void DX12DefaultApp::CreateConstantBufferViews()
+void DX12App::CreateConstantBufferViews()
 {
 	UINT objCBByteSize = ComputeBufferByteSize<ConstantBuffer>();
 	for (int i = 0; i < mWorld.size(); i++)
@@ -354,7 +354,7 @@ void DX12DefaultApp::CreateConstantBufferViews()
 	}
 }
 
-void DX12DefaultApp::CreateRootSignature()
+void DX12App::CreateRootSignature()
 {
 	// 6-5
 	// Shader programs typically require resources as input (constant buffers,
@@ -384,7 +384,7 @@ void DX12DefaultApp::CreateRootSignature()
 		serializedRootSig->GetBufferSize(), IID_PPV_ARGS(&mRootSignature));
 }
 
-void DX12DefaultApp::CompileShader()
+void DX12App::CompileShader()
 {
 	mInputLayout =
 	{
@@ -395,7 +395,7 @@ void DX12DefaultApp::CompileShader()
 	D3DCompileFromFile(L"shader\\fragShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &mpsByteCode, 0);
 }
 
-void DX12DefaultApp::CreatePSO()
+void DX12App::CreatePSO()
 {
 	// 8, 9
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
@@ -430,7 +430,7 @@ void DX12DefaultApp::CreatePSO()
 
 
 
-void DX12DefaultApp::Update()
+void DX12App::Update()
 {
 	// Convert Spherical to Cartesian coordinates.
 	float x = mRadius * sinf(mPhi) * cosf(mTheta);
@@ -461,7 +461,7 @@ void DX12DefaultApp::Update()
 	}
 }
 
-void DX12DefaultApp::Draw()
+void DX12App::Draw()
 {
 	mCommandList->RSSetViewports(1, &mScreenViewport);
 	mCommandList->RSSetScissorRects(1, &mScissorRect);
@@ -522,7 +522,7 @@ void DX12DefaultApp::Draw()
 
 
 
-void DX12DefaultApp::CloseCommandList()
+void DX12App::CloseCommandList()
 {
 	// ############### 1. Close ################
 	// Done recording commands.
@@ -553,7 +553,7 @@ void DX12DefaultApp::CloseCommandList()
 
 
 
-void DX12DefaultApp::FlushCommandQueue()
+void DX12App::FlushCommandQueue()
 {
 	// Advance the fence value to mark commands up to this fence point.
 	mCurrentFence++;
@@ -579,7 +579,7 @@ void DX12DefaultApp::FlushCommandQueue()
 
 
 
-void DX12DefaultApp::UpdateVirtualSphereAngles(const POINT mLastMousePos, const int x, const int y)
+void DX12App::UpdateVirtualSphereAngles(const POINT mLastMousePos, const int x, const int y)
 {
 	// Make each pixel correspond to a quarter of a degree.
 	float dx = XMConvertToRadians(0.25f * static_cast<float>(x - mLastMousePos.x));
@@ -594,7 +594,7 @@ void DX12DefaultApp::UpdateVirtualSphereAngles(const POINT mLastMousePos, const 
 }
 
 
-void DX12DefaultApp::UpdateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y)
+void DX12App::UpdateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y)
 {
 	// Make each pixel correspond to 0.005 unit in the scene.
 	float dx = 0.005f * static_cast<float>(x - mLastMousePos.x);
@@ -608,13 +608,13 @@ void DX12DefaultApp::UpdateVirtualSphereRadius(const POINT mLastMousePos, const 
 }
 
 
-float DX12DefaultApp::Clamp(const float x, const float low, const float high)
+float DX12App::Clamp(const float x, const float low, const float high)
 {
 	return x < low ? low : (x > high ? high : x);
 }
 
 
-ComPtr<ID3D12Resource> DX12DefaultApp::CreateDefaultBuffer(
+ComPtr<ID3D12Resource> DX12App::CreateDefaultBuffer(
 	const void* initData, UINT64 byteSize, ComPtr<ID3D12Resource>& uploadBuffer)
 {
 	ComPtr<ID3D12Resource> defaultBuffer;
@@ -665,17 +665,17 @@ ComPtr<ID3D12Resource> DX12DefaultApp::CreateDefaultBuffer(
 
 
 
-D3D12_CPU_DESCRIPTOR_HANDLE DX12DefaultApp::DepthStencilView() const
+D3D12_CPU_DESCRIPTOR_HANDLE DX12App::DepthStencilView() const
 {
 	return mDsvHeap->GetCPUDescriptorHandleForHeapStart();
 }
 
-ID3D12Resource* DX12DefaultApp::CurrentBackBuffer() const
+ID3D12Resource* DX12App::CurrentBackBuffer() const
 {
 	return mSwapChainBuffer[mCurrBackBuffer].Get();
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE DX12DefaultApp::CurrentBackBufferView() const
+D3D12_CPU_DESCRIPTOR_HANDLE DX12App::CurrentBackBufferView() const
 {
 	return CD3DX12_CPU_DESCRIPTOR_HANDLE(
 		mRtvHeap->GetCPUDescriptorHandleForHeapStart(),
