@@ -9,7 +9,7 @@
 #include <WindowsX.h>
 #include <typeinfo>
 
-#include "DX12DrawingApp.h" // This includes IDX12App, DX12DefaultApp.h
+#include "DX12DefaultApp.h"
 
 class Win32App
 {
