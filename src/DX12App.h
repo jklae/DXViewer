@@ -7,13 +7,6 @@ class DX12App
 {
 protected:
 
-    const int kWidth;
-    const int kHeight;
-
-    const HWND mhMainWnd; // main window handle
-
-
-
     struct ConstantBuffer
     {
         DirectX::XMFLOAT4X4 worldViewProj;
@@ -23,14 +16,15 @@ protected:
     std::vector<ConstantBuffer> constantBuffer;
     std::vector<DirectX::XMFLOAT4X4> mWorld;
 
-
-
     struct Vertex
     {
         DirectX::XMFLOAT3 Pos;
     };
 
+    const int kWidth;
+    const int kHeight;
 
+    const HWND mhMainWnd; // main window handle
 
 
 #pragma region Init1
@@ -87,7 +81,7 @@ protected:
     void SetScissorRectangle();
 
     // ##########################################################################################
-
+#pragma endregion
 
 #pragma region Init2
     // ######################################## Init 2 ##########################################
@@ -137,12 +131,10 @@ protected:
     void CreatePSO();
 
     // ##########################################################################################
-
-
 #pragma endregion
 
 
-
+#pragma region Draw
     // ########################################## Draw ##########################################
     UINT64 mCurrentFence = 0;
     int mCurrBackBuffer = 0;
@@ -153,21 +145,26 @@ protected:
     void FlushCommandQueue();
     void CloseCommandList();
     // ##########################################################################################
+#pragma endregion
 
 
-
+#pragma region Arcball
+    // ####################################### Arcball ##########################################
     float mTheta = 1.5f * 3.14f;
     float mPhi = 3.14f / 2.0f;
     float mRadius = 5.0f;
 
     float Clamp(const float x, const float low, const float high);
+    // ##########################################################################################
+#pragma endregion
 
-
-
+#pragma region Util
+    // ######################################## Util ##########################################
     D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView() const;
     ID3D12Resource* CurrentBackBuffer() const;
     D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView() const;
-
+    // ########################################################################################
+#pragma endregion
 
 public:
     DX12App(const int kWidth, const int kHeight, const HWND mhMainWnd);
