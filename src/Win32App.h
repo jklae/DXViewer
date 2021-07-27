@@ -32,7 +32,7 @@ private:
     void Draw();
 
 
-    std::unique_ptr<IDX12App> dxApp = nullptr;
+    std::unique_ptr<DX12DefaultApp> dxApp = nullptr;
 
 
     POINT mLastMousePos;

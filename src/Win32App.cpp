@@ -143,7 +143,6 @@ void Win32App::InitDirectX()
 	assert(dxApp == nullptr);
 
 	dxApp = std::make_unique<DX12DefaultApp>(kWidth, kHeight, mhMainWnd);
-	dxApp->Initialize();
 }
 
 void Win32App::CreateObjects(const int count, const float scale)
@@ -152,7 +151,7 @@ void Win32App::CreateObjects(const int count, const float scale)
 	assert(dxApp != nullptr);
 
 	dxApp.reset();
-	dxApp = std::make_unique<DX12DrawingApp>(kWidth, kHeight, mhMainWnd);
+	dxApp = std::make_unique<DX12DefaultApp>(kWidth, kHeight, mhMainWnd);
 	dxApp->Initialize(count, scale);
 	
 }

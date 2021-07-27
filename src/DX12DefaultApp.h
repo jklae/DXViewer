@@ -1,10 +1,9 @@
 #pragma once
 
 #include "dx12header.h"
-#include "IDX12App.h"
 
 
-class DX12DefaultApp : public IDX12App
+class DX12DefaultApp
 {
 protected:
 
@@ -15,8 +14,27 @@ protected:
 
 
 
-#pragma region Initialization
-    // ########################################## Init ##########################################
+    struct ConstantBuffer
+    {
+        DirectX::XMFLOAT4X4 worldViewProj;
+        DirectX::XMFLOAT4 color;
+    };
+
+    std::vector<ConstantBuffer> constantBuffer;
+    std::vector<DirectX::XMFLOAT4X4> mWorld;
+
+
+
+    struct Vertex
+    {
+        DirectX::XMFLOAT3 Pos;
+    };
+
+
+
+
+#pragma region Init1
+    // ######################################## Init 1 ##########################################
     // CheckMSAA
     // Set true to use 4X MSAA (4.1.8).  The default is false.
     bool m4xMsaaState = false;    // 4X MSAA enabled
@@ -69,6 +87,58 @@ protected:
     void SetScissorRectangle();
 
     // ##########################################################################################
+
+
+#pragma region Init2
+    // ######################################## Init 2 ##########################################
+
+    // CreateVertexIndexBuffer
+    Microsoft::WRL::ComPtr<ID3D12Resource> CreateDefaultBuffer(
+        const void* initData, UINT64 byteSize,
+        Microsoft::WRL::ComPtr<ID3D12Resource>& uploadBuffer);
+
+    Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferGPU = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferUploader = nullptr;
+
+    Microsoft::WRL::ComPtr<ID3D12Resource> IndexBufferGPU = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> IndexBufferUploader = nullptr;
+
+    D3D12_VERTEX_BUFFER_VIEW vbv;
+    D3D12_INDEX_BUFFER_VIEW ibv;
+    UINT IndexCount = 0;
+
+
+    // CreateConstantBuffer
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> mUploadBuffer = nullptr;
+    BYTE* mMappedData = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
+
+    // CompileShader
+    Microsoft::WRL::ComPtr<ID3DBlob> mvsByteCode = nullptr;
+    Microsoft::WRL::ComPtr<ID3DBlob> mpsByteCode = nullptr;
+    std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
+
+
+    DirectX::XMFLOAT4X4 mView = TransformMatrix(0.0f, 0.0f, 0.0f);
+    DirectX::XMFLOAT4X4 mProj = TransformMatrix(0.0f, 0.0f, 0.0f);
+
+
+    void CreateProjMatrix();
+    void CreateVertexIndexBuffer();
+    //
+    void CreateConstantBuffer();
+    void CreateConstantBufferViewHeap();
+    void CreateUploadBuffer();
+    void CreateConstantBufferViews();
+    void CreateRootSignature();
+    //
+    void CompileShader();
+    void CreatePSO();
+
+    // ##########################################################################################
+
+
 #pragma endregion
 
 
@@ -85,6 +155,15 @@ protected:
     // ##########################################################################################
 
 
+
+    float mTheta = 1.5f * 3.14f;
+    float mPhi = 3.14f / 2.0f;
+    float mRadius = 5.0f;
+
+    float Clamp(const float x, const float low, const float high);
+
+
+
     D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView() const;
     ID3D12Resource* CurrentBackBuffer() const;
     D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView() const;
@@ -92,13 +171,15 @@ protected:
 
 public:
     DX12DefaultApp(const int kWidth, const int kHeight, const HWND mhMainWnd);
-    ~DX12DefaultApp() override;
+    ~DX12DefaultApp();
 
-    bool Initialize(const int count = 0, const float scale = 0.0f) override;
+    void CreateObjects(const int count, const float scale);
 
-    void Update() override {};
-    void Draw() override;
+    bool Initialize(const int count = 0, const float scale = 0.0f);
 
-    void UpdateVirtualSphereAngles(const POINT mLastMousePos, const int x, const int y) override {};
-    void UpdateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y) override {};
+    void Update();
+    void Draw();
+
+    void UpdateVirtualSphereAngles(const POINT mLastMousePos, const int x, const int y);
+    void UpdateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y);
 };
