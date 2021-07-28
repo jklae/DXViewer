@@ -2,6 +2,7 @@
 
 
 using namespace std;
+using namespace DirectX;
 
 // Static variable is used to put the proc function into the class.
 Win32App* Win32App::instanceForProc = nullptr;
@@ -134,6 +135,10 @@ void Win32App::InitDirectX()
 	//std::make_unique<DX12App> adxApp_;
 
 	dxApp = std::make_unique<DX12App>(kWidth, kHeight, mhMainWnd);
+
+
+
+	dxApp->SetVertexIndexResource(vertices2, indices2);
 }
 
 void Win32App::CreateObjects(const int count, const float scale)
@@ -147,9 +152,15 @@ void Win32App::CreateObjects(const int count, const float scale)
 
 void Win32App::Update()
 {
+	static int i = 0;
 	if (dxApp)
 	{
 		dxApp->Update();
+		if (i == 1) 
+			dxApp->SetVertexIndexResource(vertices2, indices2);
+		else dxApp->SetVertexIndexResource(vertices1, indices1);
+		i = (i + 1) % 2;
+		cout << i << endl;
 	}
 }
 

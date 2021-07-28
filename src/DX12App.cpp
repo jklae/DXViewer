@@ -3,6 +3,7 @@
 
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
+using namespace std;
 
 DX12App::DX12App(const int kWidth, const int kHeight, const HWND mhMainWnd)
 	:kWidth(kWidth), kHeight(kHeight), mhMainWnd(mhMainWnd)
@@ -15,8 +16,13 @@ DX12App::~DX12App()
 		FlushCommandQueue();
 
 	// CreateVertexIndexBuffer
-	VertexBufferUploader = nullptr;
-	IndexBufferUploader = nullptr;
+	vMappedData = nullptr;
+	iMappedData = nullptr;
+
+	if (VertexBufferUploader != nullptr)
+		VertexBufferUploader->Unmap(0, nullptr);
+	if (IndexBufferUploader != nullptr)
+		IndexBufferUploader->Unmap(0, nullptr);
 
 	// CreateConstantBuffer
 	mMappedData = nullptr;
@@ -44,7 +50,8 @@ void DX12App::CreateObjects(const int count, const float scale)
 					offset + (float)j * stride,
 					offset + (float)k * stride);
 
-				XMFLOAT4X4 world = TransformMatrix(pos.x, pos.y, pos.z, scale);
+								//TransformMatrix(pos.x, pos.y, pos.z, scale);
+				XMFLOAT4X4 world = TransformMatrix(0.0f, 0.0f, 0.0f, scale);
 				mWorld.push_back(world);
 
 				struct ConstantBuffer cb;
@@ -55,6 +62,12 @@ void DX12App::CreateObjects(const int count, const float scale)
 			}
 		}
 	}
+}
+
+void DX12App::SetVertexIndexResource(vector<Vertex> _vertices, vector<uint16_t> _indices)
+{
+	vertices = _vertices;
+	indices = _indices;
 }
 
 bool DX12App::Initialize(const int count, const float scale)
@@ -251,61 +264,36 @@ void DX12App::CreateProjMatrix()
 void DX12App::CreateVertexIndexBuffer()
 {
 	// 2, 3
-	std::vector<Vertex> vertices =
-	{
-		Vertex({ XMFLOAT3(-1.0f, -1.0f, -1.0f) }),
-		Vertex({ XMFLOAT3(-1.0f, +1.0f, -1.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, +1.0f, -1.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, -1.0f, -1.0f) }),
-		Vertex({ XMFLOAT3(-1.0f, -1.0f, +1.0f) }),
-		Vertex({ XMFLOAT3(-1.0f, +1.0f, +1.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, +1.0f, +1.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, -1.0f, +1.0f) }) //, XMFLOAT4(Colors::Black)
-	};
-
-	std::vector<std::uint16_t> indices =
-	{
-		// front face
-		0, 1, 2,
-		0, 2, 3,
-
-		// back face
-		4, 6, 5,
-		4, 7, 6,
-
-		// left face
-		4, 5, 1,
-		4, 1, 0,
-
-		// right face
-		3, 2, 6,
-		3, 6, 7,
-
-		// top face
-		1, 5, 6,
-		1, 6, 2,
-
-		// bottom face
-		4, 0, 3,
-		4, 3, 7
-	};
-
-
+	const UINT descSize = 1000000;
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
-	VertexBufferGPU = CreateDefaultBuffer(vertices.data(), vbByteSize, VertexBufferUploader);
-	IndexBufferGPU = CreateDefaultBuffer(indices.data(), ibByteSize, IndexBufferUploader);
+	md3dDevice->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
+		// &CD3DX12_RESOURCE_DESC::Buffer(vbByteSize)
+		&CD3DX12_RESOURCE_DESC::Buffer(descSize), D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr, IID_PPV_ARGS(VertexBufferUploader.GetAddressOf()));
 
-	vbv.BufferLocation = VertexBufferGPU->GetGPUVirtualAddress();
+
+	VertexBufferUploader->Map(0, nullptr, reinterpret_cast<void**>(&vMappedData));
+
+	vbv.BufferLocation = VertexBufferUploader->GetGPUVirtualAddress();
 	vbv.StrideInBytes = sizeof(Vertex);
 	vbv.SizeInBytes = vbByteSize;
 
-	ibv.BufferLocation = IndexBufferGPU->GetGPUVirtualAddress();
+
+	md3dDevice->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
+		// &CD3DX12_RESOURCE_DESC::Buffer(ibByteSize)
+		&CD3DX12_RESOURCE_DESC::Buffer(descSize), D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr, IID_PPV_ARGS(IndexBufferUploader.GetAddressOf()));
+
+	IndexBufferUploader->Map(0, nullptr, reinterpret_cast<void**>(&iMappedData));
+
+	ibv.BufferLocation = IndexBufferUploader->GetGPUVirtualAddress();
 	ibv.Format = DXGI_FORMAT_R16_UINT;
 	ibv.SizeInBytes = ibByteSize;
 
-	IndexCount = (UINT)indices.size();
 }
 
 void DX12App::CreateConstantBuffer()
@@ -430,56 +418,6 @@ void DX12App::CreatePSO()
 	psoDesc.DSVFormat = mDepthStencilFormat;
 	md3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSO));
 }
-
-
-ComPtr<ID3D12Resource> DX12App::CreateDefaultBuffer(
-	const void* initData, UINT64 byteSize, ComPtr<ID3D12Resource>& uploadBuffer)
-{
-	ComPtr<ID3D12Resource> defaultBuffer;
-
-	// Create the actual default buffer resource.
-	md3dDevice->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(byteSize), D3D12_RESOURCE_STATE_COMMON,
-		nullptr, IID_PPV_ARGS(defaultBuffer.GetAddressOf()));
-
-	// In order to copy CPU memory data into our default buffer, we need to create
-	// an intermediate """upload""" heap. 
-	md3dDevice->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(byteSize), D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr, IID_PPV_ARGS(uploadBuffer.GetAddressOf()));
-
-
-	// Describe the data we want to copy into the default buffer.
-	// Data material for copying?
-	D3D12_SUBRESOURCE_DATA subResourceData = {};
-	subResourceData.pData = initData;
-	subResourceData.RowPitch = byteSize;
-	subResourceData.SlicePitch = subResourceData.RowPitch;
-
-
-	// Schedule to copy the data to the default buffer resource.  At a high level, the helper function UpdateSubresources
-	// will copy the CPU memory into the intermediate upload heap.  Then, using ID3D12CommandList::CopySubresourceRegion,
-	// the intermediate upload heap data will be copied to mBuffer.
-
-	// 1. transit defaultBuffer to copy mode
-	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(defaultBuffer.Get(),
-		D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST));
-	// 2. Copy
-	UpdateSubresources<1>(mCommandList.Get(), defaultBuffer.Get(), uploadBuffer.Get(), 0, 0, 1, &subResourceData);
-	// 3. reset mode
-	mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(defaultBuffer.Get(),
-		D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_GENERIC_READ));
-
-
-	// Note: uploadBuffer has to be kept alive after the above function calls because
-	// the command list has not been executed yet that performs the actual copy.
-	// The caller can Release the uploadBuffer after it knows the copy has been executed.
-
-
-	return defaultBuffer;
-}
 // ##########################################################################################
 #pragma endregion
 
@@ -547,6 +485,20 @@ void DX12App::FlushCommandQueue()
 
 void DX12App::Update()
 {
+	// ######### Update Vertex, Index buffer
+	// Change View size
+	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+	vbv.SizeInBytes = vbByteSize;
+	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+	ibv.SizeInBytes = ibByteSize;
+
+	// Update mapping data
+	memcpy(&vMappedData[0], vertices.data(), sizeof(Vertex) * vertices.size());
+	memcpy(&iMappedData[0], indices.data(), sizeof(uint16_t) * indices.size());
+	IndexCount = (UINT)indices.size();
+	// #########
+
+	// ######### Update Constant Buffer
 	// Convert Spherical to Cartesian coordinates.
 	float x = mRadius * sinf(mPhi) * cosf(mTheta);
 	float z = mRadius * sinf(mPhi) * sinf(mTheta);
@@ -574,6 +526,7 @@ void DX12App::Update()
 		memcpy(&mMappedData[i * mElementByteSize], &constantBuffer[i].worldViewProj, sizeof(ConstantBuffer));
 
 	}
+	// #########
 }
 
 void DX12App::Draw()
