@@ -152,10 +152,14 @@ void Win32App::CreateObjects(const int count, const float scale)
 
 void Win32App::Update()
 {
+	static int i = 0;
 	if (dxApp)
 	{
 		dxApp->Update();
-		dxApp->SetVertexIndexResource(vertices2, indices);
+		if (i == 1) dxApp->SetVertexIndexResource(vertices2, indices);
+		else dxApp->SetVertexIndexResource(vertices1, indices);
+		i = (i + 1) % 2;
+		cout << i << endl;
 	}
 }
 

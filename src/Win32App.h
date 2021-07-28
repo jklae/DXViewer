@@ -8,6 +8,7 @@
 #include <cassert>
 #include <WindowsX.h>
 #include <typeinfo>
+#include <iostream>
 
 #include "DX12App.h"
 

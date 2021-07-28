@@ -262,12 +262,25 @@ void DX12App::CreateVertexIndexBuffer()
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
-	VertexBufferGPU = CreateDefaultBuffer(vertices.data(), vbByteSize, VertexBufferUploader);
-	IndexBufferGPU = CreateDefaultBuffer(indices.data(), ibByteSize, IndexBufferUploader);
+	//VertexBufferGPU = CreateDefaultBuffer(vertices.data(), vbByteSize, VertexBufferUploader);
 
-	vbv.BufferLocation = VertexBufferGPU->GetGPUVirtualAddress();
+	//vertices.data();
+
+	md3dDevice->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(vbByteSize), D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr, IID_PPV_ARGS(VertexBufferUploader.GetAddressOf()));
+
+
+	VertexBufferUploader->Map(0, nullptr, reinterpret_cast<void**>(&vMappedData));
+
+	vbv.BufferLocation = VertexBufferUploader->GetGPUVirtualAddress();
 	vbv.StrideInBytes = sizeof(Vertex);
 	vbv.SizeInBytes = vbByteSize;
+
+
+	IndexBufferGPU = CreateDefaultBuffer(indices.data(), ibByteSize, IndexBufferUploader);
+
 
 	ibv.BufferLocation = IndexBufferGPU->GetGPUVirtualAddress();
 	ibv.Format = DXGI_FORMAT_R16_UINT;
@@ -542,6 +555,8 @@ void DX12App::Update()
 		memcpy(&mMappedData[i * mElementByteSize], &constantBuffer[i].worldViewProj, sizeof(ConstantBuffer));
 
 	}
+
+	memcpy(&vMappedData[0], vertices.data(), sizeof(Vertex)*vertices.size());
 }
 
 void DX12App::Draw()
