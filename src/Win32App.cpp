@@ -138,7 +138,7 @@ void Win32App::InitDirectX()
 
 
 
-	dxApp->SetVertexIndexResource(vertices1, indices);
+	dxApp->SetVertexIndexResource(vertices1, indices1);
 }
 
 void Win32App::CreateObjects(const int count, const float scale)
@@ -156,8 +156,8 @@ void Win32App::Update()
 	if (dxApp)
 	{
 		dxApp->Update();
-		if (i == 1) dxApp->SetVertexIndexResource(vertices2, indices);
-		else dxApp->SetVertexIndexResource(vertices1, indices);
+		if (i == 1) dxApp->SetVertexIndexResource(vertices2, indices2);
+		else dxApp->SetVertexIndexResource(vertices1, indices1);
 		i = (i + 1) % 2;
 		cout << i << endl;
 	}

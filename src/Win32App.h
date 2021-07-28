@@ -55,7 +55,7 @@ private:
         Vertex({ DirectX::XMFLOAT3(+0.5f, -0.5f, +0.5f) }) //, XMFLOAT4(Colors::Black)
     };
 
-    std::vector<std::uint16_t> indices =
+    std::vector<std::uint16_t> indices1 =
     {
         // front face
         0, 1, 2,
@@ -80,6 +80,18 @@ private:
         // bottom face
         4, 0, 3,
         4, 3, 7
+    };
+
+    std::vector<std::uint16_t> indices2 =
+    {
+        // left face
+        4, 5, 1,
+        4, 1, 0,
+
+        // right face
+        3, 2, 6,
+        3, 6, 7,
+
     };
 
 public:
