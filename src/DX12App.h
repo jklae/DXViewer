@@ -16,11 +16,6 @@ protected:
     std::vector<ConstantBuffer> constantBuffer;
     std::vector<DirectX::XMFLOAT4X4> mWorld;
     
-
-    struct Vertex
-    {
-        DirectX::XMFLOAT3 Pos;
-    };
     std::vector<Vertex> vertices;
     std::vector<std::uint16_t> indices;
 
@@ -175,6 +170,7 @@ public:
     DX12App(const DX12App& dxApp);
 
     void CreateObjects(const int count, const float scale);
+    void SetVertexIndexResource(std::vector<Vertex> _vertices, std::vector<std::uint16_t> _indices);
 
     bool Initialize(const int count = 0, const float scale = 0.0f);
 

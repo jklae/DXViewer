@@ -2,6 +2,7 @@
 
 
 using namespace std;
+using namespace DirectX;
 
 // Static variable is used to put the proc function into the class.
 Win32App* Win32App::instanceForProc = nullptr;
@@ -134,6 +135,47 @@ void Win32App::InitDirectX()
 	//std::make_unique<DX12App> adxApp_;
 
 	dxApp = std::make_unique<DX12App>(kWidth, kHeight, mhMainWnd);
+
+	vector<Vertex> vertices =
+	{
+		Vertex({ XMFLOAT3(-1.0f, -1.0f, -1.0f) }),
+		Vertex({ XMFLOAT3(-1.0f, +1.0f, -1.0f) }),
+		Vertex({ XMFLOAT3(+1.0f, +1.0f, -1.0f) }),
+		Vertex({ XMFLOAT3(+1.0f, -1.0f, -1.0f) }),
+		Vertex({ XMFLOAT3(-1.0f, -1.0f, +1.0f) }),
+		Vertex({ XMFLOAT3(-1.0f, +1.0f, +1.0f) }),
+		Vertex({ XMFLOAT3(+1.0f, +1.0f, +1.0f) }),
+		Vertex({ XMFLOAT3(+1.0f, -1.0f, +1.0f) }) //, XMFLOAT4(Colors::Black)
+	};
+
+	vector<uint16_t> indices =
+	{
+		// front face
+		0, 1, 2,
+		0, 2, 3,
+
+		// back face
+		4, 6, 5,
+		4, 7, 6,
+
+		// left face
+		4, 5, 1,
+		4, 1, 0,
+
+		// right face
+		3, 2, 6,
+		3, 6, 7,
+
+		// top face
+		1, 5, 6,
+		1, 6, 2,
+
+		// bottom face
+		4, 0, 3,
+		4, 3, 7
+	};
+
+	dxApp->SetVertexIndexResource(vertices, indices);
 }
 
 void Win32App::CreateObjects(const int count, const float scale)
