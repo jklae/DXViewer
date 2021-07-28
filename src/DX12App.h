@@ -85,11 +85,9 @@ protected:
     // ######################################## Init 2 ##########################################
 
     // CreateVertexIndexBuffer
-    Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferGPU = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferUploader = nullptr;
     BYTE* vMappedData = nullptr;
 
-    Microsoft::WRL::ComPtr<ID3D12Resource> IndexBufferGPU = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> IndexBufferUploader = nullptr;
     BYTE* iMappedData = nullptr;
 

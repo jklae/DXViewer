@@ -262,10 +262,6 @@ void DX12App::CreateVertexIndexBuffer()
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
-	//VertexBufferGPU = CreateDefaultBuffer(vertices.data(), vbByteSize, VertexBufferUploader);
-
-	//vertices.data();
-
 	md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer(vbByteSize), D3D12_RESOURCE_STATE_GENERIC_READ,
@@ -279,14 +275,17 @@ void DX12App::CreateVertexIndexBuffer()
 	vbv.SizeInBytes = vbByteSize;
 
 
-	IndexBufferGPU = CreateDefaultBuffer(indices.data(), ibByteSize, IndexBufferUploader);
+	md3dDevice->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(vbByteSize), D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr, IID_PPV_ARGS(IndexBufferUploader.GetAddressOf()));
 
+	IndexBufferUploader->Map(0, nullptr, reinterpret_cast<void**>(&iMappedData));
 
-	ibv.BufferLocation = IndexBufferGPU->GetGPUVirtualAddress();
+	ibv.BufferLocation = IndexBufferUploader->GetGPUVirtualAddress();
 	ibv.Format = DXGI_FORMAT_R16_UINT;
 	ibv.SizeInBytes = ibByteSize;
 
-	IndexCount = (UINT)indices.size();
 }
 
 void DX12App::CreateConstantBuffer()
@@ -478,6 +477,13 @@ void DX12App::FlushCommandQueue()
 
 void DX12App::Update()
 {
+	// ######### Update Vertex, Index buffer
+	memcpy(&vMappedData[0], vertices.data(), sizeof(Vertex) * vertices.size());
+	memcpy(&iMappedData[0], indices.data(), sizeof(uint16_t) * indices.size());
+	IndexCount = (UINT)indices.size();
+	// #########
+
+	// ######### Update Constant Buffer
 	// Convert Spherical to Cartesian coordinates.
 	float x = mRadius * sinf(mPhi) * cosf(mTheta);
 	float z = mRadius * sinf(mPhi) * sinf(mTheta);
@@ -505,8 +511,7 @@ void DX12App::Update()
 		memcpy(&mMappedData[i * mElementByteSize], &constantBuffer[i].worldViewProj, sizeof(ConstantBuffer));
 
 	}
-
-	memcpy(&vMappedData[0], vertices.data(), sizeof(Vertex)*vertices.size());
+	// #########
 }
 
 void DX12App::Draw()

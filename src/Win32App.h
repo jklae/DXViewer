@@ -85,12 +85,7 @@ private:
     std::vector<std::uint16_t> indices2 =
     {
         // left face
-        4, 5, 1,
-        4, 1, 0,
-
-        // right face
-        3, 2, 6,
-        3, 6, 7,
+        4, 5, 1
 
     };
 
