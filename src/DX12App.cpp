@@ -44,7 +44,8 @@ void DX12App::CreateObjects(const int count, const float scale)
 					offset + (float)j * stride,
 					offset + (float)k * stride);
 
-				XMFLOAT4X4 world = TransformMatrix(pos.x, pos.y, pos.z, scale);
+								//TransformMatrix(pos.x, pos.y, pos.z, scale);
+				XMFLOAT4X4 world = TransformMatrix(0.0f, 0.0f, 0.0f, scale);
 				mWorld.push_back(world);
 
 				struct ConstantBuffer cb;
@@ -251,7 +252,7 @@ void DX12App::CreateProjMatrix()
 void DX12App::CreateVertexIndexBuffer()
 {
 	// 2, 3
-	std::vector<Vertex> vertices =
+	vertices =
 	{
 		Vertex({ XMFLOAT3(-1.0f, -1.0f, -1.0f) }),
 		Vertex({ XMFLOAT3(-1.0f, +1.0f, -1.0f) }),
@@ -263,7 +264,7 @@ void DX12App::CreateVertexIndexBuffer()
 		Vertex({ XMFLOAT3(+1.0f, -1.0f, +1.0f) }) //, XMFLOAT4(Colors::Black)
 	};
 
-	std::vector<std::uint16_t> indices =
+	indices =
 	{
 		// front face
 		0, 1, 2,

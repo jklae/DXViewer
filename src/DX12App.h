@@ -15,11 +15,14 @@ protected:
 
     std::vector<ConstantBuffer> constantBuffer;
     std::vector<DirectX::XMFLOAT4X4> mWorld;
+    
 
     struct Vertex
     {
         DirectX::XMFLOAT3 Pos;
     };
+    std::vector<Vertex> vertices;
+    std::vector<std::uint16_t> indices;
 
     const int kWidth;
     const int kHeight;
