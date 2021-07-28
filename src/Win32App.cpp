@@ -136,46 +136,9 @@ void Win32App::InitDirectX()
 
 	dxApp = std::make_unique<DX12App>(kWidth, kHeight, mhMainWnd);
 
-	vector<Vertex> vertices =
-	{
-		Vertex({ XMFLOAT3(-1.0f, -1.0f, -1.0f) }),
-		Vertex({ XMFLOAT3(-1.0f, +1.0f, -1.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, +1.0f, -1.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, -1.0f, -1.0f) }),
-		Vertex({ XMFLOAT3(-1.0f, -1.0f, +1.0f) }),
-		Vertex({ XMFLOAT3(-1.0f, +1.0f, +1.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, +1.0f, +1.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, -1.0f, +1.0f) }) //, XMFLOAT4(Colors::Black)
-	};
 
-	vector<uint16_t> indices =
-	{
-		// front face
-		0, 1, 2,
-		0, 2, 3,
 
-		// back face
-		4, 6, 5,
-		4, 7, 6,
-
-		// left face
-		4, 5, 1,
-		4, 1, 0,
-
-		// right face
-		3, 2, 6,
-		3, 6, 7,
-
-		// top face
-		1, 5, 6,
-		1, 6, 2,
-
-		// bottom face
-		4, 0, 3,
-		4, 3, 7
-	};
-
-	dxApp->SetVertexIndexResource(vertices, indices);
+	dxApp->SetVertexIndexResource(vertices1, indices);
 }
 
 void Win32App::CreateObjects(const int count, const float scale)
@@ -192,6 +155,7 @@ void Win32App::Update()
 	if (dxApp)
 	{
 		dxApp->Update();
+		dxApp->SetVertexIndexResource(vertices2, indices);
 	}
 }
 
