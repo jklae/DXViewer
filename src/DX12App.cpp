@@ -16,8 +16,13 @@ DX12App::~DX12App()
 		FlushCommandQueue();
 
 	// CreateVertexIndexBuffer
-	VertexBufferUploader = nullptr;
-	IndexBufferUploader = nullptr;
+	vMappedData = nullptr;
+	iMappedData = nullptr;
+
+	if (VertexBufferUploader != nullptr)
+		VertexBufferUploader->Unmap(0, nullptr);
+	if (IndexBufferUploader != nullptr)
+		IndexBufferUploader->Unmap(0, nullptr);
 
 	// CreateConstantBuffer
 	mMappedData = nullptr;
@@ -259,12 +264,14 @@ void DX12App::CreateProjMatrix()
 void DX12App::CreateVertexIndexBuffer()
 {
 	// 2, 3
+	const UINT descSize = 1000000;
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
 	md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(vbByteSize), D3D12_RESOURCE_STATE_GENERIC_READ,
+		// &CD3DX12_RESOURCE_DESC::Buffer(vbByteSize)
+		&CD3DX12_RESOURCE_DESC::Buffer(descSize), D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr, IID_PPV_ARGS(VertexBufferUploader.GetAddressOf()));
 
 
@@ -277,7 +284,8 @@ void DX12App::CreateVertexIndexBuffer()
 
 	md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(vbByteSize), D3D12_RESOURCE_STATE_GENERIC_READ,
+		// &CD3DX12_RESOURCE_DESC::Buffer(ibByteSize)
+		&CD3DX12_RESOURCE_DESC::Buffer(descSize), D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr, IID_PPV_ARGS(IndexBufferUploader.GetAddressOf()));
 
 	IndexBufferUploader->Map(0, nullptr, reinterpret_cast<void**>(&iMappedData));
@@ -478,6 +486,13 @@ void DX12App::FlushCommandQueue()
 void DX12App::Update()
 {
 	// ######### Update Vertex, Index buffer
+	// Change View size
+	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+	vbv.SizeInBytes = vbByteSize;
+	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+	ibv.SizeInBytes = ibByteSize;
+
+	// Update mapping data
 	memcpy(&vMappedData[0], vertices.data(), sizeof(Vertex) * vertices.size());
 	memcpy(&iMappedData[0], indices.data(), sizeof(uint16_t) * indices.size());
 	IndexCount = (UINT)indices.size();
