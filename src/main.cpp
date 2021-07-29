@@ -13,7 +13,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 
 
     winApp.InitDirectX();
-    winApp.CreateObjects(1, 1.0f);
 
     return winApp.Run();
 }
