@@ -31,7 +31,7 @@ DX12App::~DX12App()
 		mUploadBuffer->Unmap(0, nullptr);
 }
 
-void DX12App::CreateObjects(const int count, const float scale)
+void DX12App::CreateObjects(const int count = 1, const float scale = 1.0f)
 {
 	const int totalCount = static_cast<size_t>(count * count * count);
 	constantBuffer.reserve(totalCount);
@@ -70,7 +70,7 @@ void DX12App::SetVertexIndexResource(vector<Vertex> _vertices, vector<uint16_t> 
 	indices = _indices;
 }
 
-bool DX12App::Initialize(const int count, const float scale)
+bool DX12App::Initialize()
 {
 	// Init1
 	CheckMSAA();
@@ -88,7 +88,7 @@ bool DX12App::Initialize(const int count, const float scale)
     mCommandList->Reset(mDirectCmdListAlloc.Get(), nullptr);
 
 	// Init2
-	CreateObjects(count, scale);
+	CreateObjects();
 
 	CreateProjMatrix();
 	CreateVertexIndexBuffer();

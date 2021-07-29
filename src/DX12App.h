@@ -168,7 +168,7 @@ public:
     void CreateObjects(const int count, const float scale);
     void SetVertexIndexResource(std::vector<Vertex> _vertices, std::vector<std::uint16_t> _indices);
 
-    bool Initialize(const int count = 0, const float scale = 0.0f);
+    bool Initialize();
 
     void Update();
     void Draw();

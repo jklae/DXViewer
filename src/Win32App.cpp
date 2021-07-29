@@ -139,7 +139,7 @@ void Win32App::InitDirectX()
 
 
 	dxApp->SetVertexIndexResource(vertices2, indices2);
-	dxApp->Initialize(1, 1.0f);
+	dxApp->Initialize();
 }
 
 void Win32App::Update()
