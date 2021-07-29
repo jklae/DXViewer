@@ -1,7 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.19.0)
 
 # Set the project name
-SET( PROJECT_NAME DirectXDrawingExample )
+SET( PROJECT_NAME DXViewer )
 PROJECT(${PROJECT_NAME})
 
 # Define character set as Unicode

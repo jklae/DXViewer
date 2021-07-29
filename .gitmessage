@@ -14,7 +14,8 @@
 #   style   : formatting, missing semi colons, etc; no code change
 #   docs    : changes to documentation
 #   file    : changes to files
-#   chore   : updating grunt tasks etc; no code change
+#   chore   : updating package manager(ex. gitignore) etc; 
+#               no code change
 # ------------------
 #   1. Capitalize the subject line (except TYPE)
 #   2. Use the imperative mood in the subject line

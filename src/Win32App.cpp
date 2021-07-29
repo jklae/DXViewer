@@ -2,8 +2,9 @@
 
 
 using namespace std;
+using namespace DirectX;
 
-// static variable is used to put the proc function into the class.
+// Static variable is used to put the proc function into the class.
 Win32App* Win32App::instanceForProc = nullptr;
 Win32App* Win32App::GetinstanceForProc()
 {
@@ -30,8 +31,39 @@ bool Win32App::Initialize(HINSTANCE hInstance)
 	// Just call it once.
 	assert(mhMainWnd == nullptr);
 
-	if (!InitMainWindow(hInstance))
+	WNDCLASS wc;
+	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.lpfnWndProc = MainWndProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.hInstance = hInstance;
+	wc.hIcon = LoadIcon(0, IDI_APPLICATION);
+	wc.hCursor = LoadCursor(0, IDC_ARROW);
+	wc.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
+	wc.lpszMenuName = 0;
+	wc.lpszClassName = L"MainWnd";
+
+	if (!RegisterClass(&wc))
+	{
+		MessageBox(0, L"RegisterClass Failed.", 0, 0);
 		return false;
+	}
+
+
+	mhMainWnd = CreateWindow(L"MainWnd", L"d3d App",
+		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
+		CW_USEDEFAULT, CW_USEDEFAULT, kWidth, kHeight,
+		0, 0, hInstance, 0);
+
+	if (!mhMainWnd)
+	{
+		MessageBox(0, L"CreateWindow Failed.", 0, 0);
+		return false;
+	}
+
+	ShowWindow(mhMainWnd, SW_SHOW);
+	UpdateWindow(mhMainWnd);
+
 
 	return true;
 }
@@ -68,47 +100,6 @@ LRESULT Win32App::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 
 
-
-
-bool Win32App::InitMainWindow(HINSTANCE hInstance)
-{
-	WNDCLASS wc;
-	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = MainWndProc;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
-	wc.hInstance = hInstance;
-	wc.hIcon = LoadIcon(0, IDI_APPLICATION);
-	wc.hCursor = LoadCursor(0, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
-	wc.lpszMenuName = 0;
-	wc.lpszClassName = L"MainWnd";
-
-	if (!RegisterClass(&wc))
-	{
-		MessageBox(0, L"RegisterClass Failed.", 0, 0);
-		return false;
-	}
-
-
-	mhMainWnd = CreateWindow(L"MainWnd", L"d3d App",
-		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
-		CW_USEDEFAULT, CW_USEDEFAULT, kWidth, kHeight,
-		0, 0, hInstance, 0);
-
-	if (!mhMainWnd)
-	{
-		MessageBox(0, L"CreateWindow Failed.", 0, 0);
-		return false;
-	}
-
-	ShowWindow(mhMainWnd, SW_SHOW);
-	UpdateWindow(mhMainWnd);
-
-	return true;
-}
-
-
 int Win32App::Run()
 {
 	assert(mhMainWnd != nullptr);
@@ -141,27 +132,27 @@ void Win32App::InitDirectX()
 
 	// Just call it once.
 	assert(dxApp == nullptr);
+	//std::make_unique<DX12App> adxApp_;
 
-	dxApp = std::make_unique<DX12DefaultApp>(kWidth, kHeight, mhMainWnd);
-	dxApp->Initialize();
-}
+	dxApp = std::make_unique<DX12App>(kWidth, kHeight, mhMainWnd);
 
-void Win32App::CreateObjects(const int count, const float scale)
-{
-	// Call after directx init
-	assert(dxApp != nullptr);
 
-	dxApp.reset();
-	dxApp = std::make_unique<DX12DrawingApp>(kWidth, kHeight, mhMainWnd);
-	dxApp->Initialize(count, scale);
-	
+
+	dxApp->SetVertexIndexResource(vertices2, indices2);
+	dxApp->Initialize(1, 1.0f);
 }
 
 void Win32App::Update()
 {
+	static int i = 0;
 	if (dxApp)
 	{
 		dxApp->Update();
+		if (i == 1) 
+			dxApp->SetVertexIndexResource(vertices2, indices2);
+		else dxApp->SetVertexIndexResource(vertices1, indices1);
+		i = (i + 1) % 2;
+		cout << i << endl;
 	}
 }
 
@@ -207,3 +198,8 @@ void Win32App::OnMouseMove(WPARAM btnState, int x, int y)
 	}
 }
 
+
+HWND Win32App::GetMhMainWnd()
+{
+	return mhMainWnd;
+}
