@@ -125,7 +125,7 @@ int Win32App::Run()
 }
 
 
-void Win32App::InitDirectX()
+void Win32App::InitDirectX(FluidSimulation* fluidsim, double timestep)
 {
 	// Call after window init
 	assert(mhMainWnd != nullptr);
@@ -138,7 +138,7 @@ void Win32App::InitDirectX()
 
 
 
-	dxApp->SetVertexIndexResource(vertices2, indices2);
+	dxApp->SetVertexIndexResource(fluidsim, timestep);
 	dxApp->Initialize();
 }
 
@@ -148,11 +148,11 @@ void Win32App::Update()
 	if (dxApp)
 	{
 		dxApp->Update();
-		if (i == 1) 
-			dxApp->SetVertexIndexResource(vertices2, indices2);
-		else dxApp->SetVertexIndexResource(vertices1, indices1);
+		//if (i == 1) 
+		//	dxApp->SetVertexIndexResource(vertices2, indices2);
+		//else dxApp->SetVertexIndexResource(vertices1, indices1);
 		i = (i + 1) % 2;
-		cout << i << endl;
+		//cout << i << endl;
 	}
 }
 

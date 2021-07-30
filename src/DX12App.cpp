@@ -29,6 +29,8 @@ DX12App::~DX12App()
 
 	if (mUploadBuffer != nullptr)
 		mUploadBuffer->Unmap(0, nullptr);
+
+	delete fluidsim;
 }
 
 void DX12App::CreateObjects(const int count = 1, const float scale = 1.0f)
@@ -51,7 +53,7 @@ void DX12App::CreateObjects(const int count = 1, const float scale = 1.0f)
 					offset + (float)k * stride);
 
 								//TransformMatrix(pos.x, pos.y, pos.z, scale);
-				XMFLOAT4X4 world = TransformMatrix(0.0f, 0.0f, 0.0f, scale);
+				XMFLOAT4X4 world = TransformMatrix(-1.5f, -1.0f, -1.0f, 0.8f);
 				mWorld.push_back(world);
 
 				struct ConstantBuffer cb;
@@ -64,10 +66,12 @@ void DX12App::CreateObjects(const int count = 1, const float scale = 1.0f)
 	}
 }
 
-void DX12App::SetVertexIndexResource(vector<Vertex> _vertices, vector<uint16_t> _indices)
+void DX12App::SetVertexIndexResource(FluidSimulation* fluidsim2, double timestep2)
 {
-	vertices = _vertices;
-	indices = _indices;
+	//vertices = _vertices;
+	//indices = _indices;
+	fluidsim = fluidsim2;
+	timestep = timestep2;
 }
 
 bool DX12App::Initialize()
@@ -489,13 +493,82 @@ void DX12App::Update()
 {
 	// ######### Update Vertex, Index buffer
 	// Change View size
-	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+	fluidsim->update(timestep);
+
+	std::vector<vmath::vec3> old_vertices = fluidsim->isomesh2.vertices;
+	std::vector<Triangle> old_triangles = fluidsim->isomesh2.triangles;
+
+	indices.clear();
+
+	//cout << fluidsim->isomesh2.triangles[0].tri[0] << endl;
+
+	for (int i = 0; i < old_triangles.size(); i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			//std::cout << old_triangles[i].tri[j] << " /";
+			std::uint16_t a = static_cast<std::uint16_t>(old_triangles[i].tri[j]);
+			indices.push_back(a);
+		}
+		//std::cout << "\n";
+	}
+
+	/*for (int i = 0; i < old_vertices.size(); i++)
+	{
+		Vertex v()
+		vertices
+	}*/
+	//cout << vertices.size() << endl;
+
+	std::vector<Vertex> vertices2 =
+	{
+		Vertex({ DirectX::XMFLOAT3(-0.5f, -0.5f, -0.5f) }),
+		Vertex({ DirectX::XMFLOAT3(-0.5f, +0.5f, -0.5f) }),
+		Vertex({ DirectX::XMFLOAT3(+0.5f, +0.5f, -0.5f) }),
+		Vertex({ DirectX::XMFLOAT3(+0.5f, -0.5f, -0.5f) }),
+		Vertex({ DirectX::XMFLOAT3(-0.5f, -0.5f, +0.5f) }),
+		Vertex({ DirectX::XMFLOAT3(-0.5f, +0.5f, +0.5f) }),
+		Vertex({ DirectX::XMFLOAT3(+0.5f, +0.5f, +0.5f) }),
+		Vertex({ DirectX::XMFLOAT3(+0.5f, -0.5f, +0.5f) }) //, XMFLOAT4(Colors::Black)
+	};
+
+	std::vector<std::uint16_t> indices1 =
+	{
+		// front face
+		0, 1, 2,
+		0, 2, 3,
+
+		// back face
+		4, 6, 5,
+		4, 7, 6,
+
+		// left face
+		4, 5, 1,
+		4, 1, 0,
+
+		// right face
+		3, 2, 6,
+		3, 6, 7,
+
+		// top face
+		1, 5, 6,
+		1, 6, 2,
+
+		// bottom face
+		4, 0, 3,
+		4, 3, 7
+	};
+
+	vertices = vertices2;
+	//indices = indices1;
+
+	const UINT vbByteSize = (UINT)old_vertices.size() * sizeof(vmath::vec3);
 	vbv.SizeInBytes = vbByteSize;
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 	ibv.SizeInBytes = ibByteSize;
 
 	// Update mapping data
-	memcpy(&vMappedData[0], vertices.data(), sizeof(Vertex) * vertices.size());
+	memcpy(&vMappedData[0], old_vertices.data(), sizeof(vmath::vec3) * old_vertices.size());
 	memcpy(&iMappedData[0], indices.data(), sizeof(uint16_t) * indices.size());
 	IndexCount = (UINT)indices.size();
 	// #########
