@@ -7,10 +7,11 @@ cbuffer cbPerObject : register(b0)
 };
 
 
-void main(float3 iPosL  : POSITION, float3 iNormal	: NORMAL,
-	out float4 oPosH  : SV_POSITION, out float4 oColor : COLOR)
+void main(float3 iPosL  : POSITION, float3 iNormalL	: NORMAL,
+	out float4 oPosH  : SV_POSITION, out float3 oNormalW  : NORMAL,
+	out float4 oColor : COLOR)
 {
-	float3 n = normalize(mul(gTransInvWorld, iNormal));
+	oNormalW = normalize(mul(gTransInvWorld, iNormalL));
 	float4 posW = mul(gWorld, float4(iPosL, 1.0f));
 
 	// Transform to homogeneous clip space.
