@@ -131,9 +131,6 @@ void Win32App::InitDirectX(DX12App* dxapp_)
 	// Call after window init
 	assert(mhMainWnd != nullptr);
 
-	// Just call it once.
-	//assert(dxApp == nullptr);
-
 	dxApp = dxapp_;
 
 	dxApp->SetWindow(kWidth, kHeight, mhMainWnd);
@@ -142,15 +139,9 @@ void Win32App::InitDirectX(DX12App* dxapp_)
 
 void Win32App::Update()
 {
-	static int i = 0;
 	if (dxApp)
 	{
 		dxApp->Update();
-		//if (i == 1) 
-		//	dxApp->SetVertexIndexResource(vertices2, indices2);
-		//else dxApp->SetVertexIndexResource(vertices1, indices1);
-		i = (i + 1) % 2;
-		//cout << i << endl;
 	}
 }
 
