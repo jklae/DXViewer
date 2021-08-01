@@ -2,14 +2,13 @@
 
 #include "dx12header.h"
 #include "ISimulation.h"
-#include "../../../src/SubFluidSimulation.h"
 
 
 class DX12App
 {
 protected:
 
-    SubFluidSimulation* fluidsim;
+    ISimulation* fluidsim;
     double timestep;
 
     struct ConstantBuffer
@@ -168,7 +167,7 @@ public:
     DX12App(const DX12App& dxApp);
 
     void CreateObjects(const int count, const float scale);
-    void SetVertexIndexResource(SubFluidSimulation* fluidsim, double timestep);
+    void SetVertexIndexResource(ISimulation* fluidsim, double timestep);
 
     bool Initialize();
     void Update();

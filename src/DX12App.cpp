@@ -66,7 +66,7 @@ void DX12App::CreateObjects(const int count = 1, const float scale = 1.0f)
 	}
 }
 
-void DX12App::SetVertexIndexResource(SubFluidSimulation* fluidsim2, double timestep2)
+void DX12App::SetVertexIndexResource(ISimulation* fluidsim2, double timestep2)
 {
 	//vertices = _vertices;
 	//indices = _indices;
