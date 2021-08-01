@@ -272,7 +272,7 @@ void DX12App::CreateVertexIndexBuffer()
 							//(UINT)vertices.size()
 	const UINT vbByteSize = descSize * sizeof(Vertex);
 							//(UINT)indices.size()
-	const UINT ibByteSize = descSize * sizeof(std::uint16_t);
+	const UINT ibByteSize = descSize * sizeof(unsigned int);
 
 	md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
@@ -297,7 +297,7 @@ void DX12App::CreateVertexIndexBuffer()
 	IndexBufferUploader->Map(0, nullptr, reinterpret_cast<void**>(&iMappedData));
 
 	ibv.BufferLocation = IndexBufferUploader->GetGPUVirtualAddress();
-	ibv.Format = DXGI_FORMAT_R16_UINT;
+	ibv.Format = DXGI_FORMAT_R32_UINT;
 	ibv.SizeInBytes = ibByteSize;
 
 }
@@ -495,8 +495,22 @@ void DX12App::Update()
 	// Change View size
 	fluidsim->IUpdate(timestep);
 
-	std::vector<vmath::vec3> old_vertices = fluidsim->isomesh2.vertices;
+
+	std::vector<Vertex> vertices;
+	std::vector<unsigned int> indices;
+
+	std::vector<vmath::vec3> old_vertices2 = fluidsim->isomesh2.vertices;
 	std::vector<Triangle> old_triangles = fluidsim->isomesh2.triangles;
+
+	std::vector<float> old_vertices = fluidsim->IGetVertice();
+	/*std::vector<Vertex> old_vertices;
+
+	old_vertices.clear();
+	for (int i = 0; i < old_vertices3.size() / 3; i++)
+	{
+		Vertex v = { DirectX::XMFLOAT3(old_vertices3[i], old_vertices3[i+1], old_vertices3[i+2])};
+		old_vertices.push_back(v);
+	}*/
 
 	indices.clear();
 
@@ -507,12 +521,12 @@ void DX12App::Update()
 		for (int j = 0; j < 3; j++)
 		{
 			//std::cout << old_triangles[i].tri[j] << " /";
-			std::uint16_t a = static_cast<std::uint16_t>(old_triangles[i].tri[j]);
+			unsigned int a = static_cast<unsigned int>(old_triangles[i].tri[j]);
 			indices.push_back(a);
 		}
 		//std::cout << "\n";
 	}
-
+	cout << old_vertices.size() << endl;
 	/*for (int i = 0; i < old_vertices.size(); i++)
 	{
 		Vertex v()
@@ -562,14 +576,14 @@ void DX12App::Update()
 	vertices = vertices2;
 	//indices = indices1;
 
-	const UINT vbByteSize = (UINT)old_vertices.size() * sizeof(vmath::vec3);
+	const UINT vbByteSize = (UINT)old_vertices.size() * sizeof(float);
 	vbv.SizeInBytes = vbByteSize;
-	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+	const UINT ibByteSize = (UINT)indices.size() * sizeof(unsigned int);
 	ibv.SizeInBytes = ibByteSize;
 
 	// Update mapping data
-	memcpy(&vMappedData[0], old_vertices.data(), sizeof(vmath::vec3) * old_vertices.size());
-	memcpy(&iMappedData[0], indices.data(), sizeof(uint16_t) * indices.size());
+	memcpy(&vMappedData[0], old_vertices.data(), sizeof(float) * old_vertices.size());
+	memcpy(&iMappedData[0], indices.data(), sizeof(unsigned int) * indices.size());
 	IndexCount = (UINT)indices.size();
 	// #########
 
