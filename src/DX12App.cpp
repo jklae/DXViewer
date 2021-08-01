@@ -539,12 +539,21 @@ void DX12App::Update()
 
 	for (int i = 0; i < mWorld.size(); i++)
 	{
+		XMFLOAT3X3 world3x3
+			= XMFLOAT3X3( mWorld[i]._11, mWorld[i]._12, mWorld[i]._13, 
+			mWorld[i]._21, mWorld[i]._22, mWorld[i]._23,
+			mWorld[i]._31, mWorld[i]._32, mWorld[i]._33);
+		XMMATRIX world3 = XMLoadFloat3x3(&world3x3);
+		XMVECTOR det = XMMatrixDeterminant(world3);
+		XMMATRIX transInvWorld = XMMatrixTranspose(XMMatrixInverse(&det, world3));
+
 		XMMATRIX world = XMLoadFloat4x4(&mWorld[i]);
 		XMMATRIX worldViewProj = world * view * proj;
 
 		// Update the constant buffer with the latest worldViewProj matrix.
 		XMStoreFloat4x4(&constantBuffer[i].worldViewProj, worldViewProj);
 		XMStoreFloat4x4(&constantBuffer[i].world, world);
+		XMStoreFloat3x3(&constantBuffer[i].transInvWorld, transInvWorld);
 		memcpy(&mMappedData[i * mElementByteSize], &constantBuffer[i], sizeof(ConstantBuffer));
 
 	}
