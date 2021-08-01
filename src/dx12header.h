@@ -49,7 +49,8 @@ inline UINT ComputeBufferByteSize()
 
 struct Vertex
 {
-	DirectX::XMFLOAT3 Pos;
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 nor;
 };
 
 
