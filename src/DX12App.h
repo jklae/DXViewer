@@ -6,7 +6,7 @@
 
 class DX12App
 {
-protected:
+private:
 
     ISimulation* fluidsim;
     double timestep;
