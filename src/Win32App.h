@@ -19,7 +19,8 @@ private:
     const int kWidth;
     const int kHeight;
     HWND mhMainWnd = nullptr; // Main window handle
-    std::unique_ptr<DX12App> dxApp = nullptr;
+    DX12App* dxApp;
+    //std::unique_ptr<DX12App> dxApp = nullptr;
 
     POINT mLastMousePos;
 
@@ -98,7 +99,7 @@ public:
 
     bool Initialize(HINSTANCE hInstance);
 	int Run();
-    void InitDirectX(ISimulation* fluidsim, double timestep);
+    void InitDirectX(DX12App* dxapp);
 
     HWND GetMhMainWnd();
 };

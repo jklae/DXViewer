@@ -76,6 +76,13 @@ void DX12App::SetVertexIndexResource(ISimulation* fluidsim2, double timestep2)
 	timestep = timestep2;
 }
 
+void DX12App::SetWindow(int kWidth_, int kHeight_, HWND mhMainWnd_)
+{
+	kWidth = kWidth_;
+	kHeight = kHeight_;
+	mhMainWnd = mhMainWnd_;
+}
+
 bool DX12App::Initialize()
 {
 	// Init1

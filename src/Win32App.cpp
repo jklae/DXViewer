@@ -24,6 +24,7 @@ Win32App::Win32App(const int kWidth, const int KHeight)
 
 Win32App::~Win32App()
 {
+	delete dxApp;
 }
 
 bool Win32App::Initialize(HINSTANCE hInstance)
@@ -125,20 +126,18 @@ int Win32App::Run()
 }
 
 
-void Win32App::InitDirectX(ISimulation* fluidsim, double timestep)
+void Win32App::InitDirectX(DX12App* dxapp_)
 {
 	// Call after window init
 	assert(mhMainWnd != nullptr);
 
 	// Just call it once.
-	assert(dxApp == nullptr);
+	//assert(dxApp == nullptr);
 	//std::make_unique<DX12App> adxApp_;
 
-	dxApp = std::make_unique<DX12App>(kWidth, kHeight, mhMainWnd);
+	dxApp = dxapp_;//std::make_unique<DX12App>(kWidth, kHeight, mhMainWnd);
 
-
-
-	dxApp->SetVertexIndexResource(fluidsim, timestep);
+	dxApp->SetWindow(kWidth, kHeight, mhMainWnd);
 	dxApp->Initialize();
 }
 
