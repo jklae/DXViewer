@@ -5,7 +5,11 @@ using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace std;
 
-DX12App::DX12App(const int kWidth, const int kHeight, const HWND mhMainWnd)
+DX12App::DX12App()
+{
+}
+
+DX12App::DX12App(int kWidth, int kHeight, HWND mhMainWnd)
 	:kWidth(kWidth), kHeight(kHeight), mhMainWnd(mhMainWnd)
 {
 }
@@ -66,12 +70,17 @@ void DX12App::CreateObjects(const int count = 1, const float scale = 1.0f)
 	}
 }
 
-void DX12App::SetVertexIndexResource(ISimulation* fluidsim2, double timestep2)
+void DX12App::SetSimulation(ISimulation* fluidsim2, double timestep2)
 {
-	//vertices = _vertices;
-	//indices = _indices;
 	fluidsim = fluidsim2;
 	timestep = timestep2;
+}
+
+void DX12App::SetWindow(int kWidth_, int kHeight_, HWND mhMainWnd_)
+{
+	kWidth = kWidth_;
+	kHeight = kHeight_;
+	mhMainWnd = mhMainWnd_;
 }
 
 bool DX12App::Initialize()

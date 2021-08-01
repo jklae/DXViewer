@@ -6,7 +6,7 @@
 
 class DX12App
 {
-protected:
+private:
 
     ISimulation* fluidsim;
     double timestep;
@@ -20,10 +20,10 @@ protected:
     std::vector<ConstantBuffer> constantBuffer;
     std::vector<DirectX::XMFLOAT4X4> mWorld;
 
-    const int kWidth;
-    const int kHeight;
+    int kWidth;
+    int kHeight;
 
-    const HWND mhMainWnd; // main window handle
+    HWND mhMainWnd; // main window handle
 
 
 #pragma region Init1
@@ -162,12 +162,13 @@ protected:
 #pragma endregion
 
 public:
-    DX12App(const int kWidth, const int kHeight, const HWND mhMainWnd);
+    DX12App();
+    DX12App(int kWidth, int kHeight, HWND mhMainWnd);
     ~DX12App();
-    DX12App(const DX12App& dxApp);
 
     void CreateObjects(const int count, const float scale);
-    void SetVertexIndexResource(ISimulation* fluidsim, double timestep);
+    void SetSimulation(ISimulation* fluidsim, double timestep);
+    void SetWindow(int kWidth_, int kHeight_, HWND mhMainWnd_);
 
     bool Initialize();
     void Update();
