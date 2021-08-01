@@ -1,11 +1,15 @@
 #pragma once
 
 #include "dx12header.h"
+#include "ISimulation.h"
 
 
 class DX12App
 {
-protected:
+private:
+
+    ISimulation* fluidsim;
+    double timestep;
 
     struct ConstantBuffer
     {
@@ -15,14 +19,11 @@ protected:
 
     std::vector<ConstantBuffer> constantBuffer;
     std::vector<DirectX::XMFLOAT4X4> mWorld;
-    
-    std::vector<Vertex> vertices;
-    std::vector<std::uint16_t> indices;
 
-    const int kWidth;
-    const int kHeight;
+    int kWidth;
+    int kHeight;
 
-    const HWND mhMainWnd; // main window handle
+    HWND mhMainWnd; // main window handle
 
 
 #pragma region Init1
@@ -161,15 +162,15 @@ protected:
 #pragma endregion
 
 public:
-    DX12App(const int kWidth, const int kHeight, const HWND mhMainWnd);
+    DX12App();
+    DX12App(int kWidth, int kHeight, HWND mhMainWnd);
     ~DX12App();
-    DX12App(const DX12App& dxApp);
 
     void CreateObjects(const int count, const float scale);
-    void SetVertexIndexResource(std::vector<Vertex> _vertices, std::vector<std::uint16_t> _indices);
+    void SetSimulation(ISimulation* fluidsim, double timestep);
+    void SetWindow(int kWidth_, int kHeight_, HWND mhMainWnd_);
 
-    bool Initialize(const int count = 0, const float scale = 0.0f);
-
+    bool Initialize();
     void Update();
     void Draw();
 

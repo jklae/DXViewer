@@ -24,6 +24,7 @@ Win32App::Win32App(const int kWidth, const int KHeight)
 
 Win32App::~Win32App()
 {
+	delete dxApp;
 }
 
 bool Win32App::Initialize(HINSTANCE hInstance)
@@ -125,34 +126,22 @@ int Win32App::Run()
 }
 
 
-void Win32App::InitDirectX()
+void Win32App::InitDirectX(DX12App* dxapp_)
 {
 	// Call after window init
 	assert(mhMainWnd != nullptr);
 
-	// Just call it once.
-	assert(dxApp == nullptr);
-	//std::make_unique<DX12App> adxApp_;
+	dxApp = dxapp_;
 
-	dxApp = std::make_unique<DX12App>(kWidth, kHeight, mhMainWnd);
-
-
-
-	dxApp->SetVertexIndexResource(vertices2, indices2);
-	dxApp->Initialize(1, 1.0f);
+	dxApp->SetWindow(kWidth, kHeight, mhMainWnd);
+	dxApp->Initialize();
 }
 
 void Win32App::Update()
 {
-	static int i = 0;
 	if (dxApp)
 	{
 		dxApp->Update();
-		if (i == 1) 
-			dxApp->SetVertexIndexResource(vertices2, indices2);
-		else dxApp->SetVertexIndexResource(vertices1, indices1);
-		i = (i + 1) % 2;
-		cout << i << endl;
 	}
 }
 

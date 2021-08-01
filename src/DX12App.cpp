@@ -5,7 +5,11 @@ using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace std;
 
-DX12App::DX12App(const int kWidth, const int kHeight, const HWND mhMainWnd)
+DX12App::DX12App()
+{
+}
+
+DX12App::DX12App(int kWidth, int kHeight, HWND mhMainWnd)
 	:kWidth(kWidth), kHeight(kHeight), mhMainWnd(mhMainWnd)
 {
 }
@@ -29,9 +33,11 @@ DX12App::~DX12App()
 
 	if (mUploadBuffer != nullptr)
 		mUploadBuffer->Unmap(0, nullptr);
+
+	delete fluidsim;
 }
 
-void DX12App::CreateObjects(const int count, const float scale)
+void DX12App::CreateObjects(const int count = 1, const float scale = 1.0f)
 {
 	const int totalCount = static_cast<size_t>(count * count * count);
 	constantBuffer.reserve(totalCount);
@@ -51,7 +57,7 @@ void DX12App::CreateObjects(const int count, const float scale)
 					offset + (float)k * stride);
 
 								//TransformMatrix(pos.x, pos.y, pos.z, scale);
-				XMFLOAT4X4 world = TransformMatrix(0.0f, 0.0f, 0.0f, scale);
+				XMFLOAT4X4 world = TransformMatrix(-1.5f, -1.0f, -1.0f, 0.8f);
 				mWorld.push_back(world);
 
 				struct ConstantBuffer cb;
@@ -64,13 +70,20 @@ void DX12App::CreateObjects(const int count, const float scale)
 	}
 }
 
-void DX12App::SetVertexIndexResource(vector<Vertex> _vertices, vector<uint16_t> _indices)
+void DX12App::SetSimulation(ISimulation* fluidsim2, double timestep2)
 {
-	vertices = _vertices;
-	indices = _indices;
+	fluidsim = fluidsim2;
+	timestep = timestep2;
 }
 
-bool DX12App::Initialize(const int count, const float scale)
+void DX12App::SetWindow(int kWidth_, int kHeight_, HWND mhMainWnd_)
+{
+	kWidth = kWidth_;
+	kHeight = kHeight_;
+	mhMainWnd = mhMainWnd_;
+}
+
+bool DX12App::Initialize()
 {
 	// Init1
 	CheckMSAA();
@@ -88,7 +101,7 @@ bool DX12App::Initialize(const int count, const float scale)
     mCommandList->Reset(mDirectCmdListAlloc.Get(), nullptr);
 
 	// Init2
-	CreateObjects(count, scale);
+	CreateObjects();
 
 	CreateProjMatrix();
 	CreateVertexIndexBuffer();
@@ -266,9 +279,9 @@ void DX12App::CreateVertexIndexBuffer()
 	// 2, 3
 	const UINT descSize = 1000000;
 							//(UINT)vertices.size()
-	const UINT vbByteSize = descSize * sizeof(Vertex);
+	const UINT vbByteSize = descSize * sizeof(float);
 							//(UINT)indices.size()
-	const UINT ibByteSize = descSize * sizeof(std::uint16_t);
+	const UINT ibByteSize = descSize * sizeof(unsigned int);
 
 	md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
@@ -280,7 +293,7 @@ void DX12App::CreateVertexIndexBuffer()
 	VertexBufferUploader->Map(0, nullptr, reinterpret_cast<void**>(&vMappedData));
 
 	vbv.BufferLocation = VertexBufferUploader->GetGPUVirtualAddress();
-	vbv.StrideInBytes = sizeof(Vertex);
+	vbv.StrideInBytes = sizeof(float)*3;
 	vbv.SizeInBytes = vbByteSize;
 
 
@@ -293,7 +306,7 @@ void DX12App::CreateVertexIndexBuffer()
 	IndexBufferUploader->Map(0, nullptr, reinterpret_cast<void**>(&iMappedData));
 
 	ibv.BufferLocation = IndexBufferUploader->GetGPUVirtualAddress();
-	ibv.Format = DXGI_FORMAT_R16_UINT;
+	ibv.Format = DXGI_FORMAT_R32_UINT;
 	ibv.SizeInBytes = ibByteSize;
 
 }
@@ -387,8 +400,8 @@ void DX12App::CompileShader()
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 
-	D3DCompileFromFile(L"shader\\vertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &mvsByteCode, 0);
-	D3DCompileFromFile(L"shader\\fragShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &mpsByteCode, 0);
+	D3DCompileFromFile(L"ext\\DXViewer\\shader\\vertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &mvsByteCode, 0);
+	D3DCompileFromFile(L"ext\\DXViewer\\shader\\fragShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &mpsByteCode, 0);
 }
 
 void DX12App::CreatePSO()
@@ -489,14 +502,19 @@ void DX12App::Update()
 {
 	// ######### Update Vertex, Index buffer
 	// Change View size
-	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+	fluidsim->IUpdate(timestep);
+
+	std::vector<float> vertices = fluidsim->IGetVertice();
+	std::vector<unsigned int> indices = fluidsim->IGetIndice();
+
+	const UINT vbByteSize = (UINT)vertices.size() * sizeof(float);
 	vbv.SizeInBytes = vbByteSize;
-	const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
+	const UINT ibByteSize = (UINT)indices.size() * sizeof(unsigned int);
 	ibv.SizeInBytes = ibByteSize;
 
 	// Update mapping data
-	memcpy(&vMappedData[0], vertices.data(), sizeof(Vertex) * vertices.size());
-	memcpy(&iMappedData[0], indices.data(), sizeof(uint16_t) * indices.size());
+	memcpy(&vMappedData[0], vertices.data(), sizeof(float) * vertices.size());
+	memcpy(&iMappedData[0], indices.data(), sizeof(unsigned int) * indices.size());
 	IndexCount = (UINT)indices.size();
 	// #########
 
