@@ -66,7 +66,7 @@ void DX12App::CreateObjects(const int count = 1, const float scale = 1.0f)
 	}
 }
 
-void DX12App::SetVertexIndexResource(FluidSimulation* fluidsim2, double timestep2)
+void DX12App::SetVertexIndexResource(SubFluidSimulation* fluidsim2, double timestep2)
 {
 	//vertices = _vertices;
 	//indices = _indices;
@@ -493,7 +493,7 @@ void DX12App::Update()
 {
 	// ######### Update Vertex, Index buffer
 	// Change View size
-	fluidsim->update(timestep);
+	fluidsim->IUpdate(timestep);
 
 	std::vector<vmath::vec3> old_vertices = fluidsim->isomesh2.vertices;
 	std::vector<Triangle> old_triangles = fluidsim->isomesh2.triangles;

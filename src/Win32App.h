@@ -98,7 +98,7 @@ public:
 
     bool Initialize(HINSTANCE hInstance);
 	int Run();
-    void InitDirectX(FluidSimulation* fluidsim, double timestep);
+    void InitDirectX(SubFluidSimulation* fluidsim, double timestep);
 
     HWND GetMhMainWnd();
 };

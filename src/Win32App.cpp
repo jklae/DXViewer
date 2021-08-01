@@ -125,7 +125,7 @@ int Win32App::Run()
 }
 
 
-void Win32App::InitDirectX(FluidSimulation* fluidsim, double timestep)
+void Win32App::InitDirectX(SubFluidSimulation* fluidsim, double timestep)
 {
 	// Call after window init
 	assert(mhMainWnd != nullptr);

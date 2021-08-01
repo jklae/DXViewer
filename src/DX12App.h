@@ -1,14 +1,15 @@
 #pragma once
 
 #include "dx12header.h"
-#include "../../../src/fluidsimulation.h"
+#include "ISimulation.h"
+#include "../../../src/SubFluidSimulation.h"
 
 
 class DX12App
 {
 protected:
 
-    FluidSimulation* fluidsim;
+    SubFluidSimulation* fluidsim;
     double timestep;
 
     struct ConstantBuffer
@@ -170,7 +171,7 @@ public:
     DX12App(const DX12App& dxApp);
 
     void CreateObjects(const int count, const float scale);
-    void SetVertexIndexResource(FluidSimulation* fluidsim, double timestep);
+    void SetVertexIndexResource(SubFluidSimulation* fluidsim, double timestep);
 
     bool Initialize();
     void Update();
