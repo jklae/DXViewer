@@ -167,7 +167,7 @@ public:
     ~DX12App();
 
     void CreateObjects(const int count, const float scale);
-    void SetVertexIndexResource(ISimulation* fluidsim, double timestep);
+    void SetSimulation(ISimulation* fluidsim, double timestep);
     void SetWindow(int kWidth_, int kHeight_, HWND mhMainWnd_);
 
     bool Initialize();

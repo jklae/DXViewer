@@ -133,9 +133,8 @@ void Win32App::InitDirectX(DX12App* dxapp_)
 
 	// Just call it once.
 	//assert(dxApp == nullptr);
-	//std::make_unique<DX12App> adxApp_;
 
-	dxApp = dxapp_;//std::make_unique<DX12App>(kWidth, kHeight, mhMainWnd);
+	dxApp = dxapp_;
 
 	dxApp->SetWindow(kWidth, kHeight, mhMainWnd);
 	dxApp->Initialize();
