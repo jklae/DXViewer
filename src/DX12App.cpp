@@ -279,7 +279,7 @@ void DX12App::CreateVertexIndexBuffer()
 	// 2, 3
 	const UINT descSize = 1000000;
 							//(UINT)vertices.size()
-	const UINT vbByteSize = descSize * sizeof(float);
+	const UINT vbByteSize = descSize * sizeof(Vertex);
 							//(UINT)indices.size()
 	const UINT ibByteSize = descSize * sizeof(unsigned int);
 
@@ -293,7 +293,7 @@ void DX12App::CreateVertexIndexBuffer()
 	VertexBufferUploader->Map(0, nullptr, reinterpret_cast<void**>(&vMappedData));
 
 	vbv.BufferLocation = VertexBufferUploader->GetGPUVirtualAddress();
-	vbv.StrideInBytes = sizeof(float)*3;
+	vbv.StrideInBytes = sizeof(Vertex);
 	vbv.SizeInBytes = vbByteSize;
 
 
@@ -504,16 +504,16 @@ void DX12App::Update()
 	// Change View size
 	fluidsim->IUpdate(timestep);
 
-	std::vector<float> vertices = fluidsim->IGetVertice();
+	std::vector<Vertex> vertices = fluidsim->IGetVertice();
 	std::vector<unsigned int> indices = fluidsim->IGetIndice();
 
-	const UINT vbByteSize = (UINT)vertices.size() * sizeof(float);
+	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
 	vbv.SizeInBytes = vbByteSize;
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(unsigned int);
 	ibv.SizeInBytes = ibByteSize;
 
 	// Update mapping data
-	memcpy(&vMappedData[0], vertices.data(), sizeof(float) * vertices.size());
+	memcpy(&vMappedData[0], vertices.data(), sizeof(Vertex) * vertices.size());
 	memcpy(&iMappedData[0], indices.data(), sizeof(unsigned int) * indices.size());
 	IndexCount = (UINT)indices.size();
 	// #########
