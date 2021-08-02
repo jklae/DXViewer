@@ -57,7 +57,7 @@ void DX12App::CreateObjects(const int count = 1, const float scale = 1.0f)
 					offset + (float)k * stride);
 
 								//TransformMatrix(pos.x, pos.y, pos.z, scale);
-				XMFLOAT4X4 world = TransformMatrix(-1.5f, -1.0f, -1.0f, 0.8f);
+				XMFLOAT4X4 world = TransformMatrix(-1.9f, -1.0f, -1.0f, 0.8f);
 				mWorld.push_back(world);
 
 				struct ConstantBuffer cb;
@@ -279,7 +279,7 @@ void DX12App::CreateVertexIndexBuffer()
 	// 2, 3
 	const UINT descSize = 1000000;
 							//(UINT)vertices.size()
-	const UINT vbByteSize = descSize * sizeof(float);
+	const UINT vbByteSize = descSize * sizeof(Vertex);
 							//(UINT)indices.size()
 	const UINT ibByteSize = descSize * sizeof(unsigned int);
 
@@ -293,7 +293,7 @@ void DX12App::CreateVertexIndexBuffer()
 	VertexBufferUploader->Map(0, nullptr, reinterpret_cast<void**>(&vMappedData));
 
 	vbv.BufferLocation = VertexBufferUploader->GetGPUVirtualAddress();
-	vbv.StrideInBytes = sizeof(float)*3;
+	vbv.StrideInBytes = sizeof(Vertex);
 	vbv.SizeInBytes = vbByteSize;
 
 
@@ -397,7 +397,8 @@ void DX12App::CompileShader()
 {
 	mInputLayout =
 	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 
 	D3DCompileFromFile(L"ext\\DXViewer\\shader\\vertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &mvsByteCode, 0);
@@ -504,16 +505,16 @@ void DX12App::Update()
 	// Change View size
 	fluidsim->IUpdate(timestep);
 
-	std::vector<float> vertices = fluidsim->IGetVertice();
+	std::vector<Vertex> vertices = fluidsim->IGetVertice();
 	std::vector<unsigned int> indices = fluidsim->IGetIndice();
 
-	const UINT vbByteSize = (UINT)vertices.size() * sizeof(float);
+	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
 	vbv.SizeInBytes = vbByteSize;
 	const UINT ibByteSize = (UINT)indices.size() * sizeof(unsigned int);
 	ibv.SizeInBytes = ibByteSize;
 
 	// Update mapping data
-	memcpy(&vMappedData[0], vertices.data(), sizeof(float) * vertices.size());
+	memcpy(&vMappedData[0], vertices.data(), sizeof(Vertex) * vertices.size());
 	memcpy(&iMappedData[0], indices.data(), sizeof(unsigned int) * indices.size());
 	IndexCount = (UINT)indices.size();
 	// #########
@@ -538,12 +539,22 @@ void DX12App::Update()
 
 	for (int i = 0; i < mWorld.size(); i++)
 	{
+		XMFLOAT3X3 world3x3
+			= XMFLOAT3X3( mWorld[i]._11, mWorld[i]._12, mWorld[i]._13, 
+			mWorld[i]._21, mWorld[i]._22, mWorld[i]._23,
+			mWorld[i]._31, mWorld[i]._32, mWorld[i]._33);
+		XMMATRIX world3 = XMLoadFloat3x3(&world3x3);
+		XMVECTOR det = XMMatrixDeterminant(world3);
+		XMMATRIX transInvWorld = XMMatrixTranspose(XMMatrixInverse(&det, world3));
+
 		XMMATRIX world = XMLoadFloat4x4(&mWorld[i]);
 		XMMATRIX worldViewProj = world * view * proj;
 
 		// Update the constant buffer with the latest worldViewProj matrix.
-		XMStoreFloat4x4(&constantBuffer[i].worldViewProj, XMMatrixTranspose(worldViewProj));
-		memcpy(&mMappedData[i * mElementByteSize], &constantBuffer[i].worldViewProj, sizeof(ConstantBuffer));
+		XMStoreFloat4x4(&constantBuffer[i].worldViewProj, worldViewProj);
+		XMStoreFloat4x4(&constantBuffer[i].world, world);
+		XMStoreFloat3x3(&constantBuffer[i].transInvWorld, transInvWorld);
+		memcpy(&mMappedData[i * mElementByteSize], &constantBuffer[i], sizeof(ConstantBuffer));
 
 	}
 	// #########
