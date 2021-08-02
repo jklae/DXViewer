@@ -57,7 +57,7 @@ void DX12App::CreateObjects(const int count = 1, const float scale = 1.0f)
 					offset + (float)k * stride);
 
 								//TransformMatrix(pos.x, pos.y, pos.z, scale);
-				XMFLOAT4X4 world = TransformMatrix(-1.5f, -1.0f, -1.0f, 0.8f);
+				XMFLOAT4X4 world = TransformMatrix(-1.9f, -1.0f, -1.0f, 0.8f);
 				mWorld.push_back(world);
 
 				struct ConstantBuffer cb;
