@@ -164,12 +164,12 @@ private:
 #pragma endregion
 
 public:
-    DX12App();
+    __declspec(dllexport) DX12App();
     DX12App(int kWidth, int kHeight, HWND mhMainWnd);
-    ~DX12App();
+    __declspec(dllexport) ~DX12App();
 
     void CreateObjects(const int count, const float scale);
-    void SetSimulation(ISimulation* fluidsim, double timestep);
+    __declspec(dllexport) void SetSimulation(ISimulation* fluidsim, double timestep);
     void SetWindow(int kWidth_, int kHeight_, HWND mhMainWnd_);
 
     bool Initialize();

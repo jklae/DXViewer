@@ -21,4 +21,4 @@ FILE( GLOB HDR src/*.h )
 FILE( GLOB SHD ${VS_SHD} ${PS_SHD} )
 
 # Link Source files ('WIN32' keyword is used for win32 project)
-ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${SRC} ${HDR} ${SHD} )
+ADD_LIBRARY( ${PROJECT_NAME} SHARED ${SRC} ${HDR} ${SHD} )

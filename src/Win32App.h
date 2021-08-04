@@ -1,9 +1,5 @@
 #pragma once
 
-// Console window is displayed in debug mode.
-#ifdef _DEBUG
-#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
-#endif
 
 #include <cassert>
 #include <WindowsX.h>
@@ -32,15 +28,15 @@ private:
     void Draw();
 
 public:
-    Win32App(const int kWidth, const int KHeight);
-    ~Win32App();
+    __declspec(dllexport) Win32App(const int kWidth, const int KHeight);
+    __declspec(dllexport) ~Win32App();
 
     static Win32App* GetinstanceForProc();
     LRESULT WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-    bool Initialize(HINSTANCE hInstance);
-	int Run();
-    void InitDirectX(DX12App* dxapp);
+    __declspec(dllexport) bool Initialize(HINSTANCE hInstance);
+    __declspec(dllexport) int Run();
+    __declspec(dllexport) void InitDirectX(DX12App* dxapp);
 
     HWND GetMhMainWnd();
 };
