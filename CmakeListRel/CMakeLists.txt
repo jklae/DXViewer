@@ -1,11 +1,11 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.19.0)
 
 # Set the project name
-SET( PROJECT_NAME DXViewer )
+SET( PROJECT_NAME DXViewerRel )
 PROJECT(${PROJECT_NAME})
 
 # Set configuration types
-Set(CMAKE_CONFIGURATION_TYPES Debug)
+Set(CMAKE_CONFIGURATION_TYPES Release)
 
 # Define character set as Unicode
 add_definitions(-DUNICODE -D_UNICODE)
@@ -28,5 +28,3 @@ FILE( GLOB SHD ${VS_SHD} ${PS_SHD} )
 
 # Link Source files
 ADD_LIBRARY( ${PROJECT_NAME} SHARED ${SRC} ${HDR} ${SHD} )
-
-#add_subdirectory(CmakeListRel)
