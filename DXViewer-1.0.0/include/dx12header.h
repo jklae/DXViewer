@@ -16,7 +16,7 @@
 #include <D3Dcompiler.h>
 #include <DirectXColors.h>
 
-#include "../extern/d3dx12.h"
+#include "../../extern/d3dx12.h"
 
 
 inline DirectX::XMFLOAT4X4 TransformMatrix(
@@ -46,6 +46,12 @@ inline UINT ComputeBufferByteSize()
 	// 512
 	return (sizeof(T) + 255) & ~255;
 }
+
+struct Vertex
+{
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 nor;
+};
 
 
 #endif
