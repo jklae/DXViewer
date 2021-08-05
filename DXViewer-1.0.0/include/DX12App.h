@@ -1,5 +1,7 @@
 #pragma once
 
+#include <fstream>
+
 #include "dx12header.h"
 #include "ISimulation.h"
 
