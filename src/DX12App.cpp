@@ -401,10 +401,10 @@ void DX12App::CompileShader()
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 
-	//D3DCompileFromFile(L"ext\\DXViewer\\shader\\vertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &mvsByteCode, 0);
-	//D3DCompileFromFile(L"ext\\DXViewer\\shader\\fragShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &mpsByteCode, 0);
+	D3DCompileFromFile(L"..\\ext\\DXViewer\\shader\\vertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &mvsByteCode, 0);
+	D3DCompileFromFile(L"..\\ext\\DXViewer\\shader\\fragShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &mpsByteCode, 0);
 	
-	std::ifstream fin("vertexShader.cso", std::ios::binary);
+	/*std::ifstream fin("vertexShader.cso", std::ios::binary);
 
 	fin.seekg(0, std::ios_base::end);
 	std::ifstream::pos_type size = (int)fin.tellg();
@@ -430,7 +430,7 @@ void DX12App::CompileShader()
 	fin2.read((char*)blob2->GetBufferPointer(), size2);
 	fin2.close();
 
-	mpsByteCode = blob2;
+	mpsByteCode = blob2;*/
 }
 
 void DX12App::CreatePSO()
