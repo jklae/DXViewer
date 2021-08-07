@@ -57,7 +57,7 @@ void DX12App::CreateObjects(const int count = 1, const float scale = 1.0f)
 					offset + (float)k * stride);
 
 								//TransformMatrix(pos.x, pos.y, pos.z, scale);
-				XMFLOAT4X4 world = TransformMatrix(-1.9f, -1.0f, -1.0f, 0.8f);
+				XMFLOAT4X4 world = TransformMatrix(-2.5f, -1.8f, 0.0f, 1.0f);
 				mWorld.push_back(world);
 
 				struct ConstantBuffer cb;
@@ -575,7 +575,7 @@ void DX12App::Update()
 		XMVECTOR det = XMMatrixDeterminant(world3);
 		XMMATRIX transInvWorld = XMMatrixTranspose(XMMatrixInverse(&det, world3));
 
-		XMMATRIX world = XMLoadFloat4x4(&mWorld[i]);
+		XMMATRIX world = XMLoadFloat4x4(&mWorld[i]) * XMMatrixRotationX(-0.5);
 		XMMATRIX worldViewProj = world * view * proj;
 
 		// Update the constant buffer with the latest worldViewProj matrix.
