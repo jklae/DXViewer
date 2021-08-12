@@ -32,15 +32,17 @@ DX12App::~DX12App()
 	delete _fluidsim;
 }
 
-void DX12App::createObjects(const int xCount = 3, const int yCount = 1, const int zCount = 1, 
-							const float scale = 0.3f)
+void DX12App::createObjects(const int xCount = 10, const int yCount = 5, const int zCount = 5, 
+							const float scale = 0.1f)
 {
+	const int objectSize = 2.0f;
+
 	const int totalCount = static_cast<size_t>(xCount * yCount * zCount);
 	_constantBuffer.reserve(totalCount);
 	_mWorld.reserve(totalCount);
 
-	const float stride = scale * 2.5f;
-	const float offset = -(stride * xCount) / 2.0f;
+	const float stride = (objectSize * scale) * 1.1f;
+	const float offset = -((stride / 2.0f) * (xCount - 1));
 	for (int i = 0; i < xCount; i++)
 	{
 		for (int j = 0; j < yCount; j++)
