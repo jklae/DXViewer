@@ -1,4 +1,10 @@
 #pragma once
+
+// Console window is displayed in debug mode.
+#ifdef _DEBUG
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+#endif
+
 #include "AdhocSimulation.h" // This includes Win32App.h
 
 
