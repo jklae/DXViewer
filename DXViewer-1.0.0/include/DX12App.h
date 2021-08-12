@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fstream>
+#include <iostream>
 
 #include "dx12header.h"
 #include "ISimulation.h"
@@ -38,7 +39,6 @@ private:
     {
         DirectX::XMFLOAT4X4 worldViewProj;
         DirectX::XMFLOAT4X4 world;
-        DirectX::XMFLOAT3X3 transInvWorld;
         DirectX::XMFLOAT4 color;
     };
 

@@ -280,8 +280,7 @@ void DX12App::_createObjects()
 				cb.worldViewProj = transformMatrix(0.0f, 0.0f, 0.0f);
 							// TransformMatrix(-2.5f, -1.8f, 0.0f, 1.0f)
 				cb.world = transformMatrix(pos.x, pos.y, pos.z, _objectScale);
-				//cb.transInvWorld = transformMatrix(0.0f, 0.0f, 0.0f);
-				cb.color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+				cb.color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 
 				_constantBuffer.push_back(cb);
 			}
@@ -590,22 +589,12 @@ void DX12App::update()
 
 	for (int i = 0; i < _constantBuffer.size(); i++)
 	{
-		XMFLOAT3X3 world3x3
-			= XMFLOAT3X3(_constantBuffer[i].world._11, _constantBuffer[i].world._12, _constantBuffer[i].world._13,
-				_constantBuffer[i].world._21, _constantBuffer[i].world._22, _constantBuffer[i].world._23,
-				_constantBuffer[i].world._31, _constantBuffer[i].world._32, _constantBuffer[i].world._33);
-		XMMATRIX world3 = XMLoadFloat3x3(&world3x3);
-		XMVECTOR det = XMMatrixDeterminant(world3);
-		XMMATRIX transInvWorld = XMMatrixTranspose(XMMatrixInverse(&det, world3));
-
 		XMMATRIX world = XMLoadFloat4x4(&_constantBuffer[i].world);
 		XMMATRIX worldViewProj = world * view * proj;
 
 		// Update the constant buffer with the latest worldViewProj matrix.
 		XMStoreFloat4x4(&_constantBuffer[i].worldViewProj, worldViewProj);
-		XMStoreFloat3x3(&_constantBuffer[i].transInvWorld, transInvWorld);
 		memcpy(&_mMappedData[i * mElementByteSize], &_constantBuffer[i], sizeof(ConstantBuffer));
-
 	}
 	// #########
 }
