@@ -5,36 +5,36 @@ using namespace std;
 using namespace DirectX;
 
 // Static variable is used to put the proc function into the class.
-Win32App* Win32App::instanceForProc = nullptr;
-Win32App* Win32App::GetinstanceForProc()
+Win32App* Win32App::_instanceForProc = nullptr;
+Win32App* Win32App::getinstanceForProc()
 {
-	return instanceForProc;
+	return _instanceForProc;
 }
-LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK mainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	return Win32App::GetinstanceForProc()->WndProc(hwnd, msg, wParam, lParam);
+	return Win32App::getinstanceForProc()->wndProc(hwnd, msg, wParam, lParam);
 }
 //
 
 Win32App::Win32App(const int kWidth, const int KHeight)
-	:kWidth(kWidth), kHeight(KHeight)
+	:_kWidth(kWidth), _kHeight(KHeight)
 {
-	instanceForProc = this;
+	_instanceForProc = this;
 }
 
 Win32App::~Win32App()
 {
-	delete dxApp;
+	delete _dxApp;
 }
 
-bool Win32App::Initialize(HINSTANCE hInstance)
+bool Win32App::initialize(HINSTANCE hInstance)
 {
 	// Just call it once.
-	assert(mhMainWnd == nullptr);
+	assert(_mhMainWnd == nullptr);
 
 	WNDCLASS wc;
 	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = MainWndProc;
+	wc.lpfnWndProc = mainWndProc;
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = hInstance;
@@ -51,26 +51,26 @@ bool Win32App::Initialize(HINSTANCE hInstance)
 	}
 
 
-	mhMainWnd = CreateWindow(L"MainWnd", L"d3d App",
+	_mhMainWnd = CreateWindow(L"MainWnd", L"d3d App",
 		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
-		CW_USEDEFAULT, CW_USEDEFAULT, kWidth, kHeight,
+		CW_USEDEFAULT, CW_USEDEFAULT, _kWidth, _kHeight,
 		0, 0, hInstance, 0);
 
-	if (!mhMainWnd)
+	if (!_mhMainWnd)
 	{
 		MessageBox(0, L"CreateWindow Failed.", 0, 0);
 		return false;
 	}
 
-	ShowWindow(mhMainWnd, SW_SHOW);
-	UpdateWindow(mhMainWnd);
+	ShowWindow(_mhMainWnd, SW_SHOW);
+	UpdateWindow(_mhMainWnd);
 
 
 	return true;
 }
 
 
-LRESULT Win32App::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT Win32App::wndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
@@ -83,15 +83,15 @@ LRESULT Win32App::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONDOWN:
 	case WM_MBUTTONDOWN:
 	case WM_RBUTTONDOWN:
-		OnMouseDown(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		_onMouseDown(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 	case WM_LBUTTONUP:
 	case WM_MBUTTONUP:
 	case WM_RBUTTONUP:
-		OnMouseUp(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		_onMouseUp(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 	case WM_MOUSEMOVE:
-		OnMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		_onMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 
 	}
@@ -101,9 +101,9 @@ LRESULT Win32App::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 
 
-int Win32App::Run()
+int Win32App::run()
 {
-	assert(mhMainWnd != nullptr);
+	assert(_mhMainWnd != nullptr);
 
 	MSG msg = {0};
 	while(msg.message != WM_QUIT)
@@ -117,8 +117,8 @@ int Win32App::Run()
 		// Otherwise, do animation/game stuff.
 		else
         {	
-			Update();
-			Draw();
+			_update();
+			_draw();
         }
     }
 
@@ -126,69 +126,63 @@ int Win32App::Run()
 }
 
 
-void Win32App::InitDirectX(DX12App* dxapp_)
+void Win32App::initDirectX(DX12App* dxapp_)
 {
 	// Call after window init
-	assert(mhMainWnd != nullptr);
+	assert(_mhMainWnd != nullptr);
 
-	dxApp = dxapp_;
+	_dxApp = dxapp_;
 
-	dxApp->SetWindow(kWidth, kHeight, mhMainWnd);
-	dxApp->Initialize();
+	_dxApp->setWindow(_kWidth, _kHeight, _mhMainWnd);
+	_dxApp->initialize();
 }
 
-void Win32App::Update()
+void Win32App::_update()
 {
-	if (dxApp)
+	if (_dxApp)
 	{
-		dxApp->Update();
+		_dxApp->update();
 	}
 }
 
-void Win32App::Draw()
+void Win32App::_draw()
 {
-	if (dxApp)
+	if (_dxApp)
 	{
-		dxApp->Draw();
+		_dxApp->draw();
 	}
 }
 
 
 
 
-void Win32App::OnMouseDown(WPARAM btnState, int x, int y)
+void Win32App::_onMouseDown(WPARAM btnState, int x, int y)
 {
-	mLastMousePos.x = x;
-	mLastMousePos.y = y;
+	_mLastMousePos.x = x;
+	_mLastMousePos.y = y;
 
-	SetCapture(mhMainWnd);
+	SetCapture(_mhMainWnd);
 }
 
-void Win32App::OnMouseUp(WPARAM btnState, int x, int y)
+void Win32App::_onMouseUp(WPARAM btnState, int x, int y)
 {
 	ReleaseCapture();
 }
 
-void Win32App::OnMouseMove(WPARAM btnState, int x, int y)
+void Win32App::_onMouseMove(WPARAM btnState, int x, int y)
 {
-	if (dxApp)
+	if (_dxApp)
 	{
 		if ((btnState & MK_LBUTTON) != 0)
 		{
-			dxApp->UpdateVirtualSphereAngles(mLastMousePos, x, y);
+			_dxApp->updateVirtualSphereAngles(_mLastMousePos, x, y);
 		}
 		else if ((btnState & MK_RBUTTON) != 0)
 		{
-			dxApp->UpdateVirtualSphereRadius(mLastMousePos, x, y);
+			_dxApp->updateVirtualSphereRadius(_mLastMousePos, x, y);
 		}
 
-		mLastMousePos.x = x;
-		mLastMousePos.y = y;
+		_mLastMousePos.x = x;
+		_mLastMousePos.y = y;
 	}
-}
-
-
-HWND Win32App::GetMhMainWnd()
-{
-	return mhMainWnd;
 }

@@ -14,6 +14,8 @@
 #   style   : formatting, missing semi colons, etc; no code change
 #   docs    : changes to documentation
 #   file    : changes to files
+#   test    : adding or refactoring tests
+#             no production code change
 #   chore   : updating package manager(ex. gitignore) etc; 
 #               no code change
 # ------------------
