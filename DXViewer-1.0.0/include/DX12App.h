@@ -12,9 +12,9 @@ public:
     __declspec(dllexport) DX12App();
     __declspec(dllexport) ~DX12App();
 
-    void createObjects(const int count, const float scale);
+    void createObjects(const int xCount, const int yCount, const int zCount, const float scale);
     __declspec(dllexport) void setSimulation(ISimulation* fluidsim, double timestep);
-    void setWindow(int kWidth, int kHeight, HWND mhMainWnd);
+    void setWindow(const int kWidth, const int kHeight, HWND mhMainWnd);
 
     bool initialize();
     void update();
