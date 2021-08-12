@@ -64,3 +64,15 @@ vector<unsigned int> AdhocSimulation::iGetIndice()
 
 	return indices;
 }
+
+vector<XMFLOAT4> AdhocSimulation::iGetColor()
+{
+	vector<XMFLOAT4> color;
+	color.push_back(XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f));
+	color.push_back(XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f));
+	color.push_back(XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f));
+	color.push_back(XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f));
+	color.push_back(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+
+	return color;
+}
