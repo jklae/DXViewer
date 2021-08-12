@@ -10,7 +10,7 @@ class DX12App
 {
 private:
 
-    ISimulation* fluidsim;
+    ISimulation* fluidsim = nullptr;
     double timestep;
 
     struct ConstantBuffer

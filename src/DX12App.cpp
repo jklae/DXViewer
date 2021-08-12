@@ -85,6 +85,9 @@ void DX12App::SetWindow(int kWidth_, int kHeight_, HWND mhMainWnd_)
 
 bool DX12App::Initialize()
 {
+	// Call after simulation init
+	assert(fluidsim != nullptr);
+
 	// Init1
 	CheckMSAA();
 	CreateDevice();
@@ -401,8 +404,9 @@ void DX12App::CompileShader()
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 
-	D3DCompileFromFile(L"..\\ext\\DXViewer\\shader\\vertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &mvsByteCode, 0);
-	D3DCompileFromFile(L"..\\ext\\DXViewer\\shader\\fragShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &mpsByteCode, 0);
+	// ..\\ext\\DXViewer\\shader\\vertexShader.hlsl
+	D3DCompileFromFile(L"..\\..\\shader\\vertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &mvsByteCode, 0);
+	D3DCompileFromFile(L"..\\..\\shader\\fragShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &mpsByteCode, 0);
 	
 	/*std::ifstream fin("vertexShader.cso", std::ios::binary);
 

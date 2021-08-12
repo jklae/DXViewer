@@ -1,6 +1,6 @@
 #pragma once
 #include "Win32App.h"
-
+#include "AdhocSimulation.h"
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
@@ -11,8 +11,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
     Win32App winApp(width, height);
     winApp.Initialize(hInstance);
 
+    AdhocSimulation* adhocsim = new AdhocSimulation();
 
-    winApp.InitDirectX();
+    DX12App* dxapp = new DX12App();
+    dxapp->SetSimulation(adhocsim, 0.05);
+
+    winApp.InitDirectX(dxapp);
 
     return winApp.Run();
 }

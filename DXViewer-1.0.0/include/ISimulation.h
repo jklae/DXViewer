@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+
 struct Vertex;
 
 class ISimulation abstract
