@@ -1,6 +1,5 @@
 #pragma once
-#include "Win32App.h"
-#include "AdhocSimulation.h"
+#include "AdhocSimulation.h" // This includes Win32App.h
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)

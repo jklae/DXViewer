@@ -1,9 +1,6 @@
 #pragma once
 #include <iostream>
-#include "ISimulation.h"
-#include "dx12header.h"
-
-
+#include "Win32App.h" // This includes ISimulation.h
 
 class AdhocSimulation : public ISimulation
 {
