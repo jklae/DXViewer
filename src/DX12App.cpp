@@ -576,7 +576,7 @@ void DX12App::update()
 		XMVECTOR det = XMMatrixDeterminant(world3);
 		XMMATRIX transInvWorld = XMMatrixTranspose(XMMatrixInverse(&det, world3));
 
-		XMMATRIX world = XMLoadFloat4x4(&_mWorld[i]) * XMMatrixRotationX(-0.5);
+		XMMATRIX world = XMLoadFloat4x4(&_mWorld[i]);
 		XMMATRIX worldViewProj = world * view * proj;
 
 		// Update the constant buffer with the latest worldViewProj matrix.
