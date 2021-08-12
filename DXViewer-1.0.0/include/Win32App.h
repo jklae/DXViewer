@@ -37,7 +37,5 @@ public:
     __declspec(dllexport) bool Initialize(HINSTANCE hInstance);
     __declspec(dllexport) int Run();
     __declspec(dllexport) void InitDirectX(DX12App* dxapp);
-
-    HWND GetMhMainWnd();
 };
 

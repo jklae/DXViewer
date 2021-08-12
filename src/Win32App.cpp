@@ -186,9 +186,3 @@ void Win32App::OnMouseMove(WPARAM btnState, int x, int y)
 		mLastMousePos.y = y;
 	}
 }
-
-
-HWND Win32App::GetMhMainWnd()
-{
-	return mhMainWnd;
-}
