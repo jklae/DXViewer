@@ -20,8 +20,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 
     DX12App* dxapp = new DX12App();
     dxapp->setSimulation(adhocsim, 0.05);
-    dxapp->setObjectCountXYZ(100, 100, 1);
-    dxapp->setObjectScale(0.01f);
+    dxapp->setObjectCountXYZ(1, 1, 1);
+    dxapp->setObjectScale(1.0f);
 
     winApp.initDirectX(dxapp);
 

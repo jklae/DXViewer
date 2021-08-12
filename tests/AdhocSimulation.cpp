@@ -16,9 +16,9 @@ void AdhocSimulation::iUpdate(double timestep)
 	//cout << "timestep : " << timestep << endl;
 }
 
-std::vector<Vertex> AdhocSimulation::iGetVertice()
+vector<Vertex> AdhocSimulation::iGetVertice()
 {
-	std::vector<Vertex> vertices =
+	vector<Vertex> vertices =
 	{
 		Vertex({ XMFLOAT3(-1.0f, -1.0f, -1.0f) }),
 		Vertex({ XMFLOAT3(-1.0f, +1.0f, -1.0f) }),
@@ -33,9 +33,9 @@ std::vector<Vertex> AdhocSimulation::iGetVertice()
 	return vertices;
 }
 
-std::vector<unsigned int> AdhocSimulation::iGetIndice()
+vector<unsigned int> AdhocSimulation::iGetIndice()
 {
-	std::vector<unsigned int> indices =
+	vector<unsigned int> indices =
 	{
 		// front face
 		0, 1, 2,
