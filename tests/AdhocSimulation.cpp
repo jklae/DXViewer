@@ -76,3 +76,17 @@ vector<XMFLOAT4> AdhocSimulation::iGetColor()
 
 	return color;
 }
+
+void AdhocSimulation::iSetObjectCountXYZ(int objectCount[3])
+{
+	// 0 is not allowed.
+	assert((objectCount[0] != 0)
+		&& (objectCount[1] != 0)
+		&& (objectCount[2] != 0));
+}
+
+void AdhocSimulation::iSetObjectScale(float objectScale)
+{
+	// 0 is not allowed.
+	assert(objectScale != 0.0f);
+}

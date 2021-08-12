@@ -246,13 +246,6 @@ void DX12App::_setScissorRectangle()
 // ######################################## Init 2 ##########################################
 void DX12App::_createObjects()
 {
-	// 0 is not allowed.
-	assert((_objectCount[0] != 0)
-		&& (_objectCount[1] != 0)
-		&& (_objectCount[2] != 0)
-		&& (_objectScale != 0.0f));
-
-
 	const int objectSize = 2.0f;
 
 	const int totalCount = static_cast<size_t>(_objectCount[0] * _objectCount[1] * _objectCount[2]);

@@ -27,9 +27,6 @@ public:
     void setObjectScale(const float scale);
 
 private:
-    // createObject()
-    int _objectCount[3] = { 0, 0, 0 };
-    float _objectScale = 0.0f;
 
     // setSimulation()
     ISimulation* _simulation = nullptr;

@@ -12,5 +12,12 @@ public:
 	std::vector<Vertex> iGetVertice() override;
 	std::vector<unsigned int> iGetIndice() override;
 	std::vector<DirectX::XMFLOAT4> iGetColor() override;
+
+	void iSetObjectCountXYZ(int objectCount[3]) override;
+	void iSetObjectScale(float objectScale) override;
+
+private:
+	int _objectCount[3] = { 0, 0, 0 };
+	float _objectScale = 0.0f;
 };
 
