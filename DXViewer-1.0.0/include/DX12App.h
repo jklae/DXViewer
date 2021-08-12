@@ -43,7 +43,6 @@ private:
     };
 
     std::vector<ConstantBuffer> _constantBuffer;
-    std::vector<DirectX::XMFLOAT4X4> _mWorld;
 
     int _kWidth;
     int _kHeight;
