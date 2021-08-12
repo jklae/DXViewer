@@ -11,7 +11,7 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
 {
     int width = 800;
-    int height = 600;
+    int height = 800;
 
     Win32App winApp(width, height);
     winApp.initialize(hInstance);
