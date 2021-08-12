@@ -32,18 +32,6 @@ DX12App::~DX12App()
 	delete _simulation;
 }
 
-void DX12App::setObjectCountXYZ(const int xCount, const int yCount, const int zCount)
-{
-	_objectCount[0] = xCount;
-	_objectCount[1] = yCount;
-	_objectCount[2] = zCount;
-}
-
-void DX12App::setObjectScale(const float scale)
-{
-	_objectScale = scale;
-}
-
 void DX12App::setSimulation(ISimulation* simulation, double timestep)
 {
 	_simulation = simulation;

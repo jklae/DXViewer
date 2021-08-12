@@ -23,9 +23,6 @@ public:
     void updateVirtualSphereAngles(const POINT mLastMousePos, const int x, const int y);
     void updateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y);
 
-    void setObjectCountXYZ(const int xCount, const int yCount, const int zCount);
-    void setObjectScale(const float scale);
-
 private:
 
     // setSimulation()

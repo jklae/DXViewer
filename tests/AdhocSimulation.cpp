@@ -83,10 +83,16 @@ void AdhocSimulation::iSetObjectCountXYZ(int objectCount[3])
 	assert((objectCount[0] != 0)
 		&& (objectCount[1] != 0)
 		&& (objectCount[2] != 0));
+
+	_objectCount[0] = objectCount[0];
+	_objectCount[1] = objectCount[1];
+	_objectCount[2] = objectCount[2];
 }
 
 void AdhocSimulation::iSetObjectScale(float objectScale)
 {
 	// 0 is not allowed.
 	assert(objectScale != 0.0f);
+
+	_objectScale = objectScale;
 }
