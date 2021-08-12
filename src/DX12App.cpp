@@ -348,7 +348,7 @@ void DX12App::_createConstantBufferViewHeap()
 {
 	// 6-4
 	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
-	cbvHeapDesc.NumDescriptors = _mWorld.size();
+	cbvHeapDesc.NumDescriptors = _constantBuffer.size();
 	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE; // The shader program will access this descriptor.
 	cbvHeapDesc.NodeMask = 0;
@@ -361,7 +361,7 @@ void DX12App::_createUploadBuffer()
 
 	_md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(mElementByteSize * _mWorld.size()), D3D12_RESOURCE_STATE_GENERIC_READ,
+		&CD3DX12_RESOURCE_DESC::Buffer(mElementByteSize * _constantBuffer.size()), D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr, IID_PPV_ARGS(&_mUploadBuffer));
 
 	_mUploadBuffer->Map(0, nullptr, reinterpret_cast<void**>(&_mMappedData));
@@ -370,7 +370,7 @@ void DX12App::_createUploadBuffer()
 void DX12App::_createConstantBufferViews()
 {
 	UINT objCBByteSize = computeBufferByteSize<ConstantBuffer>();
-	for (int i = 0; i < _mWorld.size(); i++)
+	for (int i = 0; i < _constantBuffer.size(); i++)
 	{
 		//obj.CreateConstantBuffer(mCbvHeap, i, counts);
 		auto handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(_mCbvHeap->GetCPUDescriptorHandleForHeapStart());
