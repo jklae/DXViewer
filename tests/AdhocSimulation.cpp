@@ -13,7 +13,7 @@ AdhocSimulation::~AdhocSimulation()
 
 void AdhocSimulation::iUpdate(double timestep)
 {
-	cout << "timestep : " << timestep << endl;
+	//cout << "timestep : " << timestep << endl;
 }
 
 std::vector<Vertex> AdhocSimulation::iGetVertice()

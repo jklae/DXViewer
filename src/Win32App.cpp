@@ -128,7 +128,7 @@ int Win32App::run()
 
 void Win32App::initDirectX(DX12App* dxapp_)
 {
-	// Call after window init
+	// Call after window init.
 	assert(_mhMainWnd != nullptr);
 
 	_dxApp = dxapp_;

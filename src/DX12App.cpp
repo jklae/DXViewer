@@ -32,9 +32,13 @@ DX12App::~DX12App()
 	delete _fluidsim;
 }
 
-void DX12App::createObjects(const int xCount = 10, const int yCount = 5, const int zCount = 5, 
+void DX12App::createObjects(const int xCount = 1, const int yCount = 1, const int zCount = 1, 
 							const float scale = 0.1f)
 {
+	// 0 is not allowed.
+	assert((xCount != 0) && (yCount != 0) && (zCount != 0));
+
+
 	const int objectSize = 2.0f;
 
 	const int totalCount = static_cast<size_t>(xCount * yCount * zCount);
@@ -42,7 +46,11 @@ void DX12App::createObjects(const int xCount = 10, const int yCount = 5, const i
 	_mWorld.reserve(totalCount);
 
 	const float stride = (objectSize * scale) * 1.1f;
-	const float offset = -((stride / 2.0f) * (xCount - 1));
+	XMFLOAT3 offset = XMFLOAT3(
+			-((stride / 2.0f) * static_cast<float>(xCount - 1)),
+			-((stride / 2.0f) * static_cast<float>(yCount - 1)),
+			-((stride / 2.0f) * static_cast<float>(zCount - 1)) );
+
 	for (int i = 0; i < xCount; i++)
 	{
 		for (int j = 0; j < yCount; j++)
@@ -50,12 +58,11 @@ void DX12App::createObjects(const int xCount = 10, const int yCount = 5, const i
 			for (int k = 0; k < zCount; k++)
 			{
 				XMFLOAT3 pos = XMFLOAT3(
-					offset + (float)i * stride,
-					offset + (float)j * stride,
-					offset + (float)k * stride);
+					offset.x + (float)i * stride,
+					offset.y + (float)j * stride,
+					offset.z + (float)k * stride);
 
 								// TransformMatrix(-2.5f, -1.8f, 0.0f, 1.0f)
-								//TransformMatrix(pos.x, pos.y, pos.z, scale);
 				XMFLOAT4X4 world = transformMatrix(pos.x, pos.y, pos.z, scale);
 				_mWorld.push_back(world);
 
