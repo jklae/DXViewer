@@ -11,7 +11,7 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
 {
     int width = 800;
-    int height = 600;
+    int height = 800;
 
     Win32App winApp(width, height);
     winApp.initialize(hInstance);
@@ -20,6 +20,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 
     DX12App* dxapp = new DX12App();
     dxapp->setSimulation(adhocsim, 0.05);
+    dxapp->setObjectCountXYZ(100, 100, 1);
+    dxapp->setObjectScale(0.01f);
 
     winApp.initDirectX(dxapp);
 
