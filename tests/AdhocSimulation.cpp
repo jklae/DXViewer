@@ -11,12 +11,12 @@ AdhocSimulation::~AdhocSimulation()
 {
 }
 
-void AdhocSimulation::IUpdate(double timestep)
+void AdhocSimulation::iUpdate(double timestep)
 {
 	cout << "timestep : " << timestep << endl;
 }
 
-std::vector<Vertex> AdhocSimulation::IGetVertice()
+std::vector<Vertex> AdhocSimulation::iGetVertice()
 {
 	std::vector<Vertex> vertices =
 	{
@@ -33,7 +33,7 @@ std::vector<Vertex> AdhocSimulation::IGetVertice()
 	return vertices;
 }
 
-std::vector<unsigned int> AdhocSimulation::IGetIndice()
+std::vector<unsigned int> AdhocSimulation::iGetIndice()
 {
 	std::vector<unsigned int> indices =
 	{

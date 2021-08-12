@@ -18,7 +18,7 @@
 #include "../../extern/d3dx12.h"
 
 
-inline DirectX::XMFLOAT4X4 TransformMatrix(
+inline DirectX::XMFLOAT4X4 transformMatrix(
     const float x, const float y, const float z, 
     const float scale = 1.0f)
 {
@@ -30,7 +30,7 @@ inline DirectX::XMFLOAT4X4 TransformMatrix(
 }
 
 template <typename T>
-inline UINT ComputeBufferByteSize()
+inline UINT computeBufferByteSize()
 {
 	// Constant buffers must be a multiple of the minimum hardware
 	// allocation size (usually 256 bytes).  So round up to nearest

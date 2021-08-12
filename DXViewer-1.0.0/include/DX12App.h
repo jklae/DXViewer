@@ -8,10 +8,25 @@
 
 class DX12App
 {
-private:
+public:
+    __declspec(dllexport) DX12App();
+    __declspec(dllexport) ~DX12App();
 
-    ISimulation* fluidsim = nullptr;
-    double timestep;
+    void createObjects(const int count, const float scale);
+    __declspec(dllexport) void setSimulation(ISimulation* fluidsim, double timestep);
+    void setWindow(int kWidth, int kHeight, HWND mhMainWnd);
+
+    bool initialize();
+    void update();
+    void draw();
+
+    void updateVirtualSphereAngles(const POINT mLastMousePos, const int x, const int y);
+    void updateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y);
+
+
+private:
+    ISimulation* _fluidsim = nullptr;
+    double _timestep;
 
     struct ConstantBuffer
     {
@@ -21,67 +36,67 @@ private:
         DirectX::XMFLOAT4 color;
     };
 
-    std::vector<ConstantBuffer> constantBuffer;
-    std::vector<DirectX::XMFLOAT4X4> mWorld;
+    std::vector<ConstantBuffer> _constantBuffer;
+    std::vector<DirectX::XMFLOAT4X4> _mWorld;
 
-    int kWidth;
-    int kHeight;
+    int _kWidth;
+    int _kHeight;
 
-    HWND mhMainWnd; // main window handle
+    HWND _mhMainWnd; // main window handle
 
 
 #pragma region Init1
     // ######################################## Init 1 ##########################################
     // CheckMSAA
     // Set true to use 4X MSAA (4.1.8).  The default is false.
-    bool m4xMsaaState = false;    // 4X MSAA enabled
-    UINT m4xMsaaQuality = 0;      // quality level of 4X MSAA
+    bool _m4xMsaaState = false;    // 4X MSAA enabled
+    UINT _m4xMsaaQuality = 0;      // quality level of 4X MSAA
 
     // CreateDevice
-    Microsoft::WRL::ComPtr<IDXGIFactory4> mdxgiFactory;
-    Microsoft::WRL::ComPtr<ID3D12Device> md3dDevice;
+    Microsoft::WRL::ComPtr<IDXGIFactory4> _mdxgiFactory;
+    Microsoft::WRL::ComPtr<ID3D12Device> _md3dDevice;
 
     // CreateFence
-    Microsoft::WRL::ComPtr<ID3D12Fence> mFence;
+    Microsoft::WRL::ComPtr<ID3D12Fence> _mFence;
 
     // CreateCommandQueueAllocatorList
-    Microsoft::WRL::ComPtr<ID3D12CommandQueue> mCommandQueue;
-    Microsoft::WRL::ComPtr<ID3D12CommandAllocator> mDirectCmdListAlloc;
-    Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> mCommandList;
+    Microsoft::WRL::ComPtr<ID3D12CommandQueue> _mCommandQueue;
+    Microsoft::WRL::ComPtr<ID3D12CommandAllocator> _mDirectCmdListAlloc;
+    Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> _mCommandList;
 
     // CreateSwapChain
-    const DXGI_FORMAT mBackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
-    static const int SwapChainBufferCount = 2; // 'static' is required when declared in a class.
-    Microsoft::WRL::ComPtr<IDXGISwapChain> mSwapChain;
+    const DXGI_FORMAT _mBackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+    static const int _swapChainBufferCount = 2; // 'static' is required when declared in a class.
+    Microsoft::WRL::ComPtr<IDXGISwapChain> _mSwapChain;
 
     // CreateDescriptorHeap
-    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mRtvHeap;
-    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mDsvHeap;
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _mRtvHeap;
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _mDsvHeap;
 
     // CreateRTV
-    UINT mRtvDescriptorSize;
-    Microsoft::WRL::ComPtr<ID3D12Resource> mSwapChainBuffer[SwapChainBufferCount];
+    UINT _mRtvDescriptorSize;
+    Microsoft::WRL::ComPtr<ID3D12Resource> _mSwapChainBuffer[_swapChainBufferCount];
 
     // CreateDSV
-    Microsoft::WRL::ComPtr<ID3D12Resource> mDepthStencilBuffer;
-    DXGI_FORMAT mDepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT; // This is reused in pso.
+    Microsoft::WRL::ComPtr<ID3D12Resource> _mDepthStencilBuffer;
+    DXGI_FORMAT _mDepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT; // This is reused in pso.
 
     // SetViewport
-    D3D12_VIEWPORT mScreenViewport;
+    D3D12_VIEWPORT _mScreenViewport;
 
     // SetScissorRectangle
-    D3D12_RECT mScissorRect;
+    D3D12_RECT _mScissorRect;
 
-    void CheckMSAA();
-    void CreateDevice();
-    void CreateFence();
-    void CreateCommandQueueAllocatorList();
-    void CreateSwapChain();
-    void CreateDescriptorHeap();
-    void CreateRTV();
-    void CreateDSV();
-    void SetViewport();
-    void SetScissorRectangle();
+    void _checkMSAA();
+    void _createDevice();
+    void _createFence();
+    void _createCommandQueueAllocatorList();
+    void _createSwapChain();
+    void _createDescriptorHeap();
+    void _createRTV();
+    void _createDSV();
+    void _setViewport();
+    void _setScissorRectangle();
 
     // ##########################################################################################
 #pragma endregion
@@ -90,44 +105,44 @@ private:
     // ######################################## Init 2 ##########################################
 
     // CreateVertexIndexBuffer
-    Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferUploader = nullptr;
-    BYTE* vMappedData = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> _vertexBufferUploader = nullptr;
+    BYTE* _vMappedData = nullptr;
 
-    Microsoft::WRL::ComPtr<ID3D12Resource> IndexBufferUploader = nullptr;
-    BYTE* iMappedData = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> _indexBufferUploader = nullptr;
+    BYTE* _iMappedData = nullptr;
 
-    D3D12_VERTEX_BUFFER_VIEW vbv;
-    D3D12_INDEX_BUFFER_VIEW ibv;
-    UINT IndexCount = 0;
+    D3D12_VERTEX_BUFFER_VIEW _vbv;
+    D3D12_INDEX_BUFFER_VIEW _ibv;
+    UINT _indexCount = 0;
 
 
     // CreateConstantBuffer
-    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
-    Microsoft::WRL::ComPtr<ID3D12Resource> mUploadBuffer = nullptr;
-    BYTE* mMappedData = nullptr;
-    Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> _mCbvHeap = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> _mUploadBuffer = nullptr;
+    BYTE* _mMappedData = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12RootSignature> _mRootSignature = nullptr;
 
     // CompileShader
-    Microsoft::WRL::ComPtr<ID3DBlob> mvsByteCode = nullptr;
-    Microsoft::WRL::ComPtr<ID3DBlob> mpsByteCode = nullptr;
-    std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
+    Microsoft::WRL::ComPtr<ID3DBlob> _mvsByteCode = nullptr;
+    Microsoft::WRL::ComPtr<ID3DBlob> _mpsByteCode = nullptr;
+    std::vector<D3D12_INPUT_ELEMENT_DESC> _mInputLayout;
 
 
-    DirectX::XMFLOAT4X4 mView = TransformMatrix(0.0f, 0.0f, 0.0f);
-    DirectX::XMFLOAT4X4 mProj = TransformMatrix(0.0f, 0.0f, 0.0f);
+    DirectX::XMFLOAT4X4 _mView = transformMatrix(0.0f, 0.0f, 0.0f);
+    DirectX::XMFLOAT4X4 _mProj = transformMatrix(0.0f, 0.0f, 0.0f);
 
 
-    void CreateProjMatrix();
-    void CreateVertexIndexBuffer();
+    void _createProjMatrix();
+    void _createVertexIndexBuffer();
     //
-    void CreateConstantBuffer();
-    void CreateConstantBufferViewHeap();
-    void CreateUploadBuffer();
-    void CreateConstantBufferViews();
-    void CreateRootSignature();
+    void _createConstantBuffer();
+    void _createConstantBufferViewHeap();
+    void _createUploadBuffer();
+    void _createConstantBufferViews();
+    void _createRootSignature();
     //
-    void CompileShader();
-    void CreatePSO();
+    void _compileShader();
+    void _createPSO();
 
     // ##########################################################################################
 #pragma endregion
@@ -135,49 +150,34 @@ private:
 
 #pragma region Draw
     // ########################################## Draw ##########################################
-    UINT64 mCurrentFence = 0;
-    int mCurrBackBuffer = 0;
+    UINT64 _mCurrentFence = 0;
+    int _mCurrBackBuffer = 0;
 
     // CreatePSO (DirectXDrawingApp's)
-    Microsoft::WRL::ComPtr<ID3D12PipelineState> mPSO = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12PipelineState> _mPSO = nullptr;
 
-    void FlushCommandQueue();
-    void CloseCommandList();
+    void _flushCommandQueue();
+    void _closeCommandList();
     // ##########################################################################################
 #pragma endregion
 
 
 #pragma region Arcball
     // ####################################### Arcball ##########################################
-    float mTheta = 1.5f * 3.14f;
-    float mPhi = 3.14f / 2.0f;
-    float mRadius = 5.0f;
+    float _mTheta = 1.5f * 3.14f;
+    float _mPhi = 3.14f / 2.0f;
+    float _mRadius = 5.0f;
 
-    float Clamp(const float x, const float low, const float high);
+    float _clamp(const float x, const float low, const float high);
     // ##########################################################################################
 #pragma endregion
 
 #pragma region Util
     // ######################################## Util ##########################################
-    D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView() const;
-    ID3D12Resource* CurrentBackBuffer() const;
-    D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView() const;
+    D3D12_CPU_DESCRIPTOR_HANDLE _depthStencilView() const;
+    ID3D12Resource* _currentBackBuffer() const;
+    D3D12_CPU_DESCRIPTOR_HANDLE _currentBackBufferView() const;
     // ########################################################################################
 #pragma endregion
 
-public:
-    __declspec(dllexport) DX12App();
-    DX12App(int kWidth, int kHeight, HWND mhMainWnd);
-    __declspec(dllexport) ~DX12App();
-
-    void CreateObjects(const int count, const float scale);
-    __declspec(dllexport) void SetSimulation(ISimulation* fluidsim, double timestep);
-    void SetWindow(int kWidth_, int kHeight_, HWND mhMainWnd_);
-
-    bool Initialize();
-    void Update();
-    void Draw();
-
-    void UpdateVirtualSphereAngles(const POINT mLastMousePos, const int x, const int y);
-    void UpdateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y);
 };

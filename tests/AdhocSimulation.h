@@ -8,8 +8,8 @@ public:
 	AdhocSimulation();
 	~AdhocSimulation();
 
-	void IUpdate(double timestep) override;
-	std::vector<Vertex> IGetVertice() override;
-	std::vector<unsigned int> IGetIndice() override;
+	void iUpdate(double timestep) override;
+	std::vector<Vertex> iGetVertice() override;
+	std::vector<unsigned int> iGetIndice() override;
 };
 

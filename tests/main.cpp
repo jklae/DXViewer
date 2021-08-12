@@ -8,14 +8,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
     int height = 600;
 
     Win32App winApp(width, height);
-    winApp.Initialize(hInstance);
+    winApp.initialize(hInstance);
 
     AdhocSimulation* adhocsim = new AdhocSimulation();
 
     DX12App* dxapp = new DX12App();
-    dxapp->SetSimulation(adhocsim, 0.05);
+    dxapp->setSimulation(adhocsim, 0.05);
 
-    winApp.InitDirectX(dxapp);
+    winApp.initDirectX(dxapp);
 
-    return winApp.Run();
+    return winApp.run();
 }
