@@ -12,7 +12,6 @@ public:
     __declspec(dllexport) DX12App();
     __declspec(dllexport) ~DX12App();
 
-    void createObjects(const int xCount, const int yCount, const int zCount, const float scale);
     __declspec(dllexport) void setSimulation(ISimulation* fluidsim, double timestep);
     void setWindow(const int kWidth, const int kHeight, HWND mhMainWnd);
 
@@ -23,8 +22,15 @@ public:
     void updateVirtualSphereAngles(const POINT mLastMousePos, const int x, const int y);
     void updateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y);
 
+    void setObjectCountXYZ(const int xCount, const int yCount, const int zCount);
+    void setObjectScale(const float scale);
 
 private:
+    // createObject()
+    int _objectCount[3] = { 0, 0, 0 };
+    float _objectScale = 0.0f;
+
+    // setSimulation()
     ISimulation* _fluidsim = nullptr;
     double _timestep;
 
@@ -132,6 +138,7 @@ private:
     DirectX::XMFLOAT4X4 _mProj = transformMatrix(0.0f, 0.0f, 0.0f);
 
 
+    void _createObjects();
     void _createProjMatrix();
     void _createVertexIndexBuffer();
     //

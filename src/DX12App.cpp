@@ -32,48 +32,16 @@ DX12App::~DX12App()
 	delete _fluidsim;
 }
 
-void DX12App::createObjects(const int xCount = 1, const int yCount = 1, const int zCount = 1, 
-							const float scale = 0.1f)
+void DX12App::setObjectCountXYZ(const int xCount, const int yCount, const int zCount)
 {
-	// 0 is not allowed.
-	assert((xCount != 0) && (yCount != 0) && (zCount != 0));
+	_objectCount[0] = xCount;
+	_objectCount[1] = yCount;
+	_objectCount[2] = zCount;
+}
 
-
-	const int objectSize = 2.0f;
-
-	const int totalCount = static_cast<size_t>(xCount * yCount * zCount);
-	_constantBuffer.reserve(totalCount);
-	_mWorld.reserve(totalCount);
-
-	const float stride = (objectSize * scale) * 1.1f;
-	XMFLOAT3 offset = XMFLOAT3(
-			-((stride / 2.0f) * static_cast<float>(xCount - 1)),
-			-((stride / 2.0f) * static_cast<float>(yCount - 1)),
-			-((stride / 2.0f) * static_cast<float>(zCount - 1)) );
-
-	for (int i = 0; i < xCount; i++)
-	{
-		for (int j = 0; j < yCount; j++)
-		{
-			for (int k = 0; k < zCount; k++)
-			{
-				XMFLOAT3 pos = XMFLOAT3(
-					offset.x + (float)i * stride,
-					offset.y + (float)j * stride,
-					offset.z + (float)k * stride);
-
-								// TransformMatrix(-2.5f, -1.8f, 0.0f, 1.0f)
-				XMFLOAT4X4 world = transformMatrix(pos.x, pos.y, pos.z, scale);
-				_mWorld.push_back(world);
-
-				struct ConstantBuffer cb;
-				cb.color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-				cb.worldViewProj = transformMatrix(0.0f, 0.0f, 0.0f);
-
-				_constantBuffer.push_back(cb);
-			}
-		}
-	}
+void DX12App::setObjectScale(const float scale)
+{
+	_objectScale = scale;
 }
 
 void DX12App::setSimulation(ISimulation* fluidsim, double timestep)
@@ -110,7 +78,7 @@ bool DX12App::initialize()
 	_mCommandList->Reset(_mDirectCmdListAlloc.Get(), nullptr);
 
 	// Init2
-	createObjects();
+	_createObjects();
 
 	_createProjMatrix();
 	_createVertexIndexBuffer();
@@ -276,6 +244,53 @@ void DX12App::_setScissorRectangle()
 
 #pragma region Init2
 // ######################################## Init 2 ##########################################
+void DX12App::_createObjects()
+{
+	// 0 is not allowed.
+	assert((_objectCount[0] != 0)
+		&& (_objectCount[1] != 0)
+		&& (_objectCount[2] != 0)
+		&& (_objectScale != 0.0f));
+
+
+	const int objectSize = 2.0f;
+
+	const int totalCount = static_cast<size_t>(_objectCount[0] * _objectCount[1] * _objectCount[2]);
+	_constantBuffer.reserve(totalCount);
+	_mWorld.reserve(totalCount);
+
+	const float stride = (objectSize * _objectScale) * 1.1f;
+	XMFLOAT3 offset = XMFLOAT3(
+		//		radius    *     count
+		-((stride / 2.0f) * static_cast<float>(_objectCount[0] - 1)),
+		-((stride / 2.0f) * static_cast<float>(_objectCount[1] - 1)),
+		-((stride / 2.0f) * static_cast<float>(_objectCount[2] - 1)));
+
+	for (int i = 0; i < _objectCount[0]; i++)
+	{
+		for (int j = 0; j < _objectCount[1]; j++)
+		{
+			for (int k = 0; k < _objectCount[2]; k++)
+			{
+				XMFLOAT3 pos = XMFLOAT3(
+					offset.x + (float)i * stride,
+					offset.y + (float)j * stride,
+					offset.z + (float)k * stride);
+
+				// TransformMatrix(-2.5f, -1.8f, 0.0f, 1.0f)
+				XMFLOAT4X4 world = transformMatrix(pos.x, pos.y, pos.z, _objectScale);
+				_mWorld.push_back(world);
+
+				struct ConstantBuffer cb;
+				cb.color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+				cb.worldViewProj = transformMatrix(0.0f, 0.0f, 0.0f);
+
+				_constantBuffer.push_back(cb);
+			}
+		}
+	}
+}
+
 void DX12App::_createProjMatrix()
 {
 	// Compute the projection matrix.
@@ -683,7 +698,6 @@ void DX12App::updateVirtualSphereRadius(const POINT mLastMousePos, const int x, 
 	// Restrict the radius.
 	_mRadius = _clamp(_mRadius, 3.0f, 15.0f);
 }
-
 
 float DX12App::_clamp(const float x, const float low, const float high)
 {
