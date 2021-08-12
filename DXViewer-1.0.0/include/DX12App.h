@@ -13,7 +13,7 @@ public:
     __declspec(dllexport) DX12App();
     __declspec(dllexport) ~DX12App();
 
-    __declspec(dllexport) void setSimulation(ISimulation* fluidsim, double timestep);
+    __declspec(dllexport) void setSimulation(ISimulation* simulation, double timestep);
     void setWindow(const int kWidth, const int kHeight, HWND mhMainWnd);
 
     bool initialize();
@@ -32,7 +32,7 @@ private:
     float _objectScale = 0.0f;
 
     // setSimulation()
-    ISimulation* _fluidsim = nullptr;
+    ISimulation* _simulation = nullptr;
     double _timestep;
 
     struct ConstantBuffer

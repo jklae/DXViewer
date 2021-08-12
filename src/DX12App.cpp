@@ -29,7 +29,7 @@ DX12App::~DX12App()
 	if (_mUploadBuffer != nullptr)
 		_mUploadBuffer->Unmap(0, nullptr);
 
-	delete _fluidsim;
+	delete _simulation;
 }
 
 void DX12App::setObjectCountXYZ(const int xCount, const int yCount, const int zCount)
@@ -44,9 +44,9 @@ void DX12App::setObjectScale(const float scale)
 	_objectScale = scale;
 }
 
-void DX12App::setSimulation(ISimulation* fluidsim, double timestep)
+void DX12App::setSimulation(ISimulation* simulation, double timestep)
 {
-	_fluidsim = fluidsim;
+	_simulation = simulation;
 	_timestep = timestep;
 }
 
@@ -60,7 +60,7 @@ void DX12App::setWindow(int kWidth, int kHeight, HWND mhMainWnd)
 bool DX12App::initialize()
 {
 	// Call after simulation init
-	assert(_fluidsim != nullptr);
+	assert(_simulation != nullptr);
 
 	// Init1
 	_checkMSAA();
@@ -280,7 +280,7 @@ void DX12App::_createObjects()
 				cb.worldViewProj = transformMatrix(0.0f, 0.0f, 0.0f);
 							// TransformMatrix(-2.5f, -1.8f, 0.0f, 1.0f)
 				cb.world = transformMatrix(pos.x, pos.y, pos.z, _objectScale);
-				cb.color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+				cb.color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 
 				_constantBuffer.push_back(cb);
 			}
@@ -553,10 +553,10 @@ void DX12App::update()
 {
 	// ######### Update Vertex, Index buffer
 	// Change View size
-	_fluidsim->iUpdate(_timestep);
+	_simulation->iUpdate(_timestep);
 
-	std::vector<Vertex> vertices = _fluidsim->iGetVertice();
-	std::vector<unsigned int> indices = _fluidsim->iGetIndice();
+	std::vector<Vertex> vertices = _simulation->iGetVertice();
+	std::vector<unsigned int> indices = _simulation->iGetIndice();
 
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
 	_vbv.SizeInBytes = vbByteSize;
@@ -591,6 +591,9 @@ void DX12App::update()
 	{
 		XMMATRIX world = XMLoadFloat4x4(&_constantBuffer[i].world);
 		XMMATRIX worldViewProj = world * view * proj;
+
+		// Set object color
+		_constantBuffer[i].color = _simulation->iGetColor()[i];
 
 		// Update the constant buffer with the latest worldViewProj matrix.
 		XMStoreFloat4x4(&_constantBuffer[i].worldViewProj, worldViewProj);
