@@ -13,7 +13,10 @@ public:
 	std::vector<unsigned int> iGetIndice() override;
 	std::vector<DirectX::XMFLOAT4> iGetColor() override;
 
-	void iSetObjectCountXYZ(int objectCount[3]) override;
+	int* iGetObjectCountXYZ() override;
+	float iGetObjectScale() override;
+
+	void iSetObjectCountXYZ(int xCount, int yCount, int zCount) override;
 	void iSetObjectScale(float objectScale) override;
 
 private:

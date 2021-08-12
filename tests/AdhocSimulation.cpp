@@ -77,16 +77,24 @@ vector<XMFLOAT4> AdhocSimulation::iGetColor()
 	return color;
 }
 
-void AdhocSimulation::iSetObjectCountXYZ(int objectCount[3])
+int* AdhocSimulation::iGetObjectCountXYZ()
+{
+	return _objectCount;
+}
+
+float AdhocSimulation::iGetObjectScale()
+{
+	return _objectScale;
+}
+
+void AdhocSimulation::iSetObjectCountXYZ(int xCount, int yCount, int zCount)
 {
 	// 0 is not allowed.
-	assert((objectCount[0] != 0)
-		&& (objectCount[1] != 0)
-		&& (objectCount[2] != 0));
+	assert((xCount != 0) && (yCount != 0) && (zCount != 0));
 
-	_objectCount[0] = objectCount[0];
-	_objectCount[1] = objectCount[1];
-	_objectCount[2] = objectCount[2];
+	_objectCount[0] = xCount;
+	_objectCount[1] = yCount;
+	_objectCount[2] = zCount;
 }
 
 void AdhocSimulation::iSetObjectScale(float objectScale)
