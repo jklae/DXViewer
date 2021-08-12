@@ -18,5 +18,5 @@ void main(float3 iPosL  : POSITION, float3 iNormalL	: NORMAL,
 	oPosH = mul(gWorldViewProj, float4(iPosL, 1.0f));
 	
 	// Just pass vertex color into the pixel shader.
-	//oColor = gColor;  float4(iNormal, 1.0f);
+	oColor = gColor;
 }
