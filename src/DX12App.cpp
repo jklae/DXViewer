@@ -29,24 +29,12 @@ DX12App::~DX12App()
 	if (_mUploadBuffer != nullptr)
 		_mUploadBuffer->Unmap(0, nullptr);
 
-	delete _fluidsim;
+	delete _simulation;
 }
 
-void DX12App::setObjectCountXYZ(const int xCount, const int yCount, const int zCount)
+void DX12App::setSimulation(ISimulation* simulation, double timestep)
 {
-	_objectCount[0] = xCount;
-	_objectCount[1] = yCount;
-	_objectCount[2] = zCount;
-}
-
-void DX12App::setObjectScale(const float scale)
-{
-	_objectScale = scale;
-}
-
-void DX12App::setSimulation(ISimulation* fluidsim, double timestep)
-{
-	_fluidsim = fluidsim;
+	_simulation = simulation;
 	_timestep = timestep;
 }
 
@@ -60,7 +48,7 @@ void DX12App::setWindow(int kWidth, int kHeight, HWND mhMainWnd)
 bool DX12App::initialize()
 {
 	// Call after simulation init
-	assert(_fluidsim != nullptr);
+	assert(_simulation != nullptr);
 
 	// Init1
 	_checkMSAA();
@@ -246,44 +234,36 @@ void DX12App::_setScissorRectangle()
 // ######################################## Init 2 ##########################################
 void DX12App::_createObjects()
 {
-	// 0 is not allowed.
-	assert((_objectCount[0] != 0)
-		&& (_objectCount[1] != 0)
-		&& (_objectCount[2] != 0)
-		&& (_objectScale != 0.0f));
+	const int objectSize = _simulation->iGetObjectSize();
+	const int* objectCount = _simulation->iGetObjectCountXYZ();
+	const float objectScale = _simulation->iGetObjectScale();
 
-
-	const int objectSize = 2.0f;
-
-	const int totalCount = static_cast<size_t>(_objectCount[0] * _objectCount[1] * _objectCount[2]);
+	const int totalCount = static_cast<size_t>(objectCount[0] * objectCount[1] * objectCount[2]);
 	_constantBuffer.reserve(totalCount);
-	_mWorld.reserve(totalCount);
 
-	const float stride = (objectSize * _objectScale) * 1.1f;
+	const float stride = (objectSize * objectScale) * 1.1f;
 	XMFLOAT3 offset = XMFLOAT3(
 		//		radius    *     count
-		-((stride / 2.0f) * static_cast<float>(_objectCount[0] - 1)),
-		-((stride / 2.0f) * static_cast<float>(_objectCount[1] - 1)),
-		-((stride / 2.0f) * static_cast<float>(_objectCount[2] - 1)));
+		-((stride / 2.0f) * static_cast<float>(objectCount[0] - 1)),
+		-((stride / 2.0f) * static_cast<float>(objectCount[1] - 1)),
+		-((stride / 2.0f) * static_cast<float>(objectCount[2] - 1)));
 
-	for (int i = 0; i < _objectCount[0]; i++)
+	for (int k = 0; k < objectCount[2]; k++)
 	{
-		for (int j = 0; j < _objectCount[1]; j++)
+		for (int j = 0; j < objectCount[1]; j++)
 		{
-			for (int k = 0; k < _objectCount[2]; k++)
+			for (int i = 0; i < objectCount[0]; i++)
 			{
 				XMFLOAT3 pos = XMFLOAT3(
 					offset.x + (float)i * stride,
 					offset.y + (float)j * stride,
 					offset.z + (float)k * stride);
 
-				// TransformMatrix(-2.5f, -1.8f, 0.0f, 1.0f)
-				XMFLOAT4X4 world = transformMatrix(pos.x, pos.y, pos.z, _objectScale);
-				_mWorld.push_back(world);
-
 				struct ConstantBuffer cb;
-				cb.color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 				cb.worldViewProj = transformMatrix(0.0f, 0.0f, 0.0f);
+							// TransformMatrix(-2.5f, -1.8f, 0.0f, 1.0f)
+				cb.world = transformMatrix(pos.x, pos.y, pos.z, objectScale);
+				cb.color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 
 				_constantBuffer.push_back(cb);
 			}
@@ -348,7 +328,7 @@ void DX12App::_createConstantBufferViewHeap()
 {
 	// 6-4
 	D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
-	cbvHeapDesc.NumDescriptors = _mWorld.size();
+	cbvHeapDesc.NumDescriptors = _constantBuffer.size();
 	cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE; // The shader program will access this descriptor.
 	cbvHeapDesc.NodeMask = 0;
@@ -361,7 +341,7 @@ void DX12App::_createUploadBuffer()
 
 	_md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(mElementByteSize * _mWorld.size()), D3D12_RESOURCE_STATE_GENERIC_READ,
+		&CD3DX12_RESOURCE_DESC::Buffer(mElementByteSize * _constantBuffer.size()), D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr, IID_PPV_ARGS(&_mUploadBuffer));
 
 	_mUploadBuffer->Map(0, nullptr, reinterpret_cast<void**>(&_mMappedData));
@@ -370,7 +350,7 @@ void DX12App::_createUploadBuffer()
 void DX12App::_createConstantBufferViews()
 {
 	UINT objCBByteSize = computeBufferByteSize<ConstantBuffer>();
-	for (int i = 0; i < _mWorld.size(); i++)
+	for (int i = 0; i < _constantBuffer.size(); i++)
 	{
 		//obj.CreateConstantBuffer(mCbvHeap, i, counts);
 		auto handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(_mCbvHeap->GetCPUDescriptorHandleForHeapStart());
@@ -556,10 +536,10 @@ void DX12App::update()
 {
 	// ######### Update Vertex, Index buffer
 	// Change View size
-	_fluidsim->iUpdate(_timestep);
+	_simulation->iUpdate(_timestep);
 
-	std::vector<Vertex> vertices = _fluidsim->iGetVertice();
-	std::vector<unsigned int> indices = _fluidsim->iGetIndice();
+	std::vector<Vertex> vertices = _simulation->iGetVertice();
+	std::vector<unsigned int> indices = _simulation->iGetIndice();
 
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
 	_vbv.SizeInBytes = vbByteSize;
@@ -590,25 +570,17 @@ void DX12App::update()
 
 	UINT mElementByteSize = computeBufferByteSize<ConstantBuffer>();
 
-	for (int i = 0; i < _mWorld.size(); i++)
+	for (int i = 0; i < _constantBuffer.size(); i++)
 	{
-		XMFLOAT3X3 world3x3
-			= XMFLOAT3X3(_mWorld[i]._11, _mWorld[i]._12, _mWorld[i]._13,
-				_mWorld[i]._21, _mWorld[i]._22, _mWorld[i]._23,
-				_mWorld[i]._31, _mWorld[i]._32, _mWorld[i]._33);
-		XMMATRIX world3 = XMLoadFloat3x3(&world3x3);
-		XMVECTOR det = XMMatrixDeterminant(world3);
-		XMMATRIX transInvWorld = XMMatrixTranspose(XMMatrixInverse(&det, world3));
-
-		XMMATRIX world = XMLoadFloat4x4(&_mWorld[i]);
+		XMMATRIX world = XMLoadFloat4x4(&_constantBuffer[i].world);
 		XMMATRIX worldViewProj = world * view * proj;
+
+		// Set object color
+		_constantBuffer[i].color = _simulation->iGetColor()[i];
 
 		// Update the constant buffer with the latest worldViewProj matrix.
 		XMStoreFloat4x4(&_constantBuffer[i].worldViewProj, worldViewProj);
-		XMStoreFloat4x4(&_constantBuffer[i].world, world);
-		XMStoreFloat3x3(&_constantBuffer[i].transInvWorld, transInvWorld);
 		memcpy(&_mMappedData[i * mElementByteSize], &_constantBuffer[i], sizeof(ConstantBuffer));
-
 	}
 	// #########
 }
@@ -641,7 +613,7 @@ void DX12App::draw()
 	ID3D12DescriptorHeap* descriptorHeaps[] = { _mCbvHeap.Get() };
 	_mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-	for (int i = 0; i < _mWorld.size(); i++)
+	for (int i = 0; i < _constantBuffer.size(); i++)
 	{
 		auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(_mCbvHeap->GetGPUDescriptorHandleForHeapStart());
 		cbvHandle.Offset(i, _md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));

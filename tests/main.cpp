@@ -17,11 +17,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
     winApp.initialize(hInstance);
 
     AdhocSimulation* adhocsim = new AdhocSimulation();
+    adhocsim->iSetObjectCountXYZ(10, 10, 1);
+    adhocsim->iSetObjectScale(0.1f);
 
     DX12App* dxapp = new DX12App();
     dxapp->setSimulation(adhocsim, 0.05);
-    dxapp->setObjectCountXYZ(100, 100, 1);
-    dxapp->setObjectScale(0.01f);
 
     winApp.initDirectX(dxapp);
 

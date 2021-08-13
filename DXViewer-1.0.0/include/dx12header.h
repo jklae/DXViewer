@@ -9,6 +9,7 @@
 #pragma comment(lib, "D3D12.lib")
 #pragma comment(lib, "dxgi.lib")
 
+#include <vector>
 #include <memory>
 #include <wrl.h>
 #include <dxgi1_4.h>

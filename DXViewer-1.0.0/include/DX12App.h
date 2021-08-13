@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fstream>
+#include <iostream>
 
 #include "dx12header.h"
 #include "ISimulation.h"
@@ -12,7 +13,7 @@ public:
     __declspec(dllexport) DX12App();
     __declspec(dllexport) ~DX12App();
 
-    __declspec(dllexport) void setSimulation(ISimulation* fluidsim, double timestep);
+    __declspec(dllexport) void setSimulation(ISimulation* simulation, double timestep);
     void setWindow(const int kWidth, const int kHeight, HWND mhMainWnd);
 
     bool initialize();
@@ -22,28 +23,20 @@ public:
     void updateVirtualSphereAngles(const POINT mLastMousePos, const int x, const int y);
     void updateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y);
 
-    void setObjectCountXYZ(const int xCount, const int yCount, const int zCount);
-    void setObjectScale(const float scale);
-
 private:
-    // createObject()
-    int _objectCount[3] = { 0, 0, 0 };
-    float _objectScale = 0.0f;
 
     // setSimulation()
-    ISimulation* _fluidsim = nullptr;
+    ISimulation* _simulation = nullptr;
     double _timestep;
 
     struct ConstantBuffer
     {
         DirectX::XMFLOAT4X4 worldViewProj;
         DirectX::XMFLOAT4X4 world;
-        DirectX::XMFLOAT3X3 transInvWorld;
         DirectX::XMFLOAT4 color;
     };
 
     std::vector<ConstantBuffer> _constantBuffer;
-    std::vector<DirectX::XMFLOAT4X4> _mWorld;
 
     int _kWidth;
     int _kHeight;
