@@ -17,7 +17,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
     winApp.initialize(hInstance);
 
     AdhocSimulation* adhocsim = new AdhocSimulation();
-    adhocsim->iSetObjectCountXYZ(5, 1, 1);
+    adhocsim->iSetObjectCountXYZ(5, 2, 2);
     adhocsim->iSetObjectScale(0.1f);
 
     DX12App* dxapp = new DX12App();
