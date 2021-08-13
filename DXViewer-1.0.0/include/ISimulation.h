@@ -9,7 +9,7 @@ public:
 
 	virtual std::vector<Vertex> iGetVertice() = 0;
 	virtual std::vector<unsigned int> iGetIndice() = 0;
-	virtual std::vector<DirectX::XMFLOAT4> iGetColor() = 0;
+	virtual DirectX::XMFLOAT4 iGetColor(int index) = 0;
 
 	virtual int* iGetObjectCountXYZ() = 0;
 	virtual float iGetObjectScale() = 0;

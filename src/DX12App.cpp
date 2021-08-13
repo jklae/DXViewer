@@ -577,7 +577,7 @@ void DX12App::update()
 		XMMATRIX worldViewProj = world * view * proj;
 
 		// Set object color
-		_constantBuffer[i].color = _simulation->iGetColor()[i];
+		_constantBuffer[i].color = _simulation->iGetColor(i);
 
 		// Update the constant buffer with the latest worldViewProj matrix.
 		XMStoreFloat4x4(&_constantBuffer[i].worldViewProj, worldViewProj);
