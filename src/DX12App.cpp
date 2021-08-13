@@ -406,12 +406,9 @@ void DX12App::_compileShader()
 	};
 
 	// ..\\ext\\DXViewer\\shader\\vertexShader.hlsl
-	assert(
-		SUCCEEDED(
-			D3DCompileFromFile(L"..\\..\\shader\\vertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &_mvsByteCode, 0)));
-	assert(
-		SUCCEEDED(
-			D3DCompileFromFile(L"..\\..\\shader\\fragShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &_mpsByteCode, 0)));
+	HRESULT vertexShaderCompile = D3DCompileFromFile(L"..\\..\\shader\\vertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &_mvsByteCode, 0);
+	HRESULT fragmentShaderCompile = D3DCompileFromFile(L"..\\..\\shader\\fragShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &_mpsByteCode, 0);
+	assert(SUCCEEDED(vertexShaderCompile) && SUCCEEDED(fragmentShaderCompile));
 	
 	/*std::ifstream fin("vertexShader.cso", std::ios::binary);
 
