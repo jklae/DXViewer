@@ -13,6 +13,7 @@ public:
 
 	virtual int* iGetObjectCountXYZ() = 0;
 	virtual float iGetObjectScale() = 0;
+	virtual float iGetObjectSize() = 0;
 
 	virtual void iSetObjectCountXYZ(int xCount, int yCount, int zCount) = 0;
 	virtual void iSetObjectScale(float objectScale) = 0;

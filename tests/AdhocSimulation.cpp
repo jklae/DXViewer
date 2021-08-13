@@ -87,6 +87,11 @@ float AdhocSimulation::iGetObjectScale()
 	return _objectScale;
 }
 
+float AdhocSimulation::iGetObjectSize()
+{
+	return _objectSize;
+}
+
 void AdhocSimulation::iSetObjectCountXYZ(int xCount, int yCount, int zCount)
 {
 	// 0 is not allowed.

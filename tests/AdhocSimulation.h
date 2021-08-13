@@ -15,6 +15,7 @@ public:
 
 	int* iGetObjectCountXYZ() override;
 	float iGetObjectScale() override;
+	float iGetObjectSize() override;
 
 	void iSetObjectCountXYZ(int xCount, int yCount, int zCount) override;
 	void iSetObjectScale(float objectScale) override;
@@ -22,5 +23,6 @@ public:
 private:
 	int _objectCount[3] = { 0, 0, 0 };
 	float _objectScale = 0.0f;
+	float _objectSize = 2.0f;
 };
 

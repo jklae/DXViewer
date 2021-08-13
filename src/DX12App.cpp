@@ -234,7 +234,7 @@ void DX12App::_setScissorRectangle()
 // ######################################## Init 2 ##########################################
 void DX12App::_createObjects()
 {
-	const int objectSize = 2.0f;
+	const int objectSize = _simulation->iGetObjectSize();
 	const int* objectCount = _simulation->iGetObjectCountXYZ();
 	const float objectScale = _simulation->iGetObjectScale();
 
