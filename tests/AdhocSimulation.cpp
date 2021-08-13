@@ -69,11 +69,11 @@ vector<XMFLOAT4> AdhocSimulation::iGetColor()
 {
 	vector<XMFLOAT4> color;
 
-	for (int i = 0; i < _objectCount[0]; i++)
+	for (int k = 0; k < _objectCount[2]; k++)
 	{
 		for (int j = 0; j < _objectCount[1]; j++)
 		{
-			for (int k = 0; k < _objectCount[2]; k++)
+			for (int i = 0; i < _objectCount[0]; i++)
 			{
 				if (i == 1 && j == 0 && k == 0)
 					color.push_back(XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f));

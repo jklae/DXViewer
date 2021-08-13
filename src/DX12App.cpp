@@ -248,11 +248,11 @@ void DX12App::_createObjects()
 		-((stride / 2.0f) * static_cast<float>(objectCount[1] - 1)),
 		-((stride / 2.0f) * static_cast<float>(objectCount[2] - 1)));
 
-	for (int i = 0; i < objectCount[0]; i++)
+	for (int k = 0; k < objectCount[2]; k++)
 	{
 		for (int j = 0; j < objectCount[1]; j++)
 		{
-			for (int k = 0; k < objectCount[2]; k++)
+			for (int i = 0; i < objectCount[0]; i++)
 			{
 				XMFLOAT3 pos = XMFLOAT3(
 					offset.x + (float)i * stride,
