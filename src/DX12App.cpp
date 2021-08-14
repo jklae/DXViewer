@@ -66,8 +66,7 @@ bool DX12App::initialize()
 	_mCommandList->Reset(_mDirectCmdListAlloc.Get(), nullptr);
 
 	// Init2
-	_createObjects();
-	_createParticles();
+	_createObjectParticle();
 
 	_createProjMatrix();
 	_createVertexIndexBuffer();
@@ -233,16 +232,9 @@ void DX12App::_setScissorRectangle()
 
 #pragma region Init2
 // ######################################## Init 2 ##########################################
-void DX12App::_createObjects()
+void DX12App::_createObjectParticle()
 {
 	_simulation->iCreateObjectParticle(_constantBuffer);
-}
-
-void DX12App::_createParticles()
-{
-	for (int i = 0; i < _simulation->iGetParticleCount(); i++)
-	{
-	}
 }
 
 void DX12App::_createProjMatrix()

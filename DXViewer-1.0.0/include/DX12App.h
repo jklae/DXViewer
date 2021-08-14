@@ -124,8 +124,7 @@ private:
     DirectX::XMFLOAT4X4 _mProj = transformMatrix(0.0f, 0.0f, 0.0f);
 
 
-    void _createObjects();
-    void _createParticles();
+    void _createObjectParticle();
 
     void _createProjMatrix();
     void _createVertexIndexBuffer();
