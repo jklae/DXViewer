@@ -542,9 +542,20 @@ void DX12App::update()
 		XMMATRIX world = XMLoadFloat4x4(&_constantBuffer[i].world);
 		XMMATRIX worldViewProj = world * view * proj;
 
+		int maxObjectIndex = _simulation->iGetObjectCountXY()[0] * _simulation->iGetObjectCountXY()[1];
 		// Set object color
-		if (i < _simulation->iGetObjectCountXY()[0] * _simulation->iGetObjectCountXY()[1])
+		if (i < maxObjectIndex)
+		{
 			_constantBuffer[i].color = _simulation->iGetColor(i);
+		}
+		// Set particle position
+		else
+		{
+			int index = i - maxObjectIndex;
+			XMFLOAT2 pos = _simulation->iGetParticlePos(index);
+
+			_constantBuffer[i].world = transformMatrix(pos.x, pos.y, -1.0f, 1.0f);
+		}
 
 		// Update the constant buffer with the latest worldViewProj matrix.
 		XMStoreFloat4x4(&_constantBuffer[i].worldViewProj, worldViewProj);
