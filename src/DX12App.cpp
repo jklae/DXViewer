@@ -539,18 +539,18 @@ void DX12App::update()
 
 	for (int i = 0; i < _constantBuffer.size(); i++)
 	{
-		int maxObjectIndex = _simulation->iGetObjectCountXY()[0] * _simulation->iGetObjectCountXY()[1];
+		int objectEndIndex = _simulation->iGetObjectCountXY()[0] * _simulation->iGetObjectCountXY()[1];
 
 		// Set object color
-		if (i < maxObjectIndex)
+		if (i < objectEndIndex)
 		{
 			_constantBuffer[i].color = _simulation->iGetColor(i);
 		}
 		// Set particle position
 		else
 		{
-			int index = i - maxObjectIndex;
-			XMFLOAT2 pos = _simulation->iGetParticlePos(index);
+			int particleStartindex = i - objectEndIndex;
+			XMFLOAT2 pos = _simulation->iGetParticlePos(particleStartindex);
 
 			_constantBuffer[i].world._41 = pos.x;
 			_constantBuffer[i].world._42 = pos.y;
