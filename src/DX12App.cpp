@@ -235,7 +235,7 @@ void DX12App::_setScissorRectangle()
 void DX12App::_createObjects()
 {
 	const int objectSize = _simulation->iGetObjectSize();
-	const int* objectCount = _simulation->iGetObjectCountXYZ();
+	const int* objectCount = _simulation->iGetObjectCountXY();
 	const float objectScale = _simulation->iGetObjectScale();
 
 	const int totalCount = static_cast<size_t>(objectCount[0] * objectCount[1]); //* objectCount[2]);
