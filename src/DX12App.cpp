@@ -235,23 +235,7 @@ void DX12App::_setScissorRectangle()
 // ######################################## Init 2 ##########################################
 void DX12App::_createObjects()
 {
-	const int* objectCount = _simulation->iGetObjectCountXY();
-	const float objectScale = _simulation->iGetObjectScale();
-		
-	for (int j = 0; j < objectCount[1]; j++)
-	{
-		for (int i = 0; i < objectCount[0]; i++)
-		{
-			struct ConstantBuffer cb;
-			cb.world = _simulation->iComputeObjectWorldM(i, j);
-
-			// Initialize
-			cb.worldViewProj = transformMatrix(0.0f, 0.0f, 0.0f);
-			cb.color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-
-			_constantBuffer.push_back(cb);
-		}
-	}
+	_simulation->iCreateObjects(_constantBuffer);
 }
 
 void DX12App::_createParticles()

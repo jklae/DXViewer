@@ -1,6 +1,7 @@
 #pragma once
 
 struct Vertex;
+struct ConstantBuffer;
 
 class ISimulation abstract
 {
@@ -14,7 +15,7 @@ public:
 	virtual int* iGetObjectCountXY() = 0;
 	virtual float iGetObjectScale() = 0;
 	virtual float iGetObjectSize() = 0;
-	virtual DirectX::XMFLOAT4X4 iComputeObjectWorldM(int i, int j) = 0;
+	virtual void iCreateObjects(std::vector<ConstantBuffer>& constantBuffer) = 0;
 
 	virtual int iGetParticleCount() = 0;
 

@@ -29,13 +29,6 @@ private:
     ISimulation* _simulation = nullptr;
     double _timestep;
 
-    struct ConstantBuffer
-    {
-        DirectX::XMFLOAT4X4 worldViewProj;
-        DirectX::XMFLOAT4X4 world;
-        DirectX::XMFLOAT4 color;
-    };
-
     std::vector<ConstantBuffer> _constantBuffer;
 
     int _kWidth;
