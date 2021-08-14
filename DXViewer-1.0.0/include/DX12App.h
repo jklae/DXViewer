@@ -132,6 +132,8 @@ private:
 
 
     void _createObjects();
+    void _createParticles();
+
     void _createProjMatrix();
     void _createVertexIndexBuffer();
     //

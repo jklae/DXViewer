@@ -67,6 +67,7 @@ bool DX12App::initialize()
 
 	// Init2
 	_createObjects();
+	_createParticles();
 
 	_createProjMatrix();
 	_createVertexIndexBuffer();
@@ -269,6 +270,13 @@ void DX12App::_createObjects()
 			}
 		}
 	//}
+}
+
+void DX12App::_createParticles()
+{
+	for (int i = 0; i < 1; i++)
+	{
+	}
 }
 
 void DX12App::_createProjMatrix()
