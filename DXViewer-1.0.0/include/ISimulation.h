@@ -15,7 +15,7 @@ public:
 	virtual int* iGetObjectCountXY() = 0;
 	virtual float iGetObjectScale() = 0;
 	virtual float iGetObjectSize() = 0;
-	virtual void iCreateObjects(std::vector<ConstantBuffer>& constantBuffer) = 0;
+	virtual void iCreateObjectParticle(std::vector<ConstantBuffer>& constantBuffer) = 0;
 
 	virtual int iGetParticleCount() = 0;
 

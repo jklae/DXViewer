@@ -235,7 +235,7 @@ void DX12App::_setScissorRectangle()
 // ######################################## Init 2 ##########################################
 void DX12App::_createObjects()
 {
-	_simulation->iCreateObjects(_constantBuffer);
+	_simulation->iCreateObjectParticle(_constantBuffer);
 }
 
 void DX12App::_createParticles()
@@ -551,7 +551,8 @@ void DX12App::update()
 		XMMATRIX worldViewProj = world * view * proj;
 
 		// Set object color
-		_constantBuffer[i].color = _simulation->iGetColor(i);
+		if (i < _simulation->iGetObjectCountXY()[0] * _simulation->iGetObjectCountXY()[1])
+			_constantBuffer[i].color = _simulation->iGetColor(i);
 
 		// Update the constant buffer with the latest worldViewProj matrix.
 		XMStoreFloat4x4(&_constantBuffer[i].worldViewProj, worldViewProj);
