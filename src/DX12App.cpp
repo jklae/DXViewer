@@ -554,7 +554,8 @@ void DX12App::update()
 			int index = i - maxObjectIndex;
 			XMFLOAT2 pos = _simulation->iGetParticlePos(index);
 
-			_constantBuffer[i].world = transformMatrix(pos.x, pos.y, -1.0f, 1.0f);
+			_constantBuffer[i].world._41 = pos.x;
+			_constantBuffer[i].world._42 = pos.y;
 		}
 
 		// Update the constant buffer with the latest worldViewProj matrix.
