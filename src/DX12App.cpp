@@ -239,9 +239,6 @@ void DX12App::_createObjects()
 	const int* objectCount = _simulation->iGetObjectCountXY();
 	const float objectScale = _simulation->iGetObjectScale();
 
-	const int totalCount = static_cast<size_t>(objectCount[0] * objectCount[1]); //* objectCount[2]);
-	_constantBuffer.reserve(totalCount);
-
 	const float stride = (objectSize * objectScale) * 1.1f;
 	XMFLOAT2 offset = XMFLOAT2(
 		//		radius    *     count
@@ -274,7 +271,7 @@ void DX12App::_createObjects()
 
 void DX12App::_createParticles()
 {
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < _simulation->iGetParticleCount(); i++)
 	{
 	}
 }

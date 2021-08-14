@@ -15,6 +15,8 @@ public:
 	virtual float iGetObjectScale() = 0;
 	virtual float iGetObjectSize() = 0;
 
+	virtual int iGetParticleCount() = 0;
+
 	virtual ~ISimulation() = 0 {};
 };
 
