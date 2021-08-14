@@ -238,37 +238,37 @@ void DX12App::_createObjects()
 	const int* objectCount = _simulation->iGetObjectCountXYZ();
 	const float objectScale = _simulation->iGetObjectScale();
 
-	const int totalCount = static_cast<size_t>(objectCount[0] * objectCount[1] * objectCount[2]);
+	const int totalCount = static_cast<size_t>(objectCount[0] * objectCount[1]); //* objectCount[2]);
 	_constantBuffer.reserve(totalCount);
 
 	const float stride = (objectSize * objectScale) * 1.1f;
-	XMFLOAT3 offset = XMFLOAT3(
+	XMFLOAT2 offset = XMFLOAT2(
 		//		radius    *     count
 		-((stride / 2.0f) * static_cast<float>(objectCount[0] - 1)),
-		-((stride / 2.0f) * static_cast<float>(objectCount[1] - 1)),
-		-((stride / 2.0f) * static_cast<float>(objectCount[2] - 1)));
+		-((stride / 2.0f) * static_cast<float>(objectCount[1] - 1)) );
+		//-((stride / 2.0f) * static_cast<float>(objectCount[2] - 1)));
 
-	for (int k = 0; k < objectCount[2]; k++)
-	{
+	//for (int k = 0; k < objectCount[2]; k++)
+	//{
 		for (int j = 0; j < objectCount[1]; j++)
 		{
 			for (int i = 0; i < objectCount[0]; i++)
 			{
-				XMFLOAT3 pos = XMFLOAT3(
+				XMFLOAT2 pos = XMFLOAT2(
 					offset.x + (float)i * stride,
-					offset.y + (float)j * stride,
-					offset.z + (float)k * stride);
+					offset.y + (float)j * stride);
+					//offset.z + (float)k * stride);
 
 				struct ConstantBuffer cb;
 				cb.worldViewProj = transformMatrix(0.0f, 0.0f, 0.0f);
 							// TransformMatrix(-2.5f, -1.8f, 0.0f, 1.0f)
-				cb.world = transformMatrix(pos.x, pos.y, pos.z, objectScale);
+				cb.world = transformMatrix(pos.x, pos.y, 0.0f, objectScale);
 				cb.color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 
 				_constantBuffer.push_back(cb);
 			}
 		}
-	}
+	//}
 }
 
 void DX12App::_createProjMatrix()

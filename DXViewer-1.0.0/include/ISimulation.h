@@ -15,7 +15,7 @@ public:
 	virtual float iGetObjectScale() = 0;
 	virtual float iGetObjectSize() = 0;
 
-	virtual void iSetObjectCountXYZ(int xCount, int yCount, int zCount) = 0;
+	virtual void iSetObjectCountXY(int xCount, int yCount) = 0;
 	virtual void iSetObjectScale(float objectScale) = 0;
 
 	virtual ~ISimulation() = 0 {};
