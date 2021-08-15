@@ -561,7 +561,7 @@ void DX12App::update()
 
 	for (int i = 0; i < _constantBuffer.size(); i++)
 	{
-		int objectEndIndex = _simulation->iGetObjectCountXY()[0] * _simulation->iGetObjectCountXY()[1];
+		int objectEndIndex = _simulation->iGetObjectCountXY().x * _simulation->iGetObjectCountXY().y;
 
 		// Set object color
 		if (i < objectEndIndex)
