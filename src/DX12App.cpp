@@ -38,6 +38,11 @@ void DX12App::setSimulation(ISimulation* simulation, double timestep)
 	_timestep = timestep;
 }
 
+void DX12App::setProjectionType(PROJ proj)
+{
+	_proj = proj;
+}
+
 void DX12App::setWindow(int kWidth, int kHeight, HWND mhMainWnd)
 {
 	_kWidth = kWidth;
@@ -239,23 +244,23 @@ void DX12App::_createObjectParticle()
 
 void DX12App::_createProjMatrix()
 {
-	XMMATRIX proj;
+	XMMATRIX projMatrix;
 
 	// Compute the projection matrix.
 	switch (_proj)
 	{
 	case PROJ::PERSPECTIVE:
-		proj = XMMatrixPerspectiveFovLH(0.25f * 3.14f, static_cast<float>(_kWidth) / _kHeight, 1.0f, 1000.0f);
+		projMatrix = XMMatrixPerspectiveFovLH(0.25f * 3.14f, static_cast<float>(_kWidth) / _kHeight, 1.0f, 1000.0f);
 		break;
 	case PROJ::ORTHOGRAPHIC:
-		proj = XMMatrixOrthographicLH(_kWidth * 0.005f, _kHeight * 0.005f, 1.0f, 1000.0f);
+		projMatrix = XMMatrixOrthographicLH(_kWidth * 0.005f, _kHeight * 0.005f, 1.0f, 1000.0f);
 		break;
 	default:
-		proj = XMMatrixIdentity();
+		projMatrix = XMMatrixIdentity();
 		break;
 	}
 	
-	XMStoreFloat4x4(&_mProj, proj);
+	XMStoreFloat4x4(&_mProj, projMatrix);
 }
 
 void DX12App::_createVertexIndexBuffer()
