@@ -38,6 +38,11 @@ void DX12App::setSimulation(ISimulation* simulation, double timestep)
 	_timestep = timestep;
 }
 
+void DX12App::setProjectionType(PROJ proj)
+{
+	_proj = proj;
+}
+
 void DX12App::setWindow(int kWidth, int kHeight, HWND mhMainWnd)
 {
 	_kWidth = kWidth;
@@ -49,6 +54,9 @@ bool DX12App::initialize()
 {
 	// Call after simulation init
 	assert(_simulation != nullptr);
+
+	// set angles, radius of VirtualSphere
+	resetVirtualSphereAnglesRadius();
 
 	// Init1
 	_checkMSAA();
@@ -66,7 +74,7 @@ bool DX12App::initialize()
 	_mCommandList->Reset(_mDirectCmdListAlloc.Get(), nullptr);
 
 	// Init2
-	_createObjects();
+	_createObjectParticle();
 
 	_createProjMatrix();
 	_createVertexIndexBuffer();
@@ -232,50 +240,30 @@ void DX12App::_setScissorRectangle()
 
 #pragma region Init2
 // ######################################## Init 2 ##########################################
-void DX12App::_createObjects()
+void DX12App::_createObjectParticle()
 {
-	const int objectSize = _simulation->iGetObjectSize();
-	const int* objectCount = _simulation->iGetObjectCountXY();
-	const float objectScale = _simulation->iGetObjectScale();
-
-	const int totalCount = static_cast<size_t>(objectCount[0] * objectCount[1]); //* objectCount[2]);
-	_constantBuffer.reserve(totalCount);
-
-	const float stride = (objectSize * objectScale) * 1.1f;
-	XMFLOAT2 offset = XMFLOAT2(
-		//		radius    *     count
-		-((stride / 2.0f) * static_cast<float>(objectCount[0] - 1)),
-		-((stride / 2.0f) * static_cast<float>(objectCount[1] - 1)) );
-		//-((stride / 2.0f) * static_cast<float>(objectCount[2] - 1)));
-
-	//for (int k = 0; k < objectCount[2]; k++)
-	//{
-		for (int j = 0; j < objectCount[1]; j++)
-		{
-			for (int i = 0; i < objectCount[0]; i++)
-			{
-				XMFLOAT2 pos = XMFLOAT2(
-					offset.x + (float)i * stride,
-					offset.y + (float)j * stride);
-					//offset.z + (float)k * stride);
-
-				struct ConstantBuffer cb;
-				cb.worldViewProj = transformMatrix(0.0f, 0.0f, 0.0f);
-							// TransformMatrix(-2.5f, -1.8f, 0.0f, 1.0f)
-				cb.world = transformMatrix(pos.x, pos.y, 0.0f, objectScale);
-				cb.color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-
-				_constantBuffer.push_back(cb);
-			}
-		}
-	//}
+	_simulation->iCreateObjectParticle(_constantBuffer);
 }
 
 void DX12App::_createProjMatrix()
 {
+	XMMATRIX projMatrix;
+
 	// Compute the projection matrix.
-	XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * 3.14f, static_cast<float>(_kWidth) / _kHeight, 1.0f, 1000.0f);
-	XMStoreFloat4x4(&_mProj, P);
+	switch (_proj)
+	{
+	case PROJ::PERSPECTIVE:
+		projMatrix = XMMatrixPerspectiveFovLH(0.25f * 3.14f, static_cast<float>(_kWidth) / _kHeight, 1.0f, 1000.0f);
+		break;
+	case PROJ::ORTHOGRAPHIC:
+		projMatrix = XMMatrixOrthographicLH(_kWidth * 0.005f, _kHeight * 0.005f, 1.0f, 1000.0f);
+		break;
+	default:
+		projMatrix = XMMatrixIdentity();
+		break;
+	}
+	
+	XMStoreFloat4x4(&_mProj, projMatrix);
 }
 
 void DX12App::_createVertexIndexBuffer()
@@ -573,11 +561,25 @@ void DX12App::update()
 
 	for (int i = 0; i < _constantBuffer.size(); i++)
 	{
-		XMMATRIX world = XMLoadFloat4x4(&_constantBuffer[i].world);
-		XMMATRIX worldViewProj = world * view * proj;
+		int objectEndIndex = _simulation->iGetObjectCountXY().x * _simulation->iGetObjectCountXY().y;
 
 		// Set object color
-		_constantBuffer[i].color = _simulation->iGetColor(i);
+		if (i < objectEndIndex)
+		{
+			_constantBuffer[i].color = _simulation->iGetColor(i);
+		}
+		// Set particle position
+		else
+		{
+			int particleStartindex = i - objectEndIndex;
+			XMFLOAT2 pos = _simulation->iGetParticlePos(particleStartindex);
+
+			_constantBuffer[i].world._41 = pos.x;
+			_constantBuffer[i].world._42 = pos.y;
+		}
+
+		XMMATRIX world = XMLoadFloat4x4(&_constantBuffer[i].world);
+		XMMATRIX worldViewProj = world * view * proj;
 
 		// Update the constant buffer with the latest worldViewProj matrix.
 		XMStoreFloat4x4(&_constantBuffer[i].worldViewProj, worldViewProj);
@@ -670,6 +672,13 @@ void DX12App::updateVirtualSphereRadius(const POINT mLastMousePos, const int x, 
 
 	// Restrict the radius.
 	_mRadius = _clamp(_mRadius, 3.0f, 15.0f);
+}
+
+void DX12App::resetVirtualSphereAnglesRadius()
+{
+	_mTheta = 1.5f * 3.14f;
+	_mPhi = 3.14f / 2.0f;
+	_mRadius = 5.0f;
 }
 
 float DX12App::_clamp(const float x, const float low, const float high)

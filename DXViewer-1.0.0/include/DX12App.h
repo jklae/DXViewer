@@ -14,6 +14,8 @@ public:
     __declspec(dllexport) ~DX12App();
 
     __declspec(dllexport) void setSimulation(ISimulation* simulation, double timestep);
+    void setProjectionType(PROJ proj);
+
     void setWindow(const int kWidth, const int kHeight, HWND mhMainWnd);
 
     bool initialize();
@@ -22,6 +24,7 @@ public:
 
     void updateVirtualSphereAngles(const POINT mLastMousePos, const int x, const int y);
     void updateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y);
+    void resetVirtualSphereAnglesRadius();
 
 private:
 
@@ -29,12 +32,7 @@ private:
     ISimulation* _simulation = nullptr;
     double _timestep;
 
-    struct ConstantBuffer
-    {
-        DirectX::XMFLOAT4X4 worldViewProj;
-        DirectX::XMFLOAT4X4 world;
-        DirectX::XMFLOAT4 color;
-    };
+    PROJ _proj = PROJ::PERSPECTIVE;
 
     std::vector<ConstantBuffer> _constantBuffer;
 
@@ -131,7 +129,8 @@ private:
     DirectX::XMFLOAT4X4 _mProj = transformMatrix(0.0f, 0.0f, 0.0f);
 
 
-    void _createObjects();
+    void _createObjectParticle();
+
     void _createProjMatrix();
     void _createVertexIndexBuffer();
     //
@@ -164,9 +163,9 @@ private:
 
 #pragma region Arcball
     // ####################################### Arcball ##########################################
-    float _mTheta = 1.5f * 3.14f;
-    float _mPhi = 3.14f / 2.0f;
-    float _mRadius = 5.0f;
+    float _mTheta;
+    float _mPhi;
+    float _mRadius;
 
     float _clamp(const float x, const float low, const float high);
     // ##########################################################################################

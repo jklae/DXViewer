@@ -54,4 +54,17 @@ struct Vertex
 };
 
 
+struct ConstantBuffer
+{
+	DirectX::XMFLOAT4X4 worldViewProj;
+	DirectX::XMFLOAT4X4 world;
+	DirectX::XMFLOAT4 color;
+};
+
+enum class PROJ 
+{
+	PERSPECTIVE,
+	ORTHOGRAPHIC
+};
+
 #endif
