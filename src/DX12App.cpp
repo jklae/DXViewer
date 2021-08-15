@@ -240,7 +240,7 @@ void DX12App::_createObjectParticle()
 void DX12App::_createProjMatrix()
 {
 	// Compute the projection matrix.
-	XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f * 3.14f, static_cast<float>(_kWidth) / _kHeight, 1.0f, 1000.0f);
+	XMMATRIX P = XMMatrixOrthographicLH(_kWidth *0.005f, _kHeight * 0.005f, 1.0f, 1000.0f);//XMMatrixPerspectiveFovLH(0.25f * 3.14f, static_cast<float>(_kWidth) / _kHeight, 1.0f, 1000.0f);
 	XMStoreFloat4x4(&_mProj, P);
 }
 
