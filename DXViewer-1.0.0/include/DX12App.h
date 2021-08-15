@@ -24,6 +24,7 @@ public:
 
     void updateVirtualSphereAngles(const POINT mLastMousePos, const int x, const int y);
     void updateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y);
+    void resetVirtualSphereAnglesRadius();
 
 private:
 
@@ -162,9 +163,9 @@ private:
 
 #pragma region Arcball
     // ####################################### Arcball ##########################################
-    float _mTheta = 1.5f * 3.14f;
-    float _mPhi = 3.14f / 2.0f;
-    float _mRadius = 5.0f;
+    float _mTheta;
+    float _mPhi;
+    float _mRadius;
 
     float _clamp(const float x, const float low, const float high);
     // ##########################################################################################

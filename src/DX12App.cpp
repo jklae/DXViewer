@@ -55,6 +55,9 @@ bool DX12App::initialize()
 	// Call after simulation init
 	assert(_simulation != nullptr);
 
+	// set angles, radius of VirtualSphere
+	resetVirtualSphereAnglesRadius();
+
 	// Init1
 	_checkMSAA();
 	_createDevice();
@@ -669,6 +672,13 @@ void DX12App::updateVirtualSphereRadius(const POINT mLastMousePos, const int x, 
 
 	// Restrict the radius.
 	_mRadius = _clamp(_mRadius, 3.0f, 15.0f);
+}
+
+void DX12App::resetVirtualSphereAnglesRadius()
+{
+	_mTheta = 1.5f * 3.14f;
+	_mPhi = 3.14f / 2.0f;
+	_mRadius = 5.0f;
 }
 
 float DX12App::_clamp(const float x, const float low, const float high)

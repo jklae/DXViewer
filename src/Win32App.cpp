@@ -161,6 +161,14 @@ void Win32App::_onMouseDown(WPARAM btnState, int x, int y)
 	_mLastMousePos.x = x;
 	_mLastMousePos.y = y;
 
+	if (_dxApp)
+	{
+		if ((btnState & MK_MBUTTON) != 0)
+		{
+			_dxApp->resetVirtualSphereAnglesRadius();
+		}
+	}
+
 	SetCapture(_mhMainWnd);
 }
 
