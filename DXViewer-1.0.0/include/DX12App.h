@@ -29,6 +29,8 @@ private:
     ISimulation* _simulation = nullptr;
     double _timestep;
 
+    PROJ _proj = PROJ::PERSPECTIVE;
+
     std::vector<ConstantBuffer> _constantBuffer;
 
     int _kWidth;
