@@ -61,4 +61,10 @@ struct ConstantBuffer
 	DirectX::XMFLOAT4 color;
 };
 
+enum class PROJ 
+{
+	PERSPECTIVE,
+	ORTHOGRAPHIC
+};
+
 #endif
