@@ -248,6 +248,7 @@ void DX12App::_createObjectParticle()
 void DX12App::_createProjMatrix()
 {
 	XMMATRIX projMatrix;
+	float scale;
 
 	// Compute the projection matrix.
 	switch (_proj)
@@ -256,7 +257,9 @@ void DX12App::_createProjMatrix()
 		projMatrix = XMMatrixPerspectiveFovLH(0.25f * 3.14f, static_cast<float>(_kWidth) / _kHeight, 1.0f, 1000.0f);
 		break;
 	case PROJ::ORTHOGRAPHIC:
-		projMatrix = XMMatrixOrthographicLH(_kWidth * 0.02f, _kHeight * 0.02f, 1.0f, 1000.0f);
+		// Compensate for normalized simulation coordinates.		
+		scale = static_cast<float>(_simulation->iGetObjectCount()) * 0.0015f;
+		projMatrix = XMMatrixOrthographicLH(_kWidth * scale, _kHeight * scale, 1.0f, 1000.0f);
 		break;
 	default:
 		projMatrix = XMMatrixIdentity();
