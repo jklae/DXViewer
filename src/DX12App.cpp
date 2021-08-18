@@ -256,7 +256,7 @@ void DX12App::_createProjMatrix()
 		projMatrix = XMMatrixPerspectiveFovLH(0.25f * 3.14f, static_cast<float>(_kWidth) / _kHeight, 1.0f, 1000.0f);
 		break;
 	case PROJ::ORTHOGRAPHIC:
-		projMatrix = XMMatrixOrthographicLH(_kWidth * 0.005f, _kHeight * 0.005f, 1.0f, 1000.0f);
+		projMatrix = XMMatrixOrthographicLH(_kWidth * 0.02f, _kHeight * 0.02f, 1.0f, 1000.0f);
 		break;
 	default:
 		projMatrix = XMMatrixIdentity();
