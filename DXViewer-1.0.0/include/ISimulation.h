@@ -6,6 +6,10 @@ struct ConstantBuffer;
 class ISimulation abstract
 {
 public:
+	enum class STATE { FLUID, BOUNDARY, AIR };
+	enum class VALUE { MIN, MAX };
+	enum class AXIS { X, Y };
+
 	virtual void iUpdate(double timestep) = 0;
 
 	virtual std::vector<Vertex> iGetVertice() = 0;
