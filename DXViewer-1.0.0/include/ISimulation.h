@@ -15,7 +15,7 @@ public:
 	virtual std::vector<Vertex> iGetVertice() = 0;
 	virtual std::vector<unsigned int> iGetIndice() = 0;
 	virtual DirectX::XMFLOAT4 iGetColor(int i) = 0;
-	virtual DirectX::XMINT2 iGetObjectCountXY() = 0;
+	virtual int iGetObjectCount() = 0;
 	virtual DirectX::XMFLOAT2 iGetParticlePos(int i) = 0;
 
 	virtual void iCreateObjectParticle(std::vector<ConstantBuffer>& constantBuffer) = 0;
