@@ -10,6 +10,8 @@
 class DX12App
 {
 public:
+    bool dvel = false;
+
     __declspec(dllexport) DX12App();
     __declspec(dllexport) ~DX12App();
 

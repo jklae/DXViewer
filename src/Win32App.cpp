@@ -93,7 +93,13 @@ LRESULT Win32App::wndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEMOVE:
 		_onMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
-
+	case WM_KEYDOWN:
+		switch (wParam) 
+		{
+		case 0x56:
+			_dxApp->dvel = !_dxApp->dvel;
+			break;
+		}
 	}
 
 	return DefWindowProc(hwnd, msg, wParam, lParam);

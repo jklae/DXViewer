@@ -530,8 +530,8 @@ void DX12App::update()
 	// Change View size
 	_simulation->iUpdate(_timestep);
 
-	std::vector<Vertex> vertices = _simulation->iGetVertice();
-	std::vector<unsigned int> indices = _simulation->iGetIndice();
+	vector<Vertex> vertices = dvel? _simulation->iGetLineVertice() : _simulation->iGetVertice();
+	vector<unsigned int> indices = dvel? _simulation->iGetLineIndice() : _simulation->iGetIndice();
 
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
 	_vbv.SizeInBytes = vbByteSize;
@@ -567,7 +567,8 @@ void DX12App::update()
 
 	UINT mElementByteSize = computeBufferByteSize<ConstantBuffer>();
 
-	for (int i = 0; i < 1; i++)
+	int size = dvel ? 1 : _constantBuffer.size();
+	for (int i = 0; i < size; i++)
 	{
 		int objectEndIndex = _simulation->iGetObjectCount() * _simulation->iGetObjectCount();
 
@@ -619,12 +620,14 @@ void DX12App::draw()
 
 	_mCommandList->IASetVertexBuffers(0, 1, &_vbv);
 	_mCommandList->IASetIndexBuffer(&_ibv);
-	_mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	_mCommandList->IASetPrimitiveTopology(dvel ? D3D11_PRIMITIVE_TOPOLOGY_LINELIST : D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	ID3D12DescriptorHeap* descriptorHeaps[] = { _mCbvHeap.Get() };
 	_mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-	for (int i = 0; i < _constantBuffer.size(); i++)
+	int size = dvel ? 1 : _constantBuffer.size();
+	if (dvel) _constantBuffer[0].world = transformMatrix(_constantBuffer[0].world._41, _constantBuffer[0].world._42, 0.0f, 1.0f);
+	for (int i = 0; i < size; i++)
 	{
 		auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(_mCbvHeap->GetGPUDescriptorHandleForHeapStart());
 		cbvHandle.Offset(i, _md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
