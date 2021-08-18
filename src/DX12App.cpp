@@ -248,6 +248,7 @@ void DX12App::_createObjectParticle()
 void DX12App::_createProjMatrix()
 {
 	XMMATRIX projMatrix;
+	float scale;
 
 	// Compute the projection matrix.
 	switch (_proj)
@@ -256,7 +257,9 @@ void DX12App::_createProjMatrix()
 		projMatrix = XMMatrixPerspectiveFovLH(0.25f * 3.14f, static_cast<float>(_kWidth) / _kHeight, 1.0f, 1000.0f);
 		break;
 	case PROJ::ORTHOGRAPHIC:
-		projMatrix = XMMatrixOrthographicLH(_kWidth * 0.005f, _kHeight * 0.005f, 1.0f, 1000.0f);
+		// Compensate for normalized simulation coordinates.		
+		scale = static_cast<float>(_simulation->iGetObjectCount()) * 0.0015f;
+		projMatrix = XMMatrixOrthographicLH(_kWidth * scale, _kHeight * scale, 1.0f, 1000.0f);
 		break;
 	default:
 		projMatrix = XMMatrixIdentity();
@@ -542,17 +545,22 @@ void DX12App::update()
 	// #########
 
 	// ######### Update Constant Buffer
+	// Compensate for normalized simulation coordinates.				
+	//			Half of grid size = 0.5f						
+	float offset = -0.5f + static_cast<float>(_simulation->iGetObjectCount()) * 0.5f;
+	float scale = static_cast<float>(_simulation->iGetObjectCount());
+
 	// Convert Spherical to Cartesian coordinates.
-	float x = _mRadius * sinf(_mPhi) * cosf(_mTheta);
-	float z = _mRadius * sinf(_mPhi) * sinf(_mTheta);
-	float y = _mRadius * cosf(_mPhi);
+	float x = scale * _mRadius * sinf(_mPhi) * cosf(_mTheta);
+	float z = scale * _mRadius * sinf(_mPhi) * sinf(_mTheta);
+	float y = scale * _mRadius * cosf(_mPhi);
 
 	// Build the view matrix.
-	XMVECTOR pos = XMVectorSet(x, y, z, 1.0f);
-	XMVECTOR target = XMVectorZero();
+	XMVECTOR eye = XMVectorSet(x + offset, y + offset, z, 1.0f);
+	XMVECTOR at = XMVectorSet(offset, offset, 0.0f, 0.0f);
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
-	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
+	XMMATRIX view = XMMatrixLookAtLH(eye, at, up);
 	XMStoreFloat4x4(&_mView, view);
 
 	XMMATRIX proj = XMLoadFloat4x4(&_mProj);
@@ -671,14 +679,14 @@ void DX12App::updateVirtualSphereRadius(const POINT mLastMousePos, const int x, 
 	_mRadius += dx - dy;
 
 	// Restrict the radius.
-	_mRadius = _clamp(_mRadius, 3.0f, 15.0f);
+	//_mRadius = _clamp(_mRadius, 3.0f, 15.0f);
 }
 
 void DX12App::resetVirtualSphereAnglesRadius()
 {
 	_mTheta = 1.5f * 3.14f;
 	_mPhi = 3.14f / 2.0f;
-	_mRadius = 5.0f;
+	_mRadius = 1.5f;
 }
 
 float DX12App::_clamp(const float x, const float low, const float high)
