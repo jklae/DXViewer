@@ -542,22 +542,22 @@ void DX12App::update()
 	// #########
 
 	// ######### Update Constant Buffer
-	// Compensate for normalized simulation coordinates.													
-	float offset = static_cast<float>(_simulation->iGetObjectCount()) * 0.5f - 0.5;
+	// Compensate for normalized simulation coordinates.				
+	//			Half of grid size = 0.5f						
+	float offset = -0.5f + static_cast<float>(_simulation->iGetObjectCount()) * 0.5f;
 	float scale = static_cast<float>(_simulation->iGetObjectCount());
-	cout << offset << endl;
+
 	// Convert Spherical to Cartesian coordinates.
 	float x = scale * _mRadius * sinf(_mPhi) * cosf(_mTheta);
 	float z = scale * _mRadius * sinf(_mPhi) * sinf(_mTheta);
 	float y = scale * _mRadius * cosf(_mPhi);
 
-
 	// Build the view matrix.
-	XMVECTOR pos = XMVectorSet(x + offset, y + offset, z, 1.0f);
-	XMVECTOR target = XMVectorSet(offset, offset, 0.0f, 0.0f);
+	XMVECTOR eye = XMVectorSet(x + offset, y + offset, z, 1.0f);
+	XMVECTOR at = XMVectorSet(offset, offset, 0.0f, 0.0f);
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
-	XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
+	XMMATRIX view = XMMatrixLookAtLH(eye, at, up);
 	XMStoreFloat4x4(&_mView, view);
 
 	XMMATRIX proj = XMLoadFloat4x4(&_mProj);
