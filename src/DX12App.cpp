@@ -567,7 +567,7 @@ void DX12App::update()
 
 	UINT mElementByteSize = computeBufferByteSize<ConstantBuffer>();
 
-	for (int i = 0; i < _constantBuffer.size(); i++)
+	for (int i = 0; i < 1; i++)
 	{
 		int objectEndIndex = _simulation->iGetObjectCount() * _simulation->iGetObjectCount();
 
@@ -619,7 +619,7 @@ void DX12App::draw()
 
 	_mCommandList->IASetVertexBuffers(0, 1, &_vbv);
 	_mCommandList->IASetIndexBuffer(&_ibv);
-	_mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	_mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	ID3D12DescriptorHeap* descriptorHeaps[] = { _mCbvHeap.Get() };
 	_mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
