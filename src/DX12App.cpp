@@ -653,6 +653,7 @@ void DX12App::draw()
 }
 
 
+inline int INDEX(int i, int j) { return (i + 64 * j); };
 
 
 #pragma region Arcball
@@ -663,14 +664,15 @@ void DX12App::updateVirtualSphereAngles(const POINT mLastMousePos, const int x, 
 	float dx = XMConvertToRadians(0.25f * static_cast<float>(x - mLastMousePos.x));
 	float dy = XMConvertToRadians(0.25f * static_cast<float>(y - mLastMousePos.y));
 
+	_simulation->iGetVel()[INDEX(30, 30)] = { 2.0f, 2.0f };
+
 	// Update angles based on input to orbit camera around box.
-	_mTheta -= dx;
-	_mPhi -= dy;
+	//_mTheta -= dx;
+	//_mPhi -= dy;
 
-	// Restrict the angle mPhi.
-	_mPhi = _clamp(_mPhi, 0.1f, 3.14f - 0.1f);
+	//// Restrict the angle mPhi.
+	//_mPhi = _clamp(_mPhi, 0.1f, 3.14f - 0.1f);
 }
-
 
 void DX12App::updateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y)
 {

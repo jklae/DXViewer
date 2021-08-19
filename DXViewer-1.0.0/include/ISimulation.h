@@ -20,6 +20,8 @@ public:
 	virtual int iGetObjectCount() = 0;
 	virtual DirectX::XMFLOAT2 iGetParticlePos(int i) = 0;
 
+	virtual std::vector<DirectX::XMFLOAT2>& iGetVel() = 0;
+
 	virtual void iCreateObjectParticle(std::vector<ConstantBuffer>& constantBuffer) = 0;
 
 	virtual ~ISimulation() = 0 {};
