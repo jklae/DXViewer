@@ -5,21 +5,21 @@ using namespace std;
 using namespace DirectX;
 
 // Static variable is used to put the proc function into the class.
-Win32App* Win32App::_instanceForProc = nullptr;
-Win32App* Win32App::getinstanceForProc()
+Win32App* Win32App::_instanceForProc[2] = { nullptr, nullptr };
+Win32App* Win32App::getinstanceForProc(int i)
 {
-	return _instanceForProc;
+	return _instanceForProc[i];
 }
 LRESULT CALLBACK mainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	return Win32App::getinstanceForProc()->wndProc(hwnd, msg, wParam, lParam);
+	return Win32App::getinstanceForProc(0)->wndProc(hwnd, msg, wParam, lParam);
 }
 //
 
 Win32App::Win32App(const int kWidth, const int KHeight)
 	:_kWidth(kWidth), _kHeight(KHeight)
 {
-	_instanceForProc = this;
+	_instanceForProc[0] = this;
 }
 
 Win32App::~Win32App()
@@ -30,51 +30,49 @@ Win32App::~Win32App()
 bool Win32App::initialize(HINSTANCE hInstance)
 {
 	// Just call it once.
-	assert(_mhMainWnd == nullptr);
+	assert(_mhMainWnd[0] == nullptr);
 
-	WNDCLASS wc;
-	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = mainWndProc;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
-	wc.hInstance = hInstance;
-	wc.hIcon = LoadIcon(0, IDI_APPLICATION);
-	wc.hCursor = LoadCursor(0, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
-	wc.lpszMenuName = 0;
-	wc.lpszClassName = L"MainWnd";
+	WNDCLASS wc[2];
+	wc[0].style = CS_HREDRAW | CS_VREDRAW;
+	wc[0].lpfnWndProc = mainWndProc;
+	wc[0].cbClsExtra = 0;
+	wc[0].cbWndExtra = 0;
+	wc[0].hInstance = hInstance;
+	wc[0].hIcon = LoadIcon(0, IDI_APPLICATION);
+	wc[0].hCursor = LoadCursor(0, IDC_ARROW);
+	wc[0].hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
+	wc[0].lpszMenuName = 0;
+	wc[0].lpszClassName = L"MainWnd";
 
-	if (!RegisterClass(&wc))
-	{
-		MessageBox(0, L"RegisterClass Failed.", 0, 0);
-		return false;
-	}
+	wc[1] = wc[0]; // Duplicate settings
 
+	if (!RegisterClass(&wc[0]) && !RegisterClass(&wc[1])) return 0;
 
-	_mhMainWnd = CreateWindow(L"MainWnd", L"d3d App",
+	_mhMainWnd[0] = CreateWindow(L"MainWnd", L"d3d App",
 		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
-		CW_USEDEFAULT, CW_USEDEFAULT, _kWidth, _kHeight,
+		0, 0, _kWidth, _kHeight,
 		0, 0, hInstance, 0);
 
-	if (!_mhMainWnd)
-	{
-		MessageBox(0, L"CreateWindow Failed.", 0, 0);
-		return false;
-	}
+	_mhMainWnd[1] = CreateWindow(L"MainWnd", L"d3d App",
+		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
+		100, 100, _kWidth, _kHeight,
+		0, 0, hInstance, 0);
 
-	ShowWindow(_mhMainWnd, SW_SHOW);
-	UpdateWindow(_mhMainWnd);
+
+	ShowWindow(_mhMainWnd[0], SW_SHOW);
+	ShowWindow(_mhMainWnd[1], SW_SHOW);
+	UpdateWindow(_mhMainWnd[0]);
+	UpdateWindow(_mhMainWnd[1]);
 
 
 	return true;
-}
-
+}                 
 
 LRESULT Win32App::wndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+
 	switch (msg)
 	{
-
 		// WM_DESTROY is sent when the window is being destroyed.
 	case WM_DESTROY:
 		PostQuitMessage(0);
@@ -96,6 +94,7 @@ LRESULT Win32App::wndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		switch (wParam) 
 		{
+			// v
 		case 0x56:
 			_dxApp->dvel = !_dxApp->dvel;
 			break;
@@ -109,10 +108,9 @@ LRESULT Win32App::wndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 }
 
 
-
 int Win32App::run()
 {
-	assert(_mhMainWnd != nullptr);
+	assert(_mhMainWnd[0] != nullptr);
 
 	MSG msg = {0};
 	while(msg.message != WM_QUIT)
@@ -138,11 +136,11 @@ int Win32App::run()
 void Win32App::initDirectX(DX12App* dxapp)
 {
 	// Call after window init.
-	assert(_mhMainWnd != nullptr);
+	assert(_mhMainWnd[0] != nullptr);
 
 	_dxApp = dxapp;
 
-	_dxApp->setWindow(_kWidth, _kHeight, _mhMainWnd);
+	_dxApp->setWindow(_kWidth, _kHeight, _mhMainWnd[0]);
 	_dxApp->initialize();
 }
 
@@ -178,7 +176,7 @@ void Win32App::_onMouseDown(WPARAM btnState, int x, int y)
 		}
 	}
 
-	SetCapture(_mhMainWnd);
+	SetCapture(_mhMainWnd[0]);
 }
 
 void Win32App::_onMouseUp(WPARAM btnState, int x, int y)

@@ -14,19 +14,19 @@ public:
     __declspec(dllexport) Win32App(const int kWidth, const int KHeight);
     __declspec(dllexport) ~Win32App();
 
-    static Win32App* getinstanceForProc();
-    LRESULT wndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
     __declspec(dllexport) bool initialize(HINSTANCE hInstance);
     __declspec(dllexport) int run();
     __declspec(dllexport) void initDirectX(DX12App* dxapp);
 
+    static Win32App* getinstanceForProc(int i);
+    LRESULT wndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 private:
-    static Win32App* _instanceForProc;
+    static Win32App* _instanceForProc[2];
     const int _kWidth;
     const int _kHeight;
-    HWND _mhMainWnd = nullptr; // Main window handle
-    DX12App* _dxApp;
+    HWND _mhMainWnd[2] = { nullptr, nullptr }; // Main window handle
+    DX12App* _dxApp = nullptr;
 
     POINT _mLastMousePos;
 
