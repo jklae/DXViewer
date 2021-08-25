@@ -583,8 +583,19 @@ void DX12App::update()
 			int particleStartindex = i - objectEndIndex;
 			XMFLOAT2 pos = _simulation->iGetParticlePos(particleStartindex);
 
-			_constantBuffer[i].world._41 = pos.x;
-			_constantBuffer[i].world._42 = pos.y;
+			if (pvel)
+			{
+				_constantBuffer[i].world._41 = pos.x;
+				_constantBuffer[i].world._42 = pos.y;
+
+			}
+			else
+			{
+
+				_constantBuffer[i].world._41 = 100.f;
+				_constantBuffer[i].world._42 = 100.f;
+			}
+
 		}
 
 		XMMATRIX world = XMLoadFloat4x4(&_constantBuffer[i].world);
@@ -664,7 +675,7 @@ void DX12App::updateVirtualSphereAngles(const POINT mLastMousePos, const int x, 
 	float dx = XMConvertToRadians(0.25f * static_cast<float>(x - mLastMousePos.x));
 	float dy = XMConvertToRadians(0.25f * static_cast<float>(y - mLastMousePos.y));
 
-	_simulation->iGetVel()[INDEX(30, 30)] = { 2.0f, 2.0f };
+	_simulation->iGetVel()[INDEX(5, 5)] = { 2.0f, 2.0f };
 
 	// Update angles based on input to orbit camera around box.
 	//_mTheta -= dx;

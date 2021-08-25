@@ -99,7 +99,8 @@ LRESULT Win32App::wndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		case 0x56:
 			_dxApp->dvel = !_dxApp->dvel;
 			break;
-		case	VK_LEFT:
+		case VK_LEFT:
+			_dxApp->pvel = !_dxApp->pvel;
 			break;
 		}
 	}
