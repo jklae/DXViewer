@@ -5,21 +5,21 @@ using namespace std;
 using namespace DirectX;
 
 // Static variable is used to put the proc function into the class.
-Win32App* Win32App::_instanceForProc[2] = { nullptr, nullptr };
-Win32App* Win32App::getinstanceForProc(int i)
+Win32App* Win32App::_instanceForProc = nullptr;
+Win32App* Win32App::getinstanceForProc()
 {
-	return _instanceForProc[i];
+	return _instanceForProc;
 }
 LRESULT CALLBACK mainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	return Win32App::getinstanceForProc(0)->wndProc(hwnd, msg, wParam, lParam);
+	return Win32App::getinstanceForProc()->wndProc(hwnd, msg, wParam, lParam);
 }
 //
 
 Win32App::Win32App(const int kWidth, const int KHeight)
 	:_kWidth(kWidth), _kHeight(KHeight)
 {
-	_instanceForProc[0] = this;
+	_instanceForProc = this;
 }
 
 Win32App::~Win32App()
@@ -42,28 +42,34 @@ bool Win32App::initialize(HINSTANCE hInstance)
 	wc[0].hCursor = LoadCursor(0, IDC_ARROW);
 	wc[0].hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
 	wc[0].lpszMenuName = 0;
-	wc[0].lpszClassName = L"MainWnd";
+	wc[0].lpszClassName = L"DirectXWnd";
 
 	wc[1] = wc[0]; // Duplicate settings
+	wc[1].lpfnWndProc = mainWndProc;
+	wc[1].lpszClassName = L"ControllWnd";
 
-	if (!RegisterClass(&wc[0]) && !RegisterClass(&wc[1])) return 0;
+	RegisterClass(&wc[0]);
+	RegisterClass(&wc[1]);
 
-	_mhMainWnd[0] = CreateWindow(L"MainWnd", L"d3d App",
+	int offsetX = 200;
+	int offsetY = 100;
+
+	_mhMainWnd[0] = CreateWindow(L"DirectXWnd", L"d3d App",
 		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
-		0, 0, _kWidth, _kHeight,
+		offsetX, offsetY, _kWidth, _kHeight,
 		0, 0, hInstance, 0);
 
-	_mhMainWnd[1] = CreateWindow(L"MainWnd", L"d3d App",
-		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
-		100, 100, _kWidth, _kHeight,
+	_mhMainWnd[1] = CreateWindow(L"ControllWnd", L"Controller",
+		(WS_OVERLAPPEDWINDOW ^ (WS_SYSMENU | WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing, maximzing and system menu
+		offsetX + _kWidth, offsetY, 500, _kHeight,
 		0, 0, hInstance, 0);
 
 
-	ShowWindow(_mhMainWnd[0], SW_SHOW);
-	ShowWindow(_mhMainWnd[1], SW_SHOW);
-	UpdateWindow(_mhMainWnd[0]);
-	UpdateWindow(_mhMainWnd[1]);
-
+	for (int i = 0; i < 2; i++)
+	{
+		ShowWindow(_mhMainWnd[i], SW_SHOW);
+		UpdateWindow(_mhMainWnd[i]);
+	}
 
 	return true;
 }                 

@@ -18,11 +18,11 @@ public:
     __declspec(dllexport) int run();
     __declspec(dllexport) void initDirectX(DX12App* dxapp);
 
-    static Win32App* getinstanceForProc(int i);
+    static Win32App* getinstanceForProc();
     LRESULT wndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 private:
-    static Win32App* _instanceForProc[2];
+    static Win32App* _instanceForProc;
     const int _kWidth;
     const int _kHeight;
     HWND _mhMainWnd[2] = { nullptr, nullptr }; // Main window handle
