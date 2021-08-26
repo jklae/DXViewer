@@ -12,7 +12,11 @@ Win32App* Win32App::getinstanceForProc()
 }
 LRESULT CALLBACK mainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	return Win32App::getinstanceForProc()->wndProc(hwnd, msg, wParam, lParam);
+	return Win32App::getinstanceForProc()->directXWndProc(hwnd, msg, wParam, lParam);
+}
+LRESULT CALLBACK subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	return Win32App::getinstanceForProc()->controllWndProc(hwnd, msg, wParam, lParam);
 }
 //
 
@@ -45,7 +49,7 @@ bool Win32App::initialize(HINSTANCE hInstance)
 	wc[0].lpszClassName = L"DirectXWnd";
 
 	wc[1] = wc[0]; // Duplicate settings
-	wc[1].lpfnWndProc = mainWndProc;
+	wc[1].lpfnWndProc = subWndProc;
 	wc[1].lpszClassName = L"ControllWnd";
 
 	RegisterClass(&wc[0]);
@@ -60,30 +64,29 @@ bool Win32App::initialize(HINSTANCE hInstance)
 		0, 0, hInstance, 0);
 
 	_mhMainWnd[1] = CreateWindow(L"ControllWnd", L"Controller",
-		(WS_OVERLAPPEDWINDOW ^ (WS_SYSMENU | WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing, maximzing and system menu
+		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
 		offsetX + _kWidth, offsetY, 500, _kHeight,
 		0, 0, hInstance, 0);
-
 
 	for (int i = 0; i < 2; i++)
 	{
 		ShowWindow(_mhMainWnd[i], SW_SHOW);
 		UpdateWindow(_mhMainWnd[i]);
 	}
-
+	
 	return true;
 }                 
 
-LRESULT Win32App::wndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT Win32App::directXWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-
+	WINDOWINFO winfo;
 	switch (msg)
 	{
 		// WM_DESTROY is sent when the window is being destroyed.
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
-
+		
 	case WM_LBUTTONDOWN:
 	case WM_MBUTTONDOWN:
 	case WM_RBUTTONDOWN:
@@ -108,6 +111,39 @@ LRESULT Win32App::wndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			_dxApp->pvel = !_dxApp->pvel;
 			break;
 		}
+		return 0;
+	case WM_MOVING:
+		GetWindowInfo(hwnd, &winfo);
+		SetWindowPos(_mhMainWnd[1], NULL, winfo.rcWindow.left + _kWidth, winfo.rcWindow.top, 0, 0, SWP_NOSIZE);
+		return 0;
+	case WM_SIZE:
+		ShowWindow(_mhMainWnd[1], _swState[1]); // SW_NORMAL = 1, SW_MINIMIZE = 6
+		_swState[1] = (_swState[1] * 6) % 35; //Repeat 0,6
+		return 0;
+	}
+	
+
+	return DefWindowProc(hwnd, msg, wParam, lParam);
+}
+
+LRESULT Win32App::controllWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	WINDOWINFO winfo;
+	switch (msg)
+	{
+		// WM_DESTROY is sent when the window is being destroyed.
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+	case WM_MOVING:
+		GetWindowInfo(hwnd, &winfo);
+		SetWindowPos(_mhMainWnd[0], NULL, winfo.rcWindow.left - _kWidth, winfo.rcWindow.top, 0, 0, SWP_NOSIZE);
+		return 0;
+	case WM_SIZE:
+		ShowWindow(_mhMainWnd[0], _swState[0]); // SW_NORMAL = 1, SW_MINIMIZE = 6
+		_swState[0] = (_swState[0] * 6) % 35; //Repeat 0,6
+		return 0;
+	
 	}
 
 	return DefWindowProc(hwnd, msg, wParam, lParam);

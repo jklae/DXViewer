@@ -19,7 +19,8 @@ public:
     __declspec(dllexport) void initDirectX(DX12App* dxapp);
 
     static Win32App* getinstanceForProc();
-    LRESULT wndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    LRESULT directXWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    LRESULT controllWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 private:
     static Win32App* _instanceForProc;
@@ -28,7 +29,9 @@ private:
     HWND _mhMainWnd[2] = { nullptr, nullptr }; // Main window handle
     DX12App* _dxApp = nullptr;
 
+    int _swState[2] = { 1, 1 };
     POINT _mLastMousePos;
+
 
     // Convenience overrides for handling mouse input.
     void _onMouseDown(WPARAM btnState, int x, int y);
