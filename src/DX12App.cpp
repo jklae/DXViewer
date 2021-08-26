@@ -540,8 +540,8 @@ void DX12App::update()
 	// Change View size
 	_simulation->iUpdate(_timestep);
 
-	vector<Vertex> vertices = dvel? _simulation->iGetLineVertice() : _simulation->iGetVertice();
-	vector<unsigned int> indices = dvel? _simulation->iGetLineIndice() : _simulation->iGetIndice();
+	vector<Vertex> vertices = _simulation->iGetVertice();
+	vector<unsigned int> indices = _simulation->iGetIndice();
 
 	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
 	_vbv.SizeInBytes = vbByteSize;
@@ -577,21 +577,23 @@ void DX12App::update()
 
 	UINT mElementByteSize = computeBufferByteSize<ConstantBuffer>();
 
-	int size = dvel ? 1 : _constantBuffer.size();
+	int size = _constantBuffer.size();
 	for (int i = 0; i < size; i++)
 	{
+																							
 		int objectEndIndex = _simulation->iGetObjectCount() * _simulation->iGetObjectCount();
 
-		// Set object color
+		
+		// Set object color					
 		if (i < objectEndIndex)
-		{
+		{													
 			_constantBuffer[i].color = _simulation->iGetColor(i);
 		}
 		// Set particle position
-		else
-		{
-			int particleStartindex = i - objectEndIndex;
-			XMFLOAT2 pos = _simulation->iGetParticlePos(particleStartindex);
+		else if (i >= objectEndIndex && i < size - 1)
+		{												// Due to velocity field
+			int particleIndex = i - objectEndIndex;
+			XMFLOAT2 pos = _simulation->iGetParticlePos(particleIndex);
 
 			if (_particleFlag)
 			{
@@ -603,6 +605,10 @@ void DX12App::update()
 				_constantBuffer[i].world._41 = 100.f;
 				_constantBuffer[i].world._42 = 100.f;
 			}
+
+		}// Set velocity
+		else
+		{
 
 		}
 
@@ -639,20 +645,30 @@ void DX12App::draw()
 
 	_mCommandList->IASetVertexBuffers(0, 1, &_vbv);
 	_mCommandList->IASetIndexBuffer(&_ibv);
-	_mCommandList->IASetPrimitiveTopology(dvel ? D3D11_PRIMITIVE_TOPOLOGY_LINELIST : D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	ID3D12DescriptorHeap* descriptorHeaps[] = { _mCbvHeap.Get() };
 	_mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-	int size = dvel ? 1 : _constantBuffer.size();
-	if (dvel) _constantBuffer[0].world = transformMatrix(_constantBuffer[0].world._41, _constantBuffer[0].world._42, 0.0f, 1.0f);
+	int objectEndIndex = _simulation->iGetObjectCount() * _simulation->iGetObjectCount();
+	int size = _constantBuffer.size();
 	for (int i = 0; i < size; i++)
 	{
 		auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(_mCbvHeap->GetGPUDescriptorHandleForHeapStart());
 		cbvHandle.Offset(i, _md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
 
 		_mCommandList->SetGraphicsRootDescriptorTable(0, cbvHandle);
-		_mCommandList->DrawIndexedInstanced(_indexCount, 1, 0, 0, 0);
+
+		if (i < size - 1)
+		{
+			_mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			_mCommandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
+		}
+		else
+		{
+			_mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+											//   count			   index start    vertex start
+			_mCommandList->DrawIndexedInstanced(_indexCount - 6, 1,     6,             4,           0);
+		}
 	}
 	// ------
 
