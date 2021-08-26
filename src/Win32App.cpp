@@ -10,13 +10,13 @@ Win32App* Win32App::getinstanceForProc()
 {
 	return _instanceForProc;
 }
-LRESULT CALLBACK mainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK directXWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	return Win32App::getinstanceForProc()->directXWndProc(hwnd, msg, wParam, lParam);
+	return Win32App::getinstanceForProc()->mainWndProc(hwnd, msg, wParam, lParam);
 }
-LRESULT CALLBACK subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK controllWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	return Win32App::getinstanceForProc()->controllWndProc(hwnd, msg, wParam, lParam);
+	return Win32App::getinstanceForProc()->subWndProc(hwnd, msg, wParam, lParam);
 }
 //
 
@@ -33,12 +33,9 @@ Win32App::~Win32App()
 
 bool Win32App::initialize(HINSTANCE hInstance)
 {
-	// Just call it once.
-	assert(_mhMainWnd[0] == nullptr);
-
 	WNDCLASS wc[2];
 	wc[0].style = CS_HREDRAW | CS_VREDRAW;
-	wc[0].lpfnWndProc = mainWndProc;
+	wc[0].lpfnWndProc = directXWndProc;
 	wc[0].cbClsExtra = 0;
 	wc[0].cbWndExtra = 0;
 	wc[0].hInstance = hInstance;
@@ -49,7 +46,7 @@ bool Win32App::initialize(HINSTANCE hInstance)
 	wc[0].lpszClassName = L"DirectXWnd";
 
 	wc[1] = wc[0]; // Duplicate settings
-	wc[1].lpfnWndProc = subWndProc;
+	wc[1].lpfnWndProc = controllWndProc;
 	wc[1].lpszClassName = L"ControllWnd";
 
 	RegisterClass(&wc[0]);
@@ -58,28 +55,27 @@ bool Win32App::initialize(HINSTANCE hInstance)
 	int offsetX = 200;
 	int offsetY = 100;
 
-	_mhMainWnd[0] = CreateWindow(L"DirectXWnd", L"d3d App",
+	_mhWnd[0] = CreateWindow(L"DirectXWnd", L"d3d App",
 		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
 		offsetX, offsetY, _kWidth, _kHeight,
 		0, 0, hInstance, 0);
 
-	_mhMainWnd[1] = CreateWindow(L"ControllWnd", L"Controller",
+	_mhWnd[1] = CreateWindow(L"ControllWnd", L"Controller",
 		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
-		offsetX + _kWidth, offsetY, 500, _kHeight,
+		offsetX + _kWidth, offsetY, 300, _kHeight,
 		0, 0, hInstance, 0);
 
 	for (int i = 0; i < 2; i++)
 	{
-		ShowWindow(_mhMainWnd[i], SW_SHOW);
-		UpdateWindow(_mhMainWnd[i]);
+		ShowWindow(_mhWnd[i], SW_SHOW);
+		UpdateWindow(_mhWnd[i]);
 	}
 	
 	return true;
 }                 
 
-LRESULT Win32App::directXWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT Win32App::mainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	WINDOWINFO winfo;
 	switch (msg)
 	{
 		// WM_DESTROY is sent when the window is being destroyed.
@@ -113,12 +109,10 @@ LRESULT Win32App::directXWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
 		}
 		return 0;
 	case WM_MOVING:
-		GetWindowInfo(hwnd, &winfo);
-		SetWindowPos(_mhMainWnd[1], NULL, winfo.rcWindow.left + _kWidth, winfo.rcWindow.top, 0, 0, SWP_NOSIZE);
+		_synchronizeWinPos(_WINDOW::SUB);
 		return 0;
 	case WM_SIZE:
-		ShowWindow(_mhMainWnd[1], _swState[1]); // SW_NORMAL = 1, SW_MINIMIZE = 6
-		_swState[1] = (_swState[1] * 6) % 35; //Repeat 0,6
+		_switchWinState(_WINDOW::SUB);
 		return 0;
 	}
 	
@@ -126,9 +120,8 @@ LRESULT Win32App::directXWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-LRESULT Win32App::controllWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	WINDOWINFO winfo;
 	switch (msg)
 	{
 		// WM_DESTROY is sent when the window is being destroyed.
@@ -136,12 +129,10 @@ LRESULT Win32App::controllWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
 		PostQuitMessage(0);
 		return 0;
 	case WM_MOVING:
-		GetWindowInfo(hwnd, &winfo);
-		SetWindowPos(_mhMainWnd[0], NULL, winfo.rcWindow.left - _kWidth, winfo.rcWindow.top, 0, 0, SWP_NOSIZE);
+		_synchronizeWinPos(_WINDOW::MAIN);
 		return 0;
 	case WM_SIZE:
-		ShowWindow(_mhMainWnd[0], _swState[0]); // SW_NORMAL = 1, SW_MINIMIZE = 6
-		_swState[0] = (_swState[0] * 6) % 35; //Repeat 0,6
+		_switchWinState(_WINDOW::MAIN);
 		return 0;
 	
 	}
@@ -149,10 +140,34 @@ LRESULT Win32App::controllWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
+void Win32App::_synchronizeWinPos(_WINDOW state)
+{
+	int i = static_cast<int>(state);
+	int i_1 = (i + 1) % 2;
+	WINDOWINFO winfo;
+
+	GetWindowInfo(_mhWnd[i_1], &winfo);
+	SetWindowPos(_mhWnd[i], NULL,
+		// If _WINDOW::SUB,  (-1 + i * 2) == -1 + 2 == 1 
+		//			thus, winfo.rcWindow.left + _kWidth
+		// If _WINDOW::MAIN, (-1 + i * 2) == -1 + 0 == -1
+		//			thus, winfo.rcWindow.left - _kWidth
+		winfo.rcWindow.left + (-1 + i * 2) * _kWidth, 
+		winfo.rcWindow.top, 
+		0, 0, SWP_NOSIZE);
+}
+
+void Win32App::_switchWinState(_WINDOW state)
+{
+	int i = static_cast<int>(state);
+	ShowWindow(_mhWnd[i], _swState[i]); // SW_NORMAL = 1, SW_MINIMIZE = 6
+	_swState[i] = (_swState[i] * 6) % 35; //Repeat 0,6
+}
+
 
 int Win32App::run()
 {
-	assert(_mhMainWnd[0] != nullptr);
+	assert(_mhWnd[0] != nullptr);
 
 	MSG msg = {0};
 	while(msg.message != WM_QUIT)
@@ -178,11 +193,11 @@ int Win32App::run()
 void Win32App::initDirectX(DX12App* dxapp)
 {
 	// Call after window init.
-	assert(_mhMainWnd[0] != nullptr);
+	assert(_mhWnd[0] != nullptr);
 
 	_dxApp = dxapp;
 
-	_dxApp->setWindow(_kWidth, _kHeight, _mhMainWnd[0]);
+	_dxApp->setWindow(_kWidth, _kHeight, _mhWnd[0]);
 	_dxApp->initialize();
 }
 
@@ -204,7 +219,6 @@ void Win32App::_draw()
 
 
 
-
 void Win32App::_onMouseDown(WPARAM btnState, int x, int y)
 {
 	_mLastMousePos.x = x;
@@ -218,7 +232,7 @@ void Win32App::_onMouseDown(WPARAM btnState, int x, int y)
 		}
 	}
 
-	SetCapture(_mhMainWnd[0]);
+	SetCapture(_mhWnd[0]);
 }
 
 void Win32App::_onMouseUp(WPARAM btnState, int x, int y)
