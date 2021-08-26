@@ -129,18 +129,21 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	switch (msg)
 	{
 	case WM_CREATE:
+
 	{	
+		CreateWindow(L"button", L"Grid : ON ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			90, 30, 100, 25, hwnd, (HMENU)0, _hInstance, NULL);
 		CreateWindow(L"button", L"Particle : ON ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			30, 20, 100, 25, hwnd, (HMENU)0, _hInstance, NULL);
+			30, 60, 100, 25, hwnd, (HMENU)1, _hInstance, NULL);
 		CreateWindow(L"button", L"Velcoity : OFF ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			150, 20, 100, 25, hwnd, (HMENU)1, _hInstance, NULL);
+			150, 60, 100, 25, hwnd, (HMENU)2, _hInstance, NULL);
 
 		CreateWindow(L"button", L"бл", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			70, 50, 50, 25, hwnd, (HMENU)2, _hInstance, NULL);
+			65, 100, 50, 25, hwnd, (HMENU)3, _hInstance, NULL);
 		CreateWindow(L"button", L"бс", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			120, 50, 50, 25, hwnd, (HMENU)3, _hInstance, NULL);
+			115, 100, 50, 25, hwnd, (HMENU)4, _hInstance, NULL);
 		CreateWindow(L"button", L"в║l", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			180, 50, 50, 25, hwnd, (HMENU)4, _hInstance, NULL);
+			175, 100, 50, 25, hwnd, (HMENU)5, _hInstance, NULL);
 	}
 		return 0;
 
@@ -149,34 +152,38 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		{
 		case 0:
 		{
-			bool flag = !_dxApp->getParticleFlag();
-			SetDlgItemText(hwnd, 0, flag ? L"Particle : ON " : L"Particle : OFF");
-			_dxApp->setParticleFlag(flag);
-			_draw();
 		}
 			break;
 		case 1:
 		{
-			bool flag = !_dxApp->getVelocityFlag();
-			SetDlgItemText(hwnd, 1, flag ? L"Velocity : ON " : L"Velocity : OFF");
-			_dxApp->setVelocityFlag(flag);
+			bool flag = !_dxApp->getParticleFlag();
+			SetDlgItemText(hwnd, 1, flag ? L"Particle : ON " : L"Particle : OFF");
+			_dxApp->setParticleFlag(flag);
 			_draw();
 		}
 			break;
 		case 2:
 		{
-			updateFlag = !updateFlag;
-			SetDlgItemText(hwnd, 2, updateFlag ? L"бл" : L"в║");
+			bool flag = !_dxApp->getVelocityFlag();
+			SetDlgItemText(hwnd, 2, flag ? L"Velocity : ON " : L"Velocity : OFF");
+			_dxApp->setVelocityFlag(flag);
+			_draw();
 		}
 			break;
 		case 3:
+		{
+			updateFlag = !updateFlag;
+			SetDlgItemText(hwnd, 3, updateFlag ? L"бл" : L"в║");
+		}
+			break;
+		case 4:
 		{
 			_dxApp->resetSimulationState();
 			_update();
 			_draw();
 		}
 			break;
-		case 4:
+		case 5:
 		{
 			if (!updateFlag)
 			{
