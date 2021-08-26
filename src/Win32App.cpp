@@ -134,6 +134,13 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			30, 20, 100, 25, hwnd, (HMENU)0, _hInstance, NULL);
 		CreateWindow(L"button", L"Velcoity : OFF ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			150, 20, 100, 25, hwnd, (HMENU)1, _hInstance, NULL);
+
+		CreateWindow(L"button", L"бл", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			70, 50, 50, 25, hwnd, (HMENU)2, _hInstance, NULL);
+		CreateWindow(L"button", L"бс", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			120, 50, 50, 25, hwnd, (HMENU)3, _hInstance, NULL);
+		CreateWindow(L"button", L"в║l", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			180, 50, 50, 25, hwnd, (HMENU)4, _hInstance, NULL);
 	}
 		return 0;
 
@@ -152,6 +159,26 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			bool flag = !_dxApp->getVelocityFlag();
 			SetDlgItemText(hwnd, 1, flag ? L"Velocity : ON " : L"Velocity : OFF");
 			_dxApp->setVelocityFlag(flag);
+		}
+			break;
+		case 2:
+		{
+			updateFlag = !updateFlag;
+			SetDlgItemText(hwnd, 2, updateFlag ? L"бл" : L"в║");
+		}
+			break;
+		case 3:
+		{
+
+		}
+			break;
+		case 4:
+		{
+			if (!updateFlag)
+			{
+				_update();
+				_draw();
+			}
 		}
 			break;
 		}
@@ -191,8 +218,11 @@ int Win32App::run()
 		// Otherwise, do animation/game stuff.
 		else
         {	
-			_update();
-			_draw();
+			if (updateFlag)
+			{
+				_update();
+				_draw();
+			}
         }
     }
 
