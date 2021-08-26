@@ -152,6 +152,10 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		{
 		case 0:
 		{
+			bool flag = !_dxApp->getDrawFlag(FLAG::GRID);
+			SetDlgItemText(hwnd, 0, flag ? L"Grid : ON " : L"Grid : OFF");
+			_dxApp->setDrawFlag(FLAG::GRID, flag);
+			_draw();
 		}
 			break;
 		case 1:

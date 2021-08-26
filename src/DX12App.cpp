@@ -659,8 +659,11 @@ void DX12App::draw()
 
 		if (i < objectEndIndex)
 		{
-			_mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-			_mCommandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
+			if (getDrawFlag(FLAG::GRID))
+			{
+				_mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+				_mCommandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
+			}
 		}
 		else if (i >= objectEndIndex && i < size - 1)
 		{
