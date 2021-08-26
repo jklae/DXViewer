@@ -48,7 +48,7 @@ bool Win32App::initialize(HINSTANCE hInstance)
 	wc[1] = wc[0]; // Duplicate settings
 	wc[1].lpfnWndProc = controllWndProc;
 	wc[1].lpszClassName = L"ControllWnd";
-	wc[1].hbrBackground = (HBRUSH)CreateSolidBrush(RGB(225, 225, 225));
+	wc[1].hbrBackground = (HBRUSH)CreateSolidBrush(RGB(240, 240, 240));
 
 	RegisterClass(&wc[0]);
 	RegisterClass(&wc[1]);
@@ -144,6 +144,22 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			115, 100, 50, 25, hwnd, (HMENU)4, _hInstance, NULL);
 		CreateWindow(L"button", L"¢ºl", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			175, 100, 50, 25, hwnd, (HMENU)5, _hInstance, NULL);
+
+		CreateWindow(L"button", L"State", WS_CHILD | WS_VISIBLE | BS_GROUPBOX, 
+			40, 150, 200, 50, hwnd, (HMENU)6, _hInstance, NULL);
+		CreateWindow(L"button", L"Liquid", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
+			70, 167, 70, 25, hwnd, (HMENU)7, _hInstance, NULL);
+		CreateWindow(L"button", L"Gas", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+			150, 167, 70, 25, hwnd, (HMENU)8, _hInstance, NULL);
+
+		CreateWindow(L"button", L"Solver", WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
+			40, 210, 200, 50, hwnd, (HMENU)9, _hInstance, NULL);
+		CreateWindow(L"button", L"Eulerian", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
+			45, 227, 70, 25, hwnd, (HMENU)10, _hInstance, NULL);
+		CreateWindow(L"button", L"PIC", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+			120, 227, 50, 25, hwnd, (HMENU)11, _hInstance, NULL);
+		CreateWindow(L"button", L"FLIP", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+			170, 227, 50, 25, hwnd, (HMENU)12, _hInstance, NULL);
 	}
 		return 0;
 
