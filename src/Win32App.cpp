@@ -108,7 +108,6 @@ LRESULT Win32App::mainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			_dxApp->dvel = !_dxApp->dvel;
 			break;
 		case VK_LEFT:
-			_dxApp->pvel = !_dxApp->pvel;
 			break;
 		}
 		return 0;
@@ -131,17 +130,22 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	switch (msg)
 	{
 	case WM_CREATE:
-		CreateWindow(L"button", L"Click Me", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		CreateWindow(L"button", L"Particle : ON ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			30, 20, 100, 25, hwnd, (HMENU)0, _hInstance, NULL);
 		CreateWindow(L"button", L"Me Two", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			150, 20, 100, 25, hwnd, (HMENU)1, _hInstance, NULL);
+		
 		return 0;
 
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
 		case 0:
-			MessageBox(hwnd, L"First Button Clicked", L"Button", MB_OK);
+		{
+			bool flag = !_dxApp->getParticleFlag();
+			SetDlgItemText(hwnd, 0, flag ? L"Particle : ON " : L"Particle : OFF");
+			_dxApp->setParticleFlag(flag);
+		}
 			break;
 		case 1:
 			MessageBox(hwnd, L"Second Button Clicked", L"Button", MB_OK);

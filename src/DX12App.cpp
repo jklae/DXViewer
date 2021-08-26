@@ -50,6 +50,16 @@ void DX12App::setWindow(int kWidth, int kHeight, HWND mhMainWnd)
 	_mhMainWnd = mhMainWnd;
 }
 
+void DX12App::setParticleFlag(bool flag)
+{
+	_particleFlag = flag;
+}
+
+bool DX12App::getParticleFlag()
+{
+	return _particleFlag;
+}
+
 bool DX12App::initialize()
 {
 	// Call after simulation init
@@ -583,15 +593,13 @@ void DX12App::update()
 			int particleStartindex = i - objectEndIndex;
 			XMFLOAT2 pos = _simulation->iGetParticlePos(particleStartindex);
 
-			if (pvel)
+			if (_particleFlag)
 			{
 				_constantBuffer[i].world._41 = pos.x;
 				_constantBuffer[i].world._42 = pos.y;
-
 			}
 			else
 			{
-
 				_constantBuffer[i].world._41 = 100.f;
 				_constantBuffer[i].world._42 = 100.f;
 			}

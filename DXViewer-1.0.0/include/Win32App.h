@@ -31,7 +31,7 @@ private:
     HINSTANCE _hInstance;
     DX12App* _dxApp = nullptr;
 
-    enum class _WINDOW { MAIN = 0, SUB };
+    enum class _WINDOW { MAIN, SUB };
     int _swState[2] = { 1, 1 };
 
     POINT _mLastMousePos;

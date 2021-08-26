@@ -11,7 +11,6 @@ class DX12App
 {
 public:
     bool dvel = false;
-    bool pvel = true;
 
     __declspec(dllexport) DX12App();
     __declspec(dllexport) ~DX12App();
@@ -20,6 +19,9 @@ public:
     void setProjectionType(PROJ proj);
 
     void setWindow(const int kWidth, const int kHeight, HWND mhMainWnd);
+    void setParticleFlag(bool flag);
+
+    bool getParticleFlag();
 
     bool initialize();
     void update();
@@ -38,6 +40,7 @@ private:
     PROJ _proj = PROJ::PERSPECTIVE;
 
     std::vector<ConstantBuffer> _constantBuffer;
+    bool _particleFlag = true;
 
     int _kWidth;
     int _kHeight;
