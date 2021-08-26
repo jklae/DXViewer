@@ -48,6 +48,7 @@ bool Win32App::initialize(HINSTANCE hInstance)
 	wc[1] = wc[0]; // Duplicate settings
 	wc[1].lpfnWndProc = controllWndProc;
 	wc[1].lpszClassName = L"ControllWnd";
+	wc[1].hbrBackground = (HBRUSH)CreateSolidBrush(RGB(225, 225, 225));
 
 	RegisterClass(&wc[0]);
 	RegisterClass(&wc[1]);
@@ -64,6 +65,8 @@ bool Win32App::initialize(HINSTANCE hInstance)
 		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
 		offsetX + _kWidth, offsetY, 300, _kHeight,
 		0, 0, hInstance, 0);
+
+	_hInstance = hInstance;
 
 	for (int i = 0; i < 2; i++)
 	{
@@ -96,6 +99,7 @@ LRESULT Win32App::mainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEMOVE:
 		_onMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
+
 	case WM_KEYDOWN:
 		switch (wParam) 
 		{
@@ -108,9 +112,11 @@ LRESULT Win32App::mainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			break;
 		}
 		return 0;
+
 	case WM_MOVING:
 		_synchronizeWinPos(_WINDOW::SUB);
 		return 0;
+
 	case WM_SIZE:
 		_switchWinState(_WINDOW::SUB);
 		return 0;
@@ -124,13 +130,34 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
+	case WM_CREATE:
+		CreateWindow(L"button", L"Click Me", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			30, 20, 100, 25, hwnd, (HMENU)0, _hInstance, NULL);
+		CreateWindow(L"button", L"Me Two", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			150, 20, 100, 25, hwnd, (HMENU)1, _hInstance, NULL);
+		return 0;
+
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case 0:
+			MessageBox(hwnd, L"First Button Clicked", L"Button", MB_OK);
+			break;
+		case 1:
+			MessageBox(hwnd, L"Second Button Clicked", L"Button", MB_OK);
+			break;
+		}
+		return 0;
+
 		// WM_DESTROY is sent when the window is being destroyed.
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
+
 	case WM_MOVING:
 		_synchronizeWinPos(_WINDOW::MAIN);
 		return 0;
+
 	case WM_SIZE:
 		_switchWinState(_WINDOW::MAIN);
 		return 0;
@@ -139,31 +166,6 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
-
-void Win32App::_synchronizeWinPos(_WINDOW state)
-{
-	int i = static_cast<int>(state);
-	int i_1 = (i + 1) % 2;
-	WINDOWINFO winfo;
-
-	GetWindowInfo(_mhWnd[i_1], &winfo);
-	SetWindowPos(_mhWnd[i], NULL,
-		// If _WINDOW::SUB,  (-1 + i * 2) == -1 + 2 == 1 
-		//			thus, winfo.rcWindow.left + _kWidth
-		// If _WINDOW::MAIN, (-1 + i * 2) == -1 + 0 == -1
-		//			thus, winfo.rcWindow.left - _kWidth
-		winfo.rcWindow.left + (-1 + i * 2) * _kWidth, 
-		winfo.rcWindow.top, 
-		0, 0, SWP_NOSIZE);
-}
-
-void Win32App::_switchWinState(_WINDOW state)
-{
-	int i = static_cast<int>(state);
-	ShowWindow(_mhWnd[i], _swState[i]); // SW_NORMAL = 1, SW_MINIMIZE = 6
-	_swState[i] = (_swState[i] * 6) % 35; //Repeat 0,6
-}
-
 
 int Win32App::run()
 {
@@ -218,7 +220,6 @@ void Win32App::_draw()
 }
 
 
-
 void Win32App::_onMouseDown(WPARAM btnState, int x, int y)
 {
 	_mLastMousePos.x = x;
@@ -256,4 +257,29 @@ void Win32App::_onMouseMove(WPARAM btnState, int x, int y)
 		_mLastMousePos.x = x;
 		_mLastMousePos.y = y;
 	}
+}
+
+
+void Win32App::_synchronizeWinPos(_WINDOW state)
+{
+	int i = static_cast<int>(state);
+	int i_1 = (i + 1) % 2;
+	WINDOWINFO winfo;
+
+	GetWindowInfo(_mhWnd[i_1], &winfo);
+	SetWindowPos(_mhWnd[i], NULL,
+		// If _WINDOW::SUB,  (-1 + i * 2) == -1 + 2 == 1 
+		//			thus, winfo.rcWindow.left + _kWidth
+		// If _WINDOW::MAIN, (-1 + i * 2) == -1 + 0 == -1
+		//			thus, winfo.rcWindow.left - _kWidth
+		winfo.rcWindow.left + (-1 + i * 2) * _kWidth,
+		winfo.rcWindow.top,
+		0, 0, SWP_NOSIZE);
+}
+
+void Win32App::_switchWinState(_WINDOW state)
+{
+	int i = static_cast<int>(state);
+	ShowWindow(_mhWnd[i], _swState[i]); // SW_NORMAL = 1, SW_MINIMIZE = 6
+	_swState[i] = (_swState[i] * 6) % 35; //Repeat 0,6
 }
