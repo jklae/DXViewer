@@ -610,16 +610,8 @@ void DX12App::update()
 			int particleIndex = i - objectEndIndex;
 			XMFLOAT2 pos = _simulation->iGetParticlePos(particleIndex);
 
-			if (_particleFlag)
-			{
-				_constantBuffer[i].world._41 = pos.x;
-				_constantBuffer[i].world._42 = pos.y;
-			}
-			else
-			{
-				_constantBuffer[i].world._41 = 100.f;
-				_constantBuffer[i].world._42 = 100.f;
-			}
+			_constantBuffer[i].world._41 = pos.x;
+			_constantBuffer[i].world._42 = pos.y;
 
 		}// Set velocity
 		else
@@ -673,18 +665,30 @@ void DX12App::draw()
 
 		_mCommandList->SetGraphicsRootDescriptorTable(0, cbvHandle);
 
-		if (i < size - 1)
+		if (i < objectEndIndex)
 		{
 			_mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 			_mCommandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
+		}
+		else if (i >= objectEndIndex && i < size - 1)
+		{
+			if (_particleFlag)
+			{
+				_mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+				_mCommandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
+			}
 		}
 		else
 		{
 			if (_velocityFlag)
 			{
 				_mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-				//   count			   index start    vertex start
-				_mCommandList->DrawIndexedInstanced(_indexCount - 6, 1, 6, 4, 0);
+				_mCommandList->DrawIndexedInstanced(
+					_indexCount - 6, //count
+					1, 
+					6, //  index start 
+					4, //  vertex start
+					0);
 			}
 		}
 	}
