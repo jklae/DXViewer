@@ -169,7 +169,9 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			break;
 		case 3:
 		{
-
+			_dxApp->resetSimulationState();
+			_update();
+			_draw();
 		}
 			break;
 		case 4:

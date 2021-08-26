@@ -108,6 +108,11 @@ bool DX12App::initialize()
 	return true;
 }
 
+void DX12App::resetSimulationState()
+{
+	_simulation->iResetSimulationState(_constantBuffer);
+}
+
 #pragma region Init1
 // ######################################## Init 1 ##########################################
 void DX12App::_checkMSAA()

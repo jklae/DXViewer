@@ -24,6 +24,7 @@ public:
     bool getVelocityFlag();
 
     bool initialize();
+    void resetSimulationState();
     void update();
     void draw();
 

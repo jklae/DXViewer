@@ -11,6 +11,7 @@ public:
 	enum class AXIS { X, Y };
 
 	virtual void iUpdate(double timestep) = 0;
+	virtual void iResetSimulationState(std::vector<ConstantBuffer>& constantBuffer) = 0;
 
 	virtual std::vector<Vertex> iGetVertice() = 0;
 	virtual std::vector<unsigned int> iGetIndice() = 0;
