@@ -105,7 +105,6 @@ LRESULT Win32App::mainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		{
 			// v
 		case 0x56:
-			_dxApp->dvel = !_dxApp->dvel;
 			break;
 		case VK_LEFT:
 			break;
@@ -130,11 +129,12 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	switch (msg)
 	{
 	case WM_CREATE:
+	{	
 		CreateWindow(L"button", L"Particle : ON ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			30, 20, 100, 25, hwnd, (HMENU)0, _hInstance, NULL);
-		CreateWindow(L"button", L"Me Two", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		CreateWindow(L"button", L"Velcoity : OFF ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			150, 20, 100, 25, hwnd, (HMENU)1, _hInstance, NULL);
-		
+	}
 		return 0;
 
 	case WM_COMMAND:
@@ -148,7 +148,11 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 			break;
 		case 1:
-			MessageBox(hwnd, L"Second Button Clicked", L"Button", MB_OK);
+		{
+			bool flag = !_dxApp->getVelocityFlag();
+			SetDlgItemText(hwnd, 1, flag ? L"Velocity : ON " : L"Velocity : OFF");
+			_dxApp->setVelocityFlag(flag);
+		}
 			break;
 		}
 		return 0;

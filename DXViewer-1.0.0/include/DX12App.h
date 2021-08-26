@@ -10,8 +10,6 @@
 class DX12App
 {
 public:
-    bool dvel = false;
-
     __declspec(dllexport) DX12App();
     __declspec(dllexport) ~DX12App();
 
@@ -20,8 +18,10 @@ public:
 
     void setWindow(const int kWidth, const int kHeight, HWND mhMainWnd);
     void setParticleFlag(bool flag);
+    void setVelocityFlag(bool flag);
 
     bool getParticleFlag();
+    bool getVelocityFlag();
 
     bool initialize();
     void update();
@@ -41,6 +41,7 @@ private:
 
     std::vector<ConstantBuffer> _constantBuffer;
     bool _particleFlag = true;
+    bool _velocityFlag = false;
 
     int _kWidth;
     int _kHeight;

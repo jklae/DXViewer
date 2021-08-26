@@ -55,9 +55,19 @@ void DX12App::setParticleFlag(bool flag)
 	_particleFlag = flag;
 }
 
+void DX12App::setVelocityFlag(bool flag)
+{
+	_velocityFlag = flag;
+}
+
 bool DX12App::getParticleFlag()
 {
 	return _particleFlag;
+}
+
+bool DX12App::getVelocityFlag()
+{
+	return _velocityFlag;
 }
 
 bool DX12App::initialize()
@@ -665,9 +675,12 @@ void DX12App::draw()
 		}
 		else
 		{
-			_mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-											//   count			   index start    vertex start
-			_mCommandList->DrawIndexedInstanced(_indexCount - 6, 1,     6,             4,           0);
+			if (_velocityFlag)
+			{
+				_mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+				//   count			   index start    vertex start
+				_mCommandList->DrawIndexedInstanced(_indexCount - 6, 1, 6, 4, 0);
+			}
 		}
 	}
 	// ------
