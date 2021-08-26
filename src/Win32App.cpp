@@ -48,7 +48,7 @@ bool Win32App::initialize(HINSTANCE hInstance)
 	wc[1] = wc[0]; // Duplicate settings
 	wc[1].lpfnWndProc = controllWndProc;
 	wc[1].lpszClassName = L"ControllWnd";
-	wc[1].hbrBackground = (HBRUSH)CreateSolidBrush(RGB(240, 240, 240));
+	wc[1].hbrBackground = (HBRUSH)CreateSolidBrush(RGB(225, 225, 225));
 
 	RegisterClass(&wc[0]);
 	RegisterClass(&wc[1]);
@@ -132,41 +132,41 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	{	
 		CreateWindow(L"button", L"Grid : ON ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			90, 30, 100, 25, hwnd, (HMENU)0, _hInstance, NULL);
+			90, 30, 100, 25, hwnd, (HMENU)_COM::GRID_BTN, _hInstance, NULL);
 		CreateWindow(L"button", L"Particle : ON ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			30, 60, 100, 25, hwnd, (HMENU)1, _hInstance, NULL);
+			30, 60, 100, 25, hwnd, (HMENU)_COM::PARTICLE_BTN, _hInstance, NULL);
 		CreateWindow(L"button", L"Velcoity : OFF ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			150, 60, 100, 25, hwnd, (HMENU)2, _hInstance, NULL);
+			150, 60, 100, 25, hwnd, (HMENU)_COM::VELOCITY_BTN, _hInstance, NULL);
 
 		CreateWindow(L"button", L"бл", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			65, 100, 50, 25, hwnd, (HMENU)3, _hInstance, NULL);
+			65, 100, 50, 25, hwnd, (HMENU)_COM::PLAY, _hInstance, NULL);
 		CreateWindow(L"button", L"бс", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			115, 100, 50, 25, hwnd, (HMENU)4, _hInstance, NULL);
+			115, 100, 50, 25, hwnd, (HMENU)_COM::STOP, _hInstance, NULL);
 		CreateWindow(L"button", L"в║l", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			175, 100, 50, 25, hwnd, (HMENU)5, _hInstance, NULL);
+			175, 100, 50, 25, hwnd, (HMENU)_COM::NEXTSTEP, _hInstance, NULL);
 
 		CreateWindow(L"button", L"State", WS_CHILD | WS_VISIBLE | BS_GROUPBOX, 
-			40, 150, 200, 50, hwnd, (HMENU)6, _hInstance, NULL);
+			40, 150, 200, 50, hwnd, (HMENU)_COM::STATE_GROUP, _hInstance, NULL);
 		CreateWindow(L"button", L"Liquid", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
-			70, 167, 70, 25, hwnd, (HMENU)7, _hInstance, NULL);
+			70, 167, 70, 25, hwnd, (HMENU)_COM::LIQUID_RADIO, _hInstance, NULL);
 		CreateWindow(L"button", L"Gas", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-			150, 167, 70, 25, hwnd, (HMENU)8, _hInstance, NULL);
+			150, 167, 70, 25, hwnd, (HMENU)_COM::GAS_RADIO, _hInstance, NULL);
 
 		CreateWindow(L"button", L"Solver", WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
-			40, 210, 200, 50, hwnd, (HMENU)9, _hInstance, NULL);
+			40, 210, 200, 50, hwnd, (HMENU)_COM::SOLVER_GROUP, _hInstance, NULL);
 		CreateWindow(L"button", L"Eulerian", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
-			45, 227, 70, 25, hwnd, (HMENU)10, _hInstance, NULL);
+			45, 227, 70, 25, hwnd, (HMENU)_COM::EULERIAN_RADIO, _hInstance, NULL);
 		CreateWindow(L"button", L"PIC", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-			120, 227, 50, 25, hwnd, (HMENU)11, _hInstance, NULL);
+			120, 227, 50, 25, hwnd, (HMENU)_COM::PIC_RADIO, _hInstance, NULL);
 		CreateWindow(L"button", L"FLIP", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-			170, 227, 50, 25, hwnd, (HMENU)12, _hInstance, NULL);
+			170, 227, 50, 25, hwnd, (HMENU)_COM::FLIP_RADIO, _hInstance, NULL);
 	}
 		return 0;
 
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
-		case 0:
+		case (int)_COM::GRID_BTN:
 		{
 			bool flag = !_dxApp->getDrawFlag(FLAG::GRID);
 			SetDlgItemText(hwnd, 0, flag ? L"Grid : ON " : L"Grid : OFF");
@@ -174,7 +174,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			_draw();
 		}
 			break;
-		case 1:
+		case (int)_COM::PARTICLE_BTN:
 		{
 			bool flag = !_dxApp->getDrawFlag(FLAG::PARTICLE);
 			SetDlgItemText(hwnd, 1, flag ? L"Particle : ON " : L"Particle : OFF");
@@ -182,7 +182,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			_draw();
 		}
 			break;
-		case 2:
+		case (int)_COM::VELOCITY_BTN:
 		{
 			bool flag = !_dxApp->getDrawFlag(FLAG::VELOCITY);
 			SetDlgItemText(hwnd, 2, flag ? L"Velocity : ON " : L"Velocity : OFF");
@@ -190,20 +190,21 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			_draw();
 		}
 			break;
-		case 3:
+
+		case (int)_COM::PLAY:
 		{
 			updateFlag = !updateFlag;
 			SetDlgItemText(hwnd, 3, updateFlag ? L"бл" : L"в║");
 		}
 			break;
-		case 4:
+		case (int)_COM::STOP:
 		{
 			_dxApp->resetSimulationState();
 			_update();
 			_draw();
 		}
 			break;
-		case 5:
+		case (int)_COM::NEXTSTEP:
 		{
 			if (!updateFlag)
 			{
