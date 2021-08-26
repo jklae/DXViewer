@@ -50,24 +50,16 @@ void DX12App::setWindow(int kWidth, int kHeight, HWND mhMainWnd)
 	_mhMainWnd = mhMainWnd;
 }
 
-void DX12App::setParticleFlag(bool flag)
+void DX12App::setDrawFlag(FLAG flagType, bool flag)
 {
-	_particleFlag = flag;
+	int i = static_cast<int>(flagType);
+	_drawFlag[i] = flag;
 }
 
-void DX12App::setVelocityFlag(bool flag)
+bool DX12App::getDrawFlag(FLAG flagType)
 {
-	_velocityFlag = flag;
-}
-
-bool DX12App::getParticleFlag()
-{
-	return _particleFlag;
-}
-
-bool DX12App::getVelocityFlag()
-{
-	return _velocityFlag;
+	int i = static_cast<int>(flagType);
+	return _drawFlag[i];
 }
 
 bool DX12App::initialize()
@@ -672,7 +664,7 @@ void DX12App::draw()
 		}
 		else if (i >= objectEndIndex && i < size - 1)
 		{
-			if (_particleFlag)
+			if (getDrawFlag(FLAG::PARTICLE))
 			{
 				_mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 				_mCommandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
@@ -680,7 +672,7 @@ void DX12App::draw()
 		}
 		else
 		{
-			if (_velocityFlag)
+			if (getDrawFlag(FLAG::VELOCITY))
 			{
 				_mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 				_mCommandList->DrawIndexedInstanced(

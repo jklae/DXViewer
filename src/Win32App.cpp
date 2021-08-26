@@ -156,17 +156,17 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			break;
 		case 1:
 		{
-			bool flag = !_dxApp->getParticleFlag();
+			bool flag = !_dxApp->getDrawFlag(FLAG::PARTICLE);
 			SetDlgItemText(hwnd, 1, flag ? L"Particle : ON " : L"Particle : OFF");
-			_dxApp->setParticleFlag(flag);
+			_dxApp->setDrawFlag(FLAG::PARTICLE, flag);
 			_draw();
 		}
 			break;
 		case 2:
 		{
-			bool flag = !_dxApp->getVelocityFlag();
+			bool flag = !_dxApp->getDrawFlag(FLAG::VELOCITY);
 			SetDlgItemText(hwnd, 2, flag ? L"Velocity : ON " : L"Velocity : OFF");
-			_dxApp->setVelocityFlag(flag);
+			_dxApp->setDrawFlag(FLAG::VELOCITY, flag);
 			_draw();
 		}
 			break;
