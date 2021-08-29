@@ -157,6 +157,8 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		CreateWindow(L"button", L"¢ºl", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			175, 250, 50, 25, hwnd, (HMENU)_COM::NEXTSTEP, _hInstance, NULL);
 
+		EnableWindow(GetDlgItem(hwnd, (int)_COM::STOP), false);
+		EnableWindow(GetDlgItem(hwnd, (int)_COM::NEXTSTEP), false);
 	}
 		return 0;
 
@@ -191,12 +193,21 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 		case (int)_COM::PLAY:
 		{
-			updateFlag = !updateFlag;
-			SetDlgItemText(hwnd, (int)_COM::PLAY, updateFlag ? L"¡«" : L"¢º");
-			EnableWindow(GetDlgItem(hwnd, (int)_COM::NEXTSTEP), !updateFlag);
-			EnableWindow(GetDlgItem(hwnd, (int)_COM::LIQUID_RADIO), !updateFlag);
-			EnableWindow(GetDlgItem(hwnd, (int)_COM::GAS_RADIO), !updateFlag);
-			EnableWindow(GetDlgItem(hwnd, (int)_COM::EULERIAN_RADIO), !updateFlag);
+			if (_simIndex != -1 && _solverIndex != -1)
+			{
+				_updateFlag = !_updateFlag;
+				SetDlgItemText(hwnd, (int)_COM::PLAY, _updateFlag ? L"¡«" : L"¢º");
+
+				EnableWindow(GetDlgItem(hwnd, (int)_COM::STOP), true);
+				EnableWindow(GetDlgItem(hwnd, (int)_COM::NEXTSTEP), !_updateFlag);
+				EnableWindow(GetDlgItem(hwnd, (int)_COM::LIQUID_RADIO), !_updateFlag);
+				EnableWindow(GetDlgItem(hwnd, (int)_COM::GAS_RADIO), !_updateFlag);
+				EnableWindow(GetDlgItem(hwnd, (int)_COM::EULERIAN_RADIO), !_updateFlag);
+			}
+			else
+			{
+				MessageBox(hwnd, L"Select a value for the radio button.", L"Warning", MB_OK | MB_ICONWARNING);
+			}
 		}
 			break;
 		case (int)_COM::STOP:
@@ -208,7 +219,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			break;
 		case (int)_COM::NEXTSTEP:
 		{
-			if (!updateFlag)
+			if (!_updateFlag)
 			{
 				_update();
 				_draw();
@@ -217,23 +228,39 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			break;
 		case (int)_COM::LIQUID_RADIO:
 		{
-			_dxApp->resetSimulationState();
-			_update();
-			_draw();
+			if (_simIndex != 0)
+			{
+				_simIndex = 0;
+				_dxApp->setSimulation(_sim[_simIndex], 0.1);
+
+				_dxApp->resetSimulationState();
+				_update();
+				_draw();
+			}
 		}
 			break;
 		case (int)_COM::GAS_RADIO:
 		{
-			_dxApp->resetSimulationState();
-			_update();
-			_draw();
+			if (_simIndex != 1)
+			{
+				_simIndex = 1;
+				_dxApp->setSimulation(_sim[_simIndex], 0.1);
+
+				_dxApp->resetSimulationState();
+				_update();
+				_draw();
+			}
 		}
 			break;
 		case (int)_COM::EULERIAN_RADIO:
 		{
-			_dxApp->resetSimulationState();
-			_update();
-			_draw();
+			if (_solverIndex != 0)
+			{
+				_solverIndex = 0;
+				_dxApp->resetSimulationState();
+				_update();
+				_draw();
+			}
 		}
 			break;
 		}
@@ -273,7 +300,7 @@ int Win32App::run()
 		// Otherwise, do animation/game stuff.
 		else
         {	
-			if (updateFlag)
+			if (_updateFlag)
 			{
 				_update();
 				_draw();
@@ -285,14 +312,16 @@ int Win32App::run()
 }
 
 
-void Win32App::initDirectX(DX12App* dxapp)
+void Win32App::initDirectX(DX12App* dxapp, vector<ISimulation*> sim)
 {
 	// Call after window init.
 	assert(_mhWnd[0] != nullptr);
 
 	_dxApp = dxapp;
+	_sim = sim;
 
 	_dxApp->setWindow(_kWidth, _kHeight, _mhWnd[0]);
+	_dxApp->setSimulation(sim[0], 0.1);
 	_dxApp->initialize();
 }
 
