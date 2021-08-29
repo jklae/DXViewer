@@ -138,28 +138,25 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		CreateWindow(L"button", L"Velcoity : OFF ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			150, 60, 100, 25, hwnd, (HMENU)_COM::VELOCITY_BTN, _hInstance, NULL);
 
-		CreateWindow(L"button", L"¡«", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			65, 100, 50, 25, hwnd, (HMENU)_COM::PLAY, _hInstance, NULL);
-		CreateWindow(L"button", L"¡á", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			115, 100, 50, 25, hwnd, (HMENU)_COM::STOP, _hInstance, NULL);
-		CreateWindow(L"button", L"¢ºl", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			175, 100, 50, 25, hwnd, (HMENU)_COM::NEXTSTEP, _hInstance, NULL);
-
 		CreateWindow(L"button", L"State", WS_CHILD | WS_VISIBLE | BS_GROUPBOX, 
-			40, 150, 200, 50, hwnd, (HMENU)_COM::STATE_GROUP, _hInstance, NULL);
+			40, 100, 200, 50, hwnd, (HMENU)_COM::STATE_GROUP, _hInstance, NULL);
 		CreateWindow(L"button", L"Liquid", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
-			70, 167, 70, 25, hwnd, (HMENU)_COM::LIQUID_RADIO, _hInstance, NULL);
+			70, 117, 70, 25, hwnd, (HMENU)_COM::LIQUID_RADIO, _hInstance, NULL);
 		CreateWindow(L"button", L"Gas", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-			150, 167, 70, 25, hwnd, (HMENU)_COM::GAS_RADIO, _hInstance, NULL);
+			150, 117, 70, 25, hwnd, (HMENU)_COM::GAS_RADIO, _hInstance, NULL);
 
 		CreateWindow(L"button", L"Solver", WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
-			40, 210, 200, 50, hwnd, (HMENU)_COM::SOLVER_GROUP, _hInstance, NULL);
+			40, 160, 200, 50, hwnd, (HMENU)_COM::SOLVER_GROUP, _hInstance, NULL);
 		CreateWindow(L"button", L"Eulerian", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
-			45, 227, 70, 25, hwnd, (HMENU)_COM::EULERIAN_RADIO, _hInstance, NULL);
-		CreateWindow(L"button", L"PIC", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-			120, 227, 50, 25, hwnd, (HMENU)_COM::PIC_RADIO, _hInstance, NULL);
-		CreateWindow(L"button", L"FLIP", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-			170, 227, 50, 25, hwnd, (HMENU)_COM::FLIP_RADIO, _hInstance, NULL);
+			70, 177, 70, 25, hwnd, (HMENU)_COM::EULERIAN_RADIO, _hInstance, NULL);
+
+		CreateWindow(L"button", L"¢º", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			65, 250, 50, 25, hwnd, (HMENU)_COM::PLAY, _hInstance, NULL);
+		CreateWindow(L"button", L"¡á", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			115, 250, 50, 25, hwnd, (HMENU)_COM::STOP, _hInstance, NULL);
+		CreateWindow(L"button", L"¢ºl", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+			175, 250, 50, 25, hwnd, (HMENU)_COM::NEXTSTEP, _hInstance, NULL);
+
 	}
 		return 0;
 
@@ -169,7 +166,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		case (int)_COM::GRID_BTN:
 		{
 			bool flag = !_dxApp->getDrawFlag(FLAG::GRID);
-			SetDlgItemText(hwnd, 0, flag ? L"Grid : ON " : L"Grid : OFF");
+			SetDlgItemText(hwnd, (int)_COM::GRID_BTN, flag ? L"Grid : ON " : L"Grid : OFF");
 			_dxApp->setDrawFlag(FLAG::GRID, flag);
 			_draw();
 		}
@@ -177,15 +174,16 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		case (int)_COM::PARTICLE_BTN:
 		{
 			bool flag = !_dxApp->getDrawFlag(FLAG::PARTICLE);
-			SetDlgItemText(hwnd, 1, flag ? L"Particle : ON " : L"Particle : OFF");
+			SetDlgItemText(hwnd, (int)_COM::PARTICLE_BTN, flag ? L"Particle : ON " : L"Particle : OFF");
 			_dxApp->setDrawFlag(FLAG::PARTICLE, flag);
 			_draw();
+			
 		}
 			break;
 		case (int)_COM::VELOCITY_BTN:
 		{
 			bool flag = !_dxApp->getDrawFlag(FLAG::VELOCITY);
-			SetDlgItemText(hwnd, 2, flag ? L"Velocity : ON " : L"Velocity : OFF");
+			SetDlgItemText(hwnd, (int)_COM::VELOCITY_BTN, flag ? L"Velocity : ON " : L"Velocity : OFF");
 			_dxApp->setDrawFlag(FLAG::VELOCITY, flag);
 			_draw();
 		}
@@ -194,7 +192,9 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		case (int)_COM::PLAY:
 		{
 			updateFlag = !updateFlag;
-			SetDlgItemText(hwnd, 3, updateFlag ? L"¡«" : L"¢º");
+			SetDlgItemText(hwnd, (int)_COM::PLAY, updateFlag ? L"¡«" : L"¢º");
+			EnableWindow(GetDlgItem(hwnd, (int)_COM::STOP), !updateFlag);
+			EnableWindow(GetDlgItem(hwnd, (int)_COM::NEXTSTEP), !updateFlag);
 		}
 			break;
 		case (int)_COM::STOP:
@@ -213,6 +213,10 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			}
 		}
 			break;
+		case (int)_COM::EULERIAN_RADIO:
+		{
+		}
+		break;
 		}
 		return 0;
 

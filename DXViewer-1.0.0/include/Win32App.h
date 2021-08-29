@@ -41,7 +41,7 @@ private:
     };
     int _swState[2] = { 1, 1 };
 
-    bool updateFlag = true;
+    bool updateFlag = false;
 
     POINT _mLastMousePos;
 
