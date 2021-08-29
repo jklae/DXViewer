@@ -193,8 +193,10 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		{
 			updateFlag = !updateFlag;
 			SetDlgItemText(hwnd, (int)_COM::PLAY, updateFlag ? L"бл" : L"в║");
-			EnableWindow(GetDlgItem(hwnd, (int)_COM::STOP), !updateFlag);
 			EnableWindow(GetDlgItem(hwnd, (int)_COM::NEXTSTEP), !updateFlag);
+			EnableWindow(GetDlgItem(hwnd, (int)_COM::LIQUID_RADIO), !updateFlag);
+			EnableWindow(GetDlgItem(hwnd, (int)_COM::GAS_RADIO), !updateFlag);
+			EnableWindow(GetDlgItem(hwnd, (int)_COM::EULERIAN_RADIO), !updateFlag);
 		}
 			break;
 		case (int)_COM::STOP:
@@ -213,10 +215,27 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			}
 		}
 			break;
+		case (int)_COM::LIQUID_RADIO:
+		{
+			_dxApp->resetSimulationState();
+			_update();
+			_draw();
+		}
+			break;
+		case (int)_COM::GAS_RADIO:
+		{
+			_dxApp->resetSimulationState();
+			_update();
+			_draw();
+		}
+			break;
 		case (int)_COM::EULERIAN_RADIO:
 		{
+			_dxApp->resetSimulationState();
+			_update();
+			_draw();
 		}
-		break;
+			break;
 		}
 		return 0;
 
