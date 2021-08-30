@@ -157,112 +157,99 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		CreateWindow(L"button", L"¢ºl", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			175, 250, 50, 25, hwnd, (HMENU)_COM::NEXTSTEP, _hInstance, NULL);
 
-		EnableWindow(GetDlgItem(hwnd, (int)_COM::STOP), false);
-		EnableWindow(GetDlgItem(hwnd, (int)_COM::NEXTSTEP), false);
+		CheckRadioButton(hwnd, (int)_COM::LIQUID_RADIO, (int)_COM::GAS_RADIO, (int)_COM::LIQUID_RADIO);
+		CheckRadioButton(hwnd, (int)_COM::EULERIAN_RADIO, (int)_COM::EULERIAN_RADIO, (int)_COM::EULERIAN_RADIO);
+
+		EnableWindow(GetDlgItem(hwnd, (int)_COM::NEXTSTEP), false); 
 	}
 		return 0;
 
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
-		case (int)_COM::GRID_BTN:
-		{
-			bool flag = !_dxApp->getDrawFlag(FLAG::GRID);
-			SetDlgItemText(hwnd, (int)_COM::GRID_BTN, flag ? L"Grid : ON " : L"Grid : OFF");
-			_dxApp->setDrawFlag(FLAG::GRID, flag);
-			_draw();
-		}
-			break;
-		case (int)_COM::PARTICLE_BTN:
-		{
-			bool flag = !_dxApp->getDrawFlag(FLAG::PARTICLE);
-			SetDlgItemText(hwnd, (int)_COM::PARTICLE_BTN, flag ? L"Particle : ON " : L"Particle : OFF");
-			_dxApp->setDrawFlag(FLAG::PARTICLE, flag);
-			_draw();
-			
-		}
-			break;
-		case (int)_COM::VELOCITY_BTN:
-		{
-			bool flag = !_dxApp->getDrawFlag(FLAG::VELOCITY);
-			SetDlgItemText(hwnd, (int)_COM::VELOCITY_BTN, flag ? L"Velocity : ON " : L"Velocity : OFF");
-			_dxApp->setDrawFlag(FLAG::VELOCITY, flag);
-			_draw();
-		}
-			break;
+			case (int)_COM::GRID_BTN:
+			{
+				bool flag = !_dxApp->getDrawFlag(FLAG::GRID);
+				SetDlgItemText(hwnd, (int)_COM::GRID_BTN, flag ? L"Grid : ON " : L"Grid : OFF");
+				_dxApp->setDrawFlag(FLAG::GRID, flag);
+				_draw();
+			}
+				break;
 
-		case (int)_COM::PLAY:
-		{
-			if (_simIndex != -1 && _solverIndex != -1)
+			case (int)_COM::PARTICLE_BTN:
+			{
+				bool flag = !_dxApp->getDrawFlag(FLAG::PARTICLE);
+				SetDlgItemText(hwnd, (int)_COM::PARTICLE_BTN, flag ? L"Particle : ON " : L"Particle : OFF");
+				_dxApp->setDrawFlag(FLAG::PARTICLE, flag);
+				_draw();
+			
+			}
+				break;
+
+			case (int)_COM::VELOCITY_BTN:
+			{
+				bool flag = !_dxApp->getDrawFlag(FLAG::VELOCITY);
+				SetDlgItemText(hwnd, (int)_COM::VELOCITY_BTN, flag ? L"Velocity : ON " : L"Velocity : OFF");
+				_dxApp->setDrawFlag(FLAG::VELOCITY, flag);
+				_draw();
+			}
+				break;
+
+			case (int)_COM::PLAY:
 			{
 				_updateFlag = !_updateFlag;
 				SetDlgItemText(hwnd, (int)_COM::PLAY, _updateFlag ? L"¡«" : L"¢º");
 
 				EnableWindow(GetDlgItem(hwnd, (int)_COM::STOP), true);
 				EnableWindow(GetDlgItem(hwnd, (int)_COM::NEXTSTEP), !_updateFlag);
-				EnableWindow(GetDlgItem(hwnd, (int)_COM::LIQUID_RADIO), !_updateFlag);
-				EnableWindow(GetDlgItem(hwnd, (int)_COM::GAS_RADIO), !_updateFlag);
-				EnableWindow(GetDlgItem(hwnd, (int)_COM::EULERIAN_RADIO), !_updateFlag);
 			}
-			else
+				break;
+
+			case (int)_COM::STOP:
 			{
-				MessageBox(hwnd, L"Select a value for the radio button.", L"Warning", MB_OK | MB_ICONWARNING);
-			}
-		}
-			break;
-		case (int)_COM::STOP:
-		{
-			_dxApp->resetSimulationState();
-			_update();
-			_draw();
-		}
-			break;
-		case (int)_COM::NEXTSTEP:
-		{
-			if (!_updateFlag)
-			{
+				_dxApp->resetSimulationState();
 				_update();
 				_draw();
 			}
-		}
-			break;
-		case (int)_COM::LIQUID_RADIO:
-		{
-			if (_simIndex != 0)
+				break;
+
+			case (int)_COM::NEXTSTEP:
+			{
+				if (!_updateFlag)
+				{
+					_update();
+					_draw();
+				}
+			}
+				break;
+
+			case (int)_COM::LIQUID_RADIO:
 			{
 				_simIndex = 0;
 				_dxApp->setSimulation(_sim[_simIndex], 0.1);
-
 				_dxApp->resetSimulationState();
 				_update();
 				_draw();
 			}
-		}
-			break;
-		case (int)_COM::GAS_RADIO:
-		{
-			if (_simIndex != 1)
+				break;
+			case (int)_COM::GAS_RADIO:
 			{
 				_simIndex = 1;
 				_dxApp->setSimulation(_sim[_simIndex], 0.1);
-
 				_dxApp->resetSimulationState();
 				_update();
 				_draw();
 			}
-		}
-			break;
-		case (int)_COM::EULERIAN_RADIO:
-		{
-			if (_solverIndex != 0)
+				break;
+			case (int)_COM::EULERIAN_RADIO:
 			{
 				_solverIndex = 0;
+				_dxApp->setSimulation(_sim[_simIndex], 0.1);
 				_dxApp->resetSimulationState();
 				_update();
 				_draw();
 			}
-		}
-			break;
+				break;
 		}
 		return 0;
 

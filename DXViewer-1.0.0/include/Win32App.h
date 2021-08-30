@@ -40,11 +40,11 @@ private:
         SOLVER_GROUP, EULERIAN_RADIO, PIC_RADIO, FLIP_RADIO
     };
     int _swState[2] = { 1, 1 };
-    bool _updateFlag = false;
+    bool _updateFlag = true;
 
     std::vector<ISimulation*> _sim;
-    int _simIndex = -1;
-    int _solverIndex = -1;
+    int _simIndex = 0;
+    int _solverIndex = 0;
 
     POINT _mLastMousePos;
 
