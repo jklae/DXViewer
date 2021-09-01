@@ -28,8 +28,6 @@ DX12App::~DX12App()
 
 	if (_mUploadBuffer != nullptr)
 		_mUploadBuffer->Unmap(0, nullptr);
-
-	delete _simulation;
 }
 
 void DX12App::setSimulation(ISimulation* simulation)
@@ -549,15 +547,15 @@ void DX12App::update()
 	vector<Vertex> vertices = _simulation->iGetVertice();
 	vector<unsigned int> indices = _simulation->iGetIndice();
 
-	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+	const UINT vbByteSize = static_cast<UINT>(vertices.size()) * sizeof(Vertex);
 	_vbv.SizeInBytes = vbByteSize;
-	const UINT ibByteSize = (UINT)indices.size() * sizeof(unsigned int);
+	const UINT ibByteSize = static_cast<UINT>(indices.size()) * sizeof(unsigned int);
 	_ibv.SizeInBytes = ibByteSize;
 
 	// Update mapping data
 	memcpy(&_vMappedData[0], vertices.data(), sizeof(Vertex) * vertices.size());
 	memcpy(&_iMappedData[0], indices.data(), sizeof(unsigned int) * indices.size());
-	_indexCount = (UINT)indices.size();
+	_indexCount = static_cast<UINT>(indices.size());
 	// #########
 
 	// ######### Update Constant Buffer

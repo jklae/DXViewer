@@ -132,80 +132,86 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	{	
 		CreateWindow(L"button", L"Grid : ON ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			90, 30, 100, 25, hwnd, (HMENU)_COM::GRID_BTN, _hInstance, NULL);
+			90, 30, 100, 25, hwnd, reinterpret_cast<HMENU>(_COM::GRID_BTN), _hInstance, NULL);
 		CreateWindow(L"button", L"Particle : ON ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			30, 60, 100, 25, hwnd, (HMENU)_COM::PARTICLE_BTN, _hInstance, NULL);
+			30, 60, 100, 25, hwnd, reinterpret_cast<HMENU>(_COM::PARTICLE_BTN), _hInstance, NULL);
 		CreateWindow(L"button", L"Velcoity : OFF ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			150, 60, 100, 25, hwnd, (HMENU)_COM::VELOCITY_BTN, _hInstance, NULL);
+			150, 60, 100, 25, hwnd, reinterpret_cast<HMENU>(_COM::VELOCITY_BTN), _hInstance, NULL);
 
 		CreateWindow(L"button", L"State", WS_CHILD | WS_VISIBLE | BS_GROUPBOX, 
-			40, 100, 200, 50, hwnd, (HMENU)_COM::STATE_GROUP, _hInstance, NULL);
+			40, 100, 200, 50, hwnd, reinterpret_cast<HMENU>(_COM::STATE_GROUP), _hInstance, NULL);
 		CreateWindow(L"button", L"Liquid", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
-			70, 117, 70, 25, hwnd, (HMENU)_COM::LIQUID_RADIO, _hInstance, NULL);
+			70, 117, 70, 25, hwnd, reinterpret_cast<HMENU>(_COM::LIQUID_RADIO), _hInstance, NULL);
 		CreateWindow(L"button", L"Gas", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-			150, 117, 70, 25, hwnd, (HMENU)_COM::GAS_RADIO, _hInstance, NULL);
+			150, 117, 70, 25, hwnd, reinterpret_cast<HMENU>(_COM::GAS_RADIO), _hInstance, NULL);
 
 		CreateWindow(L"button", L"Solver", WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
-			40, 160, 200, 50, hwnd, (HMENU)_COM::SOLVER_GROUP, _hInstance, NULL);
+			40, 160, 200, 50, hwnd, reinterpret_cast<HMENU>(_COM::SOLVER_GROUP), _hInstance, NULL);
 		CreateWindow(L"button", L"Eulerian", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
-			70, 177, 70, 25, hwnd, (HMENU)_COM::EULERIAN_RADIO, _hInstance, NULL);
+			70, 177, 70, 25, hwnd, reinterpret_cast<HMENU>(_COM::EULERIAN_RADIO), _hInstance, NULL);
+		CreateWindow(L"button", L"PIC", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+			150, 177, 70, 25, hwnd, reinterpret_cast<HMENU>(_COM::PIC_RADIO), _hInstance, NULL);
+
+		CreateWindow(L"static", L"Delay", WS_CHILD | WS_VISIBLE,
+			50, 220, 40, 20, hwnd, reinterpret_cast<HMENU>(-1), _hInstance, NULL);
 
 		CreateWindow(L"button", L"бл", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			65, 250, 50, 25, hwnd, (HMENU)_COM::PLAY, _hInstance, NULL);
+			65, 290, 50, 25, hwnd, reinterpret_cast<HMENU>(_COM::PLAY), _hInstance, NULL);
 		CreateWindow(L"button", L"бс", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			115, 250, 50, 25, hwnd, (HMENU)_COM::STOP, _hInstance, NULL);
+			115, 290, 50, 25, hwnd, reinterpret_cast<HMENU>(_COM::STOP), _hInstance, NULL);
 		CreateWindow(L"button", L"в║l", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			175, 250, 50, 25, hwnd, (HMENU)_COM::NEXTSTEP, _hInstance, NULL);
+			175, 290, 50, 25, hwnd, reinterpret_cast<HMENU>(_COM::NEXTSTEP), _hInstance, NULL);
 
-		CheckRadioButton(hwnd, (int)_COM::LIQUID_RADIO, (int)_COM::GAS_RADIO, (int)_COM::LIQUID_RADIO);
-		CheckRadioButton(hwnd, (int)_COM::EULERIAN_RADIO, (int)_COM::EULERIAN_RADIO, (int)_COM::EULERIAN_RADIO);
 
-		EnableWindow(GetDlgItem(hwnd, (int)_COM::NEXTSTEP), false); 
+		CheckRadioButton(hwnd, static_cast<int>(_COM::LIQUID_RADIO), static_cast<int>(_COM::GAS_RADIO), static_cast<int>(_COM::LIQUID_RADIO));
+		CheckRadioButton(hwnd, static_cast<int>(_COM::EULERIAN_RADIO), static_cast<int>(_COM::EULERIAN_RADIO), static_cast<int>(_COM::EULERIAN_RADIO));
+
+		EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::NEXTSTEP)), false);
 	}
 		return 0;
 
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
-			case (int)_COM::GRID_BTN:
+			case static_cast<int>(_COM::GRID_BTN):
 			{
 				bool flag = !_dxApp->getDrawFlag(FLAG::GRID);
-				SetDlgItemText(hwnd, (int)_COM::GRID_BTN, flag ? L"Grid : ON " : L"Grid : OFF");
+				SetDlgItemText(hwnd, static_cast<int>(_COM::GRID_BTN), flag ? L"Grid : ON " : L"Grid : OFF");
 				_dxApp->setDrawFlag(FLAG::GRID, flag);
 				_draw();
 			}
 				break;
 
-			case (int)_COM::PARTICLE_BTN:
+			case static_cast<int>(_COM::PARTICLE_BTN):
 			{
 				bool flag = !_dxApp->getDrawFlag(FLAG::PARTICLE);
-				SetDlgItemText(hwnd, (int)_COM::PARTICLE_BTN, flag ? L"Particle : ON " : L"Particle : OFF");
+				SetDlgItemText(hwnd, static_cast<int>(_COM::PARTICLE_BTN), flag ? L"Particle : ON " : L"Particle : OFF");
 				_dxApp->setDrawFlag(FLAG::PARTICLE, flag);
 				_draw();
 			
 			}
 				break;
 
-			case (int)_COM::VELOCITY_BTN:
+			case static_cast<int>(_COM::VELOCITY_BTN):
 			{
 				bool flag = !_dxApp->getDrawFlag(FLAG::VELOCITY);
-				SetDlgItemText(hwnd, (int)_COM::VELOCITY_BTN, flag ? L"Velocity : ON " : L"Velocity : OFF");
+				SetDlgItemText(hwnd, static_cast<int>(_COM::VELOCITY_BTN), flag ? L"Velocity : ON " : L"Velocity : OFF");
 				_dxApp->setDrawFlag(FLAG::VELOCITY, flag);
 				_draw();
 			}
 				break;
 
-			case (int)_COM::PLAY:
+			case static_cast<int>(_COM::PLAY):
 			{
 				_updateFlag = !_updateFlag;
-				SetDlgItemText(hwnd, (int)_COM::PLAY, _updateFlag ? L"бл" : L"в║");
+				SetDlgItemText(hwnd, static_cast<int>(_COM::PLAY), _updateFlag ? L"бл" : L"в║");
 
-				EnableWindow(GetDlgItem(hwnd, (int)_COM::STOP), true);
-				EnableWindow(GetDlgItem(hwnd, (int)_COM::NEXTSTEP), !_updateFlag);
+				EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::STOP)), true);
+				EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::NEXTSTEP)), !_updateFlag);
 			}
 				break;
 
-			case (int)_COM::STOP:
+			case static_cast<int>(_COM::STOP):
 			{
 				_dxApp->resetSimulationState();
 				_update();
@@ -213,7 +219,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			}
 				break;
 
-			case (int)_COM::NEXTSTEP:
+			case static_cast<int>(_COM::NEXTSTEP):
 			{
 				if (!_updateFlag)
 				{
@@ -223,7 +229,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			}
 				break;
 
-			case (int)_COM::LIQUID_RADIO:
+			case static_cast<int>(_COM::LIQUID_RADIO):
 			{
 				_simIndex = 0;
 				_dxApp->setSimulation(_sim[_simIndex]);
@@ -232,7 +238,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				_draw();
 			}
 				break;
-			case (int)_COM::GAS_RADIO:
+			case static_cast<int>(_COM::GAS_RADIO):
 			{
 				_simIndex = 1;
 				_dxApp->setSimulation(_sim[_simIndex]);
@@ -241,15 +247,29 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				_draw();
 			}
 				break;
-			case (int)_COM::EULERIAN_RADIO:
+			case static_cast<int>(_COM::EULERIAN_RADIO):
 			{
 				_solverIndex = 0;
 				_dxApp->setSimulation(_sim[_simIndex]);
 				_dxApp->resetSimulationState();
 				_update();
 				_draw();
+
+				EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::GAS_RADIO)), true);
 			}
 				break;
+			case static_cast<int>(_COM::PIC_RADIO):
+			{
+				_solverIndex = 1;
+				_dxApp->setSimulation(_sim[_simIndex]);
+				_dxApp->resetSimulationState();
+				_update();
+				_draw();
+
+				CheckRadioButton(hwnd, static_cast<int>(_COM::LIQUID_RADIO), static_cast<int>(_COM::GAS_RADIO), static_cast<int>(_COM::LIQUID_RADIO));
+				EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::GAS_RADIO)), false);
+			}
+			break;
 		}
 		return 0;
 
@@ -295,7 +315,7 @@ int Win32App::run()
         }
     }
 
-	return (int)msg.wParam;
+	return static_cast<int>(msg.wParam);
 }
 
 
