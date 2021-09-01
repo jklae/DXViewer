@@ -45,6 +45,7 @@ private:
     std::vector<ISimulation*> _sim;
     int _simIndex = 0;
     int _solverIndex = 0;
+    float _timestep = 0.0f;
 
     POINT _mLastMousePos;
 

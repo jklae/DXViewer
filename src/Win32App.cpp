@@ -226,7 +226,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			case (int)_COM::LIQUID_RADIO:
 			{
 				_simIndex = 0;
-				_dxApp->setSimulation(_sim[_simIndex], 0.1);
+				_dxApp->setSimulation(_sim[_simIndex], _timestep);
 				_dxApp->resetSimulationState();
 				_update();
 				_draw();
@@ -235,7 +235,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			case (int)_COM::GAS_RADIO:
 			{
 				_simIndex = 1;
-				_dxApp->setSimulation(_sim[_simIndex], 0.1);
+				_dxApp->setSimulation(_sim[_simIndex], _timestep);
 				_dxApp->resetSimulationState();
 				_update();
 				_draw();
@@ -244,7 +244,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			case (int)_COM::EULERIAN_RADIO:
 			{
 				_solverIndex = 0;
-				_dxApp->setSimulation(_sim[_simIndex], 0.1);
+				_dxApp->setSimulation(_sim[_simIndex], _timestep);
 				_dxApp->resetSimulationState();
 				_update();
 				_draw();
@@ -306,6 +306,7 @@ void Win32App::initDirectX(DX12App* dxapp, vector<ISimulation*> sim, float times
 
 	_dxApp = dxapp;
 	_sim = sim;
+	_timestep = timestep;
 
 	_dxApp->setWindow(_kWidth, _kHeight, _mhWnd[0]);
 	_dxApp->setSimulation(sim[0], timestep);
