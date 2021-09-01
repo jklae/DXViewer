@@ -32,10 +32,9 @@ DX12App::~DX12App()
 	delete _simulation;
 }
 
-void DX12App::setSimulation(ISimulation* simulation, float timestep)
+void DX12App::setSimulation(ISimulation* simulation)
 {
 	_simulation = simulation;
-	_timestep = timestep;
 }
 
 void DX12App::setProjectionType(PROJ proj)
@@ -545,7 +544,7 @@ void DX12App::update()
 {
 	// ######### Update Vertex, Index buffer
 	// Change View size
-	_simulation->iUpdate(_timestep);
+	_simulation->iUpdate();
 
 	vector<Vertex> vertices = _simulation->iGetVertice();
 	vector<unsigned int> indices = _simulation->iGetIndice();

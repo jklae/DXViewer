@@ -13,7 +13,7 @@ public:
     __declspec(dllexport) DX12App();
     __declspec(dllexport) ~DX12App();
 
-    __declspec(dllexport) void setSimulation(ISimulation* simulation, float timestep);
+    __declspec(dllexport) void setSimulation(ISimulation* simulation);
     void setProjectionType(PROJ proj);
 
     void setWindow(const int kWidth, const int kHeight, HWND mhMainWnd);
@@ -34,7 +34,6 @@ private:
 
     // setSimulation()
     ISimulation* _simulation = nullptr;
-    double _timestep;
 
     PROJ _proj = PROJ::PERSPECTIVE;
 

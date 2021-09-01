@@ -16,7 +16,7 @@ public:
 
     __declspec(dllexport) bool initialize(HINSTANCE hInstance);
     __declspec(dllexport) int run();
-    __declspec(dllexport) void initDirectX(DX12App* dxapp, std::vector<ISimulation*> sim, float timestep);
+    __declspec(dllexport) void initDirectX(DX12App* dxapp, std::vector<ISimulation*> sim);
 
     static Win32App* getinstanceForProc();
     LRESULT mainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -45,7 +45,6 @@ private:
     std::vector<ISimulation*> _sim;
     int _simIndex = 0;
     int _solverIndex = 0;
-    float _timestep = 0.0f;
 
     POINT _mLastMousePos;
 
