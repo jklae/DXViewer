@@ -235,7 +235,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 			case static_cast<int>(_COM::LIQUID_RADIO):
 			{
-				_simIndex = 0;
+				if (_simIndex != 2) _simIndex = 0;
 				_dxApp->setSimulation(_sim[_simIndex]);
 				_dxApp->resetSimulationState();
 				_update();
@@ -253,7 +253,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				break;
 			case static_cast<int>(_COM::EULERIAN_RADIO):
 			{
-				if (_simIndex > 1) _simIndex = 0;
+				if (_simIndex == 2) _simIndex = 0;
 				_dxApp->setSimulation(_sim[_simIndex]);
 				_dxApp->resetSimulationState();
 				_update();
