@@ -28,6 +28,11 @@ Win32App::Win32App(const int kWidth, const int KHeight)
 
 Win32App::~Win32App()
 {
+	for (auto& sim : _sim)
+	{
+		delete sim;
+	}
+
 	delete _dxApp;
 }
 
@@ -154,9 +159,9 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 		CreateWindow(L"static", L"Delay", WS_CHILD | WS_VISIBLE,
 			50, 220, 40, 20, hwnd, reinterpret_cast<HMENU>(-1), _hInstance, NULL);
-		CreateWindow(L"scrollbar", NULL, WS_CHILD | WS_VISIBLE | SBS_HORZ,
-			40, 250, 200, 20, hwnd, reinterpret_cast<HMENU>(_COM::DELAY_BAR), _hInstance, NULL);
-		//SetScrollPos(hRed, SB_CTL, 0, TRUE);
+		HWND scroll = 
+			CreateWindow(L"scrollbar", NULL, WS_CHILD | WS_VISIBLE | SBS_HORZ,
+				40, 250, 200, 20, hwnd, reinterpret_cast<HMENU>(_COM::DELAY_BAR), _hInstance, NULL);
 
 		CreateWindow(L"button", L"бл", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			65, 290, 50, 25, hwnd, reinterpret_cast<HMENU>(_COM::PLAY), _hInstance, NULL);
@@ -171,6 +176,9 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 		EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::NEXTSTEP)), false);
 		EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::GAS_RADIO)), false);
+
+		SetScrollRange(scroll, SB_CTL, 0, 100, TRUE);
+		SetScrollPos(scroll, SB_CTL, 10, TRUE);
 	}
 		return 0;
 
@@ -277,7 +285,20 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 		return 0;
 
-		// WM_DESTROY is sent when the window is being destroyed.
+	case WM_HSCROLL:
+	{
+		switch (LOWORD(wParam))
+		{
+			case SB_THUMBTRACK:
+				cout << HIWORD(wParam) << endl;
+				//_sim[_simIndex]->
+				SetScrollPos((HWND)lParam, SB_CTL, HIWORD(wParam), TRUE);
+				break;
+		}
+	}
+		return 0;
+
+	// WM_DESTROY is sent when the window is being destroyed.
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
