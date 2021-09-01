@@ -150,7 +150,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		CreateWindow(L"button", L"Eulerian", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
 			70, 177, 70, 25, hwnd, (HMENU)_COM::EULERIAN_RADIO, _hInstance, NULL);
 
-		CreateWindow(L"button", L"в║", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		CreateWindow(L"button", L"бл", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			65, 250, 50, 25, hwnd, (HMENU)_COM::PLAY, _hInstance, NULL);
 		CreateWindow(L"button", L"бс", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			115, 250, 50, 25, hwnd, (HMENU)_COM::STOP, _hInstance, NULL);
