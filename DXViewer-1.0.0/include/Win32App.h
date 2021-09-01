@@ -43,8 +43,7 @@ private:
     bool _updateFlag = true;
 
     std::vector<ISimulation*> _sim;
-    int _simIndex = 0;
-    int _solverIndex = 0;
+    int _simIndex = 2;
 
     POINT _mLastMousePos;
 

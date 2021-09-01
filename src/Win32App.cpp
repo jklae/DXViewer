@@ -164,9 +164,10 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 
 		CheckRadioButton(hwnd, static_cast<int>(_COM::LIQUID_RADIO), static_cast<int>(_COM::GAS_RADIO), static_cast<int>(_COM::LIQUID_RADIO));
-		CheckRadioButton(hwnd, static_cast<int>(_COM::EULERIAN_RADIO), static_cast<int>(_COM::EULERIAN_RADIO), static_cast<int>(_COM::EULERIAN_RADIO));
+		CheckRadioButton(hwnd, static_cast<int>(_COM::EULERIAN_RADIO), static_cast<int>(_COM::PIC_RADIO), static_cast<int>(_COM::PIC_RADIO));
 
 		EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::NEXTSTEP)), false);
+		EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::GAS_RADIO)), false);
 	}
 		return 0;
 
@@ -328,7 +329,7 @@ void Win32App::initDirectX(DX12App* dxapp, vector<ISimulation*> sim)
 	_sim = sim;
 
 	_dxApp->setWindow(_kWidth, _kHeight, _mhWnd[0]);
-	_dxApp->setSimulation(sim[0]);
+	_dxApp->setSimulation(sim[_simIndex]);
 	_dxApp->initialize();
 }
 
