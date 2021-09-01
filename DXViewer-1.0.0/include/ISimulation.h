@@ -10,7 +10,7 @@ public:
 	enum class VALUE { MIN, MAX };
 	enum class AXIS { X, Y };
 
-	virtual void iUpdate(double timestep) = 0;
+	virtual void iUpdate(float timestep) = 0;
 	virtual void iResetSimulationState(std::vector<ConstantBuffer>& constantBuffer) = 0;
 
 	virtual std::vector<Vertex> iGetVertice() = 0;

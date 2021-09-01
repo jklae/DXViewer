@@ -299,7 +299,7 @@ int Win32App::run()
 }
 
 
-void Win32App::initDirectX(DX12App* dxapp, vector<ISimulation*> sim, double timestep)
+void Win32App::initDirectX(DX12App* dxapp, vector<ISimulation*> sim, float timestep)
 {
 	// Call after window init.
 	assert(_mhWnd[0] != nullptr);

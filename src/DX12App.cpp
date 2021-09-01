@@ -32,7 +32,7 @@ DX12App::~DX12App()
 	delete _simulation;
 }
 
-void DX12App::setSimulation(ISimulation* simulation, double timestep)
+void DX12App::setSimulation(ISimulation* simulation, float timestep)
 {
 	_simulation = simulation;
 	_timestep = timestep;
