@@ -154,6 +154,9 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 		CreateWindow(L"static", L"Delay", WS_CHILD | WS_VISIBLE,
 			50, 220, 40, 20, hwnd, reinterpret_cast<HMENU>(-1), _hInstance, NULL);
+		CreateWindow(L"scrollbar", NULL, WS_CHILD | WS_VISIBLE | SBS_HORZ,
+			40, 250, 200, 20, hwnd, reinterpret_cast<HMENU>(_COM::DELAY_BAR), _hInstance, NULL);
+		//SetScrollPos(hRed, SB_CTL, 0, TRUE);
 
 		CreateWindow(L"button", L"бл", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			65, 290, 50, 25, hwnd, reinterpret_cast<HMENU>(_COM::PLAY), _hInstance, NULL);
