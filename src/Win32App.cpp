@@ -133,183 +133,184 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
-	case WM_CREATE:
+		case WM_CREATE:
+		{	
+			CreateWindow(L"button", L"Grid : ON ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+				90, 30, 100, 25, hwnd, reinterpret_cast<HMENU>(_COM::GRID_BTN), _hInstance, NULL);
+			CreateWindow(L"button", L"Particle : ON ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+				30, 60, 100, 25, hwnd, reinterpret_cast<HMENU>(_COM::PARTICLE_BTN), _hInstance, NULL);
+			CreateWindow(L"button", L"Velcoity : OFF ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+				150, 60, 100, 25, hwnd, reinterpret_cast<HMENU>(_COM::VELOCITY_BTN), _hInstance, NULL);
 
-	{	
-		CreateWindow(L"button", L"Grid : ON ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			90, 30, 100, 25, hwnd, reinterpret_cast<HMENU>(_COM::GRID_BTN), _hInstance, NULL);
-		CreateWindow(L"button", L"Particle : ON ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			30, 60, 100, 25, hwnd, reinterpret_cast<HMENU>(_COM::PARTICLE_BTN), _hInstance, NULL);
-		CreateWindow(L"button", L"Velcoity : OFF ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			150, 60, 100, 25, hwnd, reinterpret_cast<HMENU>(_COM::VELOCITY_BTN), _hInstance, NULL);
+			CreateWindow(L"button", L"State", WS_CHILD | WS_VISIBLE | BS_GROUPBOX, 
+				40, 100, 200, 50, hwnd, reinterpret_cast<HMENU>(_COM::STATE_GROUP), _hInstance, NULL);
+			CreateWindow(L"button", L"Liquid", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
+				70, 117, 70, 25, hwnd, reinterpret_cast<HMENU>(_COM::LIQUID_RADIO), _hInstance, NULL);
+			CreateWindow(L"button", L"Gas", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+				150, 117, 70, 25, hwnd, reinterpret_cast<HMENU>(_COM::GAS_RADIO), _hInstance, NULL);
 
-		CreateWindow(L"button", L"State", WS_CHILD | WS_VISIBLE | BS_GROUPBOX, 
-			40, 100, 200, 50, hwnd, reinterpret_cast<HMENU>(_COM::STATE_GROUP), _hInstance, NULL);
-		CreateWindow(L"button", L"Liquid", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
-			70, 117, 70, 25, hwnd, reinterpret_cast<HMENU>(_COM::LIQUID_RADIO), _hInstance, NULL);
-		CreateWindow(L"button", L"Gas", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-			150, 117, 70, 25, hwnd, reinterpret_cast<HMENU>(_COM::GAS_RADIO), _hInstance, NULL);
+			CreateWindow(L"button", L"Solver", WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
+				40, 160, 200, 50, hwnd, reinterpret_cast<HMENU>(_COM::SOLVER_GROUP), _hInstance, NULL);
+			CreateWindow(L"button", L"Eulerian", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
+				70, 177, 70, 25, hwnd, reinterpret_cast<HMENU>(_COM::EULERIAN_RADIO), _hInstance, NULL);
+			CreateWindow(L"button", L"PIC", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
+				150, 177, 70, 25, hwnd, reinterpret_cast<HMENU>(_COM::PIC_RADIO), _hInstance, NULL);
 
-		CreateWindow(L"button", L"Solver", WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
-			40, 160, 200, 50, hwnd, reinterpret_cast<HMENU>(_COM::SOLVER_GROUP), _hInstance, NULL);
-		CreateWindow(L"button", L"Eulerian", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
-			70, 177, 70, 25, hwnd, reinterpret_cast<HMENU>(_COM::EULERIAN_RADIO), _hInstance, NULL);
-		CreateWindow(L"button", L"PIC", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-			150, 177, 70, 25, hwnd, reinterpret_cast<HMENU>(_COM::PIC_RADIO), _hInstance, NULL);
+			/*CreateWindow(L"static", L"Delay", WS_CHILD | WS_VISIBLE,
+				50, 220, 40, 20, hwnd, reinterpret_cast<HMENU>(-1), _hInstance, NULL);
+			HWND scroll = 
+				CreateWindow(L"scrollbar", NULL, WS_CHILD | WS_VISIBLE | SBS_HORZ,
+					40, 250, 200, 20, hwnd, reinterpret_cast<HMENU>(_COM::DELAY_BAR), _hInstance, NULL);*/
 
-		/*CreateWindow(L"static", L"Delay", WS_CHILD | WS_VISIBLE,
-			50, 220, 40, 20, hwnd, reinterpret_cast<HMENU>(-1), _hInstance, NULL);
-		HWND scroll = 
-			CreateWindow(L"scrollbar", NULL, WS_CHILD | WS_VISIBLE | SBS_HORZ,
-				40, 250, 200, 20, hwnd, reinterpret_cast<HMENU>(_COM::DELAY_BAR), _hInstance, NULL);*/
-
-		CreateWindow(L"button", L"бл", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			65, 290, 50, 25, hwnd, reinterpret_cast<HMENU>(_COM::PLAY), _hInstance, NULL);
-		CreateWindow(L"button", L"бс", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			115, 290, 50, 25, hwnd, reinterpret_cast<HMENU>(_COM::STOP), _hInstance, NULL);
-		CreateWindow(L"button", L"в║l", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			175, 290, 50, 25, hwnd, reinterpret_cast<HMENU>(_COM::NEXTSTEP), _hInstance, NULL);
+			CreateWindow(L"button", L"бл", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+				65, 290, 50, 25, hwnd, reinterpret_cast<HMENU>(_COM::PLAY), _hInstance, NULL);
+			CreateWindow(L"button", L"бс", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+				115, 290, 50, 25, hwnd, reinterpret_cast<HMENU>(_COM::STOP), _hInstance, NULL);
+			CreateWindow(L"button", L"в║l", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+				175, 290, 50, 25, hwnd, reinterpret_cast<HMENU>(_COM::NEXTSTEP), _hInstance, NULL);
 
 
-		CheckRadioButton(hwnd, static_cast<int>(_COM::LIQUID_RADIO), static_cast<int>(_COM::GAS_RADIO), static_cast<int>(_COM::LIQUID_RADIO));
-		CheckRadioButton(hwnd, static_cast<int>(_COM::EULERIAN_RADIO), static_cast<int>(_COM::PIC_RADIO), static_cast<int>(_COM::PIC_RADIO));
+			CheckRadioButton(hwnd, static_cast<int>(_COM::LIQUID_RADIO), static_cast<int>(_COM::GAS_RADIO), static_cast<int>(_COM::LIQUID_RADIO));
+			CheckRadioButton(hwnd, static_cast<int>(_COM::EULERIAN_RADIO), static_cast<int>(_COM::PIC_RADIO), static_cast<int>(_COM::PIC_RADIO));
 
-		EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::NEXTSTEP)), false);
-		EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::GAS_RADIO)), false);
+			EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::NEXTSTEP)), false);
+			EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::GAS_RADIO)), false);
 
-		/*SetScrollRange(scroll, SB_CTL, 0, 100, TRUE);
-		SetScrollPos(scroll, SB_CTL, 10, TRUE);*/
-	}
-		return 0;
-
-	case WM_COMMAND:
-		switch (LOWORD(wParam))
-		{
-			case static_cast<int>(_COM::GRID_BTN):
-			{
-				bool flag = !_dxApp->getDrawFlag(FLAG::GRID);
-				SetDlgItemText(hwnd, static_cast<int>(_COM::GRID_BTN), flag ? L"Grid : ON " : L"Grid : OFF");
-				_dxApp->setDrawFlag(FLAG::GRID, flag);
-				_draw();
-			}
-				break;
-
-			case static_cast<int>(_COM::PARTICLE_BTN):
-			{
-				bool flag = !_dxApp->getDrawFlag(FLAG::PARTICLE);
-				SetDlgItemText(hwnd, static_cast<int>(_COM::PARTICLE_BTN), flag ? L"Particle : ON " : L"Particle : OFF");
-				_dxApp->setDrawFlag(FLAG::PARTICLE, flag);
-				_draw();
-			
-			}
-				break;
-
-			case static_cast<int>(_COM::VELOCITY_BTN):
-			{
-				bool flag = !_dxApp->getDrawFlag(FLAG::VELOCITY);
-				SetDlgItemText(hwnd, static_cast<int>(_COM::VELOCITY_BTN), flag ? L"Velocity : ON " : L"Velocity : OFF");
-				_dxApp->setDrawFlag(FLAG::VELOCITY, flag);
-				_draw();
-			}
-				break;
-
-			case static_cast<int>(_COM::PLAY):
-			{
-				_updateFlag = !_updateFlag;
-				SetDlgItemText(hwnd, static_cast<int>(_COM::PLAY), _updateFlag ? L"бл" : L"в║");
-
-				EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::STOP)), true);
-				EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::NEXTSTEP)), !_updateFlag);
-			}
-				break;
-
-			case static_cast<int>(_COM::STOP):
-			{
-				_dxApp->resetSimulationState();
-				_update();
-				_draw();
-			}
-				break;
-
-			case static_cast<int>(_COM::NEXTSTEP):
-			{
-				if (!_updateFlag)
-				{
-					_update();
-					_draw();
-				}
-			}
-				break;
-
-			case static_cast<int>(_COM::LIQUID_RADIO):
-			{
-				if (_simIndex != 2) _simIndex = 0;
-				_dxApp->setSimulation(_sim[_simIndex]);
-				_dxApp->resetSimulationState();
-				_update();
-				_draw();
-			}
-				break;
-			case static_cast<int>(_COM::GAS_RADIO):
-			{
-				_simIndex = 1;
-				_dxApp->setSimulation(_sim[_simIndex]);
-				_dxApp->resetSimulationState();
-				_update();
-				_draw();
-			}
-				break;
-			case static_cast<int>(_COM::EULERIAN_RADIO):
-			{
-				if (_simIndex == 2) _simIndex = 0;
-				_dxApp->setSimulation(_sim[_simIndex]);
-				_dxApp->resetSimulationState();
-				_update();
-				_draw();
-
-				EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::GAS_RADIO)), true);
-			}
-				break;
-			case static_cast<int>(_COM::PIC_RADIO):
-			{
-				_simIndex = 2;
-				_dxApp->setSimulation(_sim[_simIndex]);
-				_dxApp->resetSimulationState();
-				_update();
-				_draw();
-
-				CheckRadioButton(hwnd, static_cast<int>(_COM::LIQUID_RADIO), static_cast<int>(_COM::GAS_RADIO), static_cast<int>(_COM::LIQUID_RADIO));
-				EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::GAS_RADIO)), false);
-			}
-			break;
+			/*SetScrollRange(scroll, SB_CTL, 0, 100, TRUE);
+			SetScrollPos(scroll, SB_CTL, 10, TRUE);*/
 		}
 		return 0;
 
-	//case WM_HSCROLL:
-	//{
-	//	switch (LOWORD(wParam))
-	//	{
-	//		case SB_THUMBTRACK:
-	//			cout << HIWORD(wParam) << endl;
-	//			//_sim[_simIndex]->
-	//			SetScrollPos((HWND)lParam, SB_CTL, HIWORD(wParam), TRUE);
-	//			break;
-	//	}
-	//}
-	//	return 0;
+		case WM_COMMAND:
+		{
+			switch (LOWORD(wParam))
+			{
+				case static_cast<int>(_COM::GRID_BTN) :
+				{
+					bool flag = !_dxApp->getDrawFlag(FLAG::GRID);
+					SetDlgItemText(hwnd, static_cast<int>(_COM::GRID_BTN), flag ? L"Grid : ON " : L"Grid : OFF");
+					_dxApp->setDrawFlag(FLAG::GRID, flag);
+					_draw();
+				}
+				break;
 
-	// WM_DESTROY is sent when the window is being destroyed.
-	case WM_DESTROY:
-		PostQuitMessage(0);
+				case static_cast<int>(_COM::PARTICLE_BTN) :
+				{
+					bool flag = !_dxApp->getDrawFlag(FLAG::PARTICLE);
+					SetDlgItemText(hwnd, static_cast<int>(_COM::PARTICLE_BTN), flag ? L"Particle : ON " : L"Particle : OFF");
+					_dxApp->setDrawFlag(FLAG::PARTICLE, flag);
+					_draw();
+
+				}
+				break;
+
+				case static_cast<int>(_COM::VELOCITY_BTN) :
+				{
+					bool flag = !_dxApp->getDrawFlag(FLAG::VELOCITY);
+					SetDlgItemText(hwnd, static_cast<int>(_COM::VELOCITY_BTN), flag ? L"Velocity : ON " : L"Velocity : OFF");
+					_dxApp->setDrawFlag(FLAG::VELOCITY, flag);
+					_draw();
+				}
+				break;
+
+				case static_cast<int>(_COM::PLAY) :
+				{
+					_updateFlag = !_updateFlag;
+					SetDlgItemText(hwnd, static_cast<int>(_COM::PLAY), _updateFlag ? L"бл" : L"в║");
+
+					EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::STOP)), true);
+					EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::NEXTSTEP)), !_updateFlag);
+				}
+				break;
+
+				case static_cast<int>(_COM::STOP) :
+				{
+					_dxApp->resetSimulationState();
+					_update();
+					_draw();
+				}
+				break;
+
+				case static_cast<int>(_COM::NEXTSTEP) :
+				{
+					if (!_updateFlag)
+					{
+						_update();
+						_draw();
+					}
+				}
+				break;
+
+				case static_cast<int>(_COM::LIQUID_RADIO) :
+				{
+					if (_simIndex != 2) _simIndex = 0;
+					_dxApp->setSimulation(_sim[_simIndex]);
+					_dxApp->resetSimulationState();
+					_update();
+					_draw();
+				}
+				break;
+				case static_cast<int>(_COM::GAS_RADIO) :
+				{
+					_simIndex = 1;
+					_dxApp->setSimulation(_sim[_simIndex]);
+					_dxApp->resetSimulationState();
+					_update();
+					_draw();
+				}
+				break;
+				case static_cast<int>(_COM::EULERIAN_RADIO) :
+				{
+					if (_simIndex == 2) _simIndex = 0;
+					_dxApp->setSimulation(_sim[_simIndex]);
+					_dxApp->resetSimulationState();
+					_update();
+					_draw();
+
+					EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::GAS_RADIO)), true);
+				}
+				break;
+				case static_cast<int>(_COM::PIC_RADIO) :
+				{
+					_simIndex = 2;
+					_dxApp->setSimulation(_sim[_simIndex]);
+					_dxApp->resetSimulationState();
+					_update();
+					_draw();
+
+					CheckRadioButton(hwnd, static_cast<int>(_COM::LIQUID_RADIO), static_cast<int>(_COM::GAS_RADIO), static_cast<int>(_COM::LIQUID_RADIO));
+					EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::GAS_RADIO)), false);
+				}
+				break;
+			}
+		}
 		return 0;
 
-	case WM_MOVING:
-		_synchronizeWinPos(_WINDOW::MAIN);
-		return 0;
+		//case WM_HSCROLL:
+		//{
+		//	switch (LOWORD(wParam))
+		//	{
+		//		case SB_THUMBTRACK:
+		//			cout << HIWORD(wParam) << endl;
+		//			//_sim[_simIndex]->
+		//			SetScrollPos((HWND)lParam, SB_CTL, HIWORD(wParam), TRUE);
+		//			break;
+		//	}
+		//}
+		//	return 0;
 
-	case WM_SIZE:
-		_switchWinState(_WINDOW::MAIN);
-		return 0;
+		// WM_DESTROY is sent when the window is being destroyed.
+		case WM_DESTROY:
+			PostQuitMessage(0);
+			return 0;
+
+		case WM_MOVING:
+			_synchronizeWinPos(_WINDOW::MAIN);
+			return 0;
+
+		case WM_SIZE:
+			_switchWinState(_WINDOW::MAIN);
+			return 0;
 	
 	}
 
