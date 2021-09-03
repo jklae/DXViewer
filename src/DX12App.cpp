@@ -620,7 +620,7 @@ void DX12App::draw()
 
 		_mCommandList->SetGraphicsRootDescriptorTable(0, cbvHandle);
 
-		_simulation->iDraw(_mCommandList, _constantBuffer, _indexCount, i);
+		_simulation->iDraw(_mCommandList, size, _indexCount, i);
 	}
 	// ------
 

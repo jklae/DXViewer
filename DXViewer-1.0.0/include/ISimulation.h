@@ -18,7 +18,7 @@ public:
 	virtual void iSubWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) = 0;
 
 	virtual void iUpdateConstantBuffer(std::vector<ConstantBuffer>& constantBuffer, int i) = 0;
-	virtual void iDraw(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& mCommandList, std::vector<ConstantBuffer>& constantBuffer, UINT indexCount, int i) = 0;
+	virtual void iDraw(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& mCommandList, int size, UINT indexCount, int i) = 0;
 
 	virtual int getI() = 0;
 	virtual void setI(int i) = 0;
