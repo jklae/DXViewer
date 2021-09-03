@@ -28,6 +28,8 @@ DX12App::~DX12App()
 
 	if (_mUploadBuffer != nullptr)
 		_mUploadBuffer->Unmap(0, nullptr);
+
+	delete _simulation;
 }
 
 void DX12App::setSimulation(ISimulation* simulation)
