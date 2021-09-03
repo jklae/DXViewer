@@ -135,9 +135,49 @@ LRESULT Win32App::mainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	switch (msg)
+	{
+	case WM_CREATE:
+	{
+		_sim->iSubWndProc(hwnd, msg, wParam, lParam, _hInstance, _updateFlag, _dxApp);
+	}
+	return 0;
 
-	
-	return _sim->iSubWndProc(hwnd, msg, wParam, lParam, _hInstance, _updateFlag, _dxApp);
+	case WM_COMMAND:
+	{
+		_sim->iSubWndProc2(hwnd, msg, wParam, lParam, _hInstance, _updateFlag, _dxApp);
+	}
+	return 0;
+
+	//case WM_HSCROLL:
+	//{
+	//	switch (LOWORD(wParam))
+	//	{
+	//		case SB_THUMBTRACK:
+	//			cout << HIWORD(wParam) << endl;
+	//			//_sim[_simIndex]->
+	//			SetScrollPos((HWND)lParam, SB_CTL, HIWORD(wParam), TRUE);
+	//			break;
+	//	}
+	//}
+	//	return 0;
+
+	// WM_DESTROY is sent when the window is being destroyed.
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+
+	case WM_MOVING:
+		_synchronizeWinPos(_WINDOW::MAIN);
+		return 0;
+
+	case WM_SIZE:
+		_switchWinState(_WINDOW::MAIN);
+		return 0;
+
+	}
+
+	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
 int Win32App::run()

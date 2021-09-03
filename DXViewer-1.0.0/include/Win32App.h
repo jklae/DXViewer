@@ -32,14 +32,6 @@ private:
     DX12App* _dxApp = nullptr;
 
     enum class _WINDOW { MAIN, SUB };
-    enum class _COM 
-    { 
-        GRID_BTN, PARTICLE_BTN, VELOCITY_BTN, 
-        PLAY, STOP, NEXTSTEP,
-        STATE_GROUP, LIQUID_RADIO, GAS_RADIO,
-        SOLVER_GROUP, EULERIAN_RADIO, PIC_RADIO, FLIP_RADIO,
-        DELAY_BAR
-    };
     int _swState[2] = { 1, 1 };
     bool _updateFlag = true;
 
