@@ -14,7 +14,7 @@ public:
     __declspec(dllexport) Win32App(const int kWidth, const int KHeight);
     __declspec(dllexport) ~Win32App();
 
-    __declspec(dllexport) bool initialize(HINSTANCE hInstance);
+    __declspec(dllexport) bool initialize(HINSTANCE hInstance, DX12App* dxapp, ISimulation* sim);
     __declspec(dllexport) int run();
     __declspec(dllexport) void initDirectX(DX12App* dxapp, ISimulation* sim);
 
@@ -43,7 +43,7 @@ private:
     int _swState[2] = { 1, 1 };
     bool _updateFlag = true;
 
-    ISimulation* _sim;
+    ISimulation* _sim = nullptr;
 
     POINT _mLastMousePos;
 

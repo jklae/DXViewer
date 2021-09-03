@@ -2,6 +2,7 @@
 
 struct Vertex;
 struct ConstantBuffer;
+class DX12App;
 
 class ISimulation abstract
 {
@@ -15,7 +16,7 @@ public:
 	virtual int iGetObjectCount() = 0;
 
 	virtual void iCreateObjectParticle(std::vector<ConstantBuffer>& constantBuffer) = 0;
-	virtual void iSubWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) = 0;
+	virtual LRESULT iSubWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, bool& updateFlag, DX12App* dxapp) = 0;
 
 	virtual void iUpdateConstantBuffer(std::vector<ConstantBuffer>& constantBuffer, int i) = 0;
 	virtual void iDraw(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& mCommandList, int size, UINT indexCount, int i) = 0;

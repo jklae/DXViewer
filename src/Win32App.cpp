@@ -31,8 +31,13 @@ Win32App::~Win32App()
 	delete _dxApp;
 }
 
-bool Win32App::initialize(HINSTANCE hInstance)
+bool Win32App::initialize(HINSTANCE hInstance, DX12App* dxapp, ISimulation* sim)
 {
+	int offsetX = 200;
+	int offsetY = 100;
+
+	_hInstance = hInstance;
+
 	WNDCLASS wc[2];
 	wc[0].style = CS_HREDRAW | CS_VREDRAW;
 	wc[0].lpfnWndProc = directXWndProc;
@@ -45,28 +50,32 @@ bool Win32App::initialize(HINSTANCE hInstance)
 	wc[0].lpszMenuName = 0;
 	wc[0].lpszClassName = L"DirectXWnd";
 
+	RegisterClass(&wc[0]);
+
+
+	_mhWnd[0] = CreateWindow(L"DirectXWnd", L"d3d App",
+		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
+		offsetX, offsetY, _kWidth, _kHeight,
+		0, 0, _hInstance, 0);
+
+	initDirectX(dxapp, sim);
+
+
+
 	wc[1] = wc[0]; // Duplicate settings
 	wc[1].lpfnWndProc = controllWndProc;
 	wc[1].lpszClassName = L"ControllWnd";
 	wc[1].hbrBackground = (HBRUSH)CreateSolidBrush(RGB(225, 225, 225));
 
-	RegisterClass(&wc[0]);
 	RegisterClass(&wc[1]);
 
-	int offsetX = 200;
-	int offsetY = 100;
 
-	_mhWnd[0] = CreateWindow(L"DirectXWnd", L"d3d App",
-		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
-		offsetX, offsetY, _kWidth, _kHeight,
-		0, 0, hInstance, 0);
 
 	_mhWnd[1] = CreateWindow(L"ControllWnd", L"Controller",
 		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
 		offsetX + _kWidth, offsetY, 300, _kHeight,
-		0, 0, hInstance, 0);
+		0, 0, _hInstance, 0);
 
-	_hInstance = hInstance;
 
 	for (int i = 0; i < 2; i++)
 	{
@@ -126,186 +135,9 @@ LRESULT Win32App::mainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	switch (msg)
-	{
-		case WM_CREATE:
-		{	
-			CreateWindow(L"button", L"Grid : ON ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-				90, 30, 100, 25, hwnd, reinterpret_cast<HMENU>(_COM::GRID_BTN), _hInstance, NULL);
-			CreateWindow(L"button", L"Particle : ON ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-				30, 60, 100, 25, hwnd, reinterpret_cast<HMENU>(_COM::PARTICLE_BTN), _hInstance, NULL);
-			CreateWindow(L"button", L"Velcoity : OFF ", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-				150, 60, 100, 25, hwnd, reinterpret_cast<HMENU>(_COM::VELOCITY_BTN), _hInstance, NULL);
 
-			CreateWindow(L"button", L"State", WS_CHILD | WS_VISIBLE | BS_GROUPBOX, 
-				40, 100, 200, 50, hwnd, reinterpret_cast<HMENU>(_COM::STATE_GROUP), _hInstance, NULL);
-			CreateWindow(L"button", L"Liquid", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
-				70, 117, 70, 25, hwnd, reinterpret_cast<HMENU>(_COM::LIQUID_RADIO), _hInstance, NULL);
-			CreateWindow(L"button", L"Gas", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-				150, 117, 70, 25, hwnd, reinterpret_cast<HMENU>(_COM::GAS_RADIO), _hInstance, NULL);
-
-			CreateWindow(L"button", L"Solver", WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
-				40, 160, 200, 50, hwnd, reinterpret_cast<HMENU>(_COM::SOLVER_GROUP), _hInstance, NULL);
-			CreateWindow(L"button", L"Eulerian", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
-				70, 177, 70, 25, hwnd, reinterpret_cast<HMENU>(_COM::EULERIAN_RADIO), _hInstance, NULL);
-			CreateWindow(L"button", L"PIC", WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
-				150, 177, 70, 25, hwnd, reinterpret_cast<HMENU>(_COM::PIC_RADIO), _hInstance, NULL);
-
-			/*CreateWindow(L"static", L"Delay", WS_CHILD | WS_VISIBLE,
-				50, 220, 40, 20, hwnd, reinterpret_cast<HMENU>(-1), _hInstance, NULL);
-			HWND scroll = 
-				CreateWindow(L"scrollbar", NULL, WS_CHILD | WS_VISIBLE | SBS_HORZ,
-					40, 250, 200, 20, hwnd, reinterpret_cast<HMENU>(_COM::DELAY_BAR), _hInstance, NULL);*/
-
-			CreateWindow(L"button", L"бл", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-				65, 290, 50, 25, hwnd, reinterpret_cast<HMENU>(_COM::PLAY), _hInstance, NULL);
-			CreateWindow(L"button", L"бс", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-				115, 290, 50, 25, hwnd, reinterpret_cast<HMENU>(_COM::STOP), _hInstance, NULL);
-			CreateWindow(L"button", L"в║l", WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-				175, 290, 50, 25, hwnd, reinterpret_cast<HMENU>(_COM::NEXTSTEP), _hInstance, NULL);
-
-
-			CheckRadioButton(hwnd, static_cast<int>(_COM::LIQUID_RADIO), static_cast<int>(_COM::GAS_RADIO), static_cast<int>(_COM::LIQUID_RADIO));
-			CheckRadioButton(hwnd, static_cast<int>(_COM::EULERIAN_RADIO), static_cast<int>(_COM::PIC_RADIO), static_cast<int>(_COM::PIC_RADIO));
-
-			EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::NEXTSTEP)), false);
-			EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::GAS_RADIO)), false);
-
-			/*SetScrollRange(scroll, SB_CTL, 0, 100, TRUE);
-			SetScrollPos(scroll, SB_CTL, 10, TRUE);*/
-		}
-		return 0;
-
-		case WM_COMMAND:
-		{
-			switch (LOWORD(wParam))
-			{
-				case static_cast<int>(_COM::GRID_BTN) :
-				{
-					bool flag = !_sim->getDrawFlag(FLAG::GRID);
-					SetDlgItemText(hwnd, static_cast<int>(_COM::GRID_BTN), flag ? L"Grid : ON " : L"Grid : OFF");
-					_sim->setDrawFlag(FLAG::GRID, flag);
-					_draw();
-				}
-				break;
-
-				case static_cast<int>(_COM::PARTICLE_BTN) :
-				{
-					bool flag = !_sim->getDrawFlag(FLAG::PARTICLE);
-					SetDlgItemText(hwnd, static_cast<int>(_COM::PARTICLE_BTN), flag ? L"Particle : ON " : L"Particle : OFF");
-					_sim->setDrawFlag(FLAG::PARTICLE, flag);
-					_draw();
-
-				}
-				break;
-
-				case static_cast<int>(_COM::VELOCITY_BTN) :
-				{
-					bool flag = !_sim->getDrawFlag(FLAG::VELOCITY);
-					SetDlgItemText(hwnd, static_cast<int>(_COM::VELOCITY_BTN), flag ? L"Velocity : ON " : L"Velocity : OFF");
-					_sim->setDrawFlag(FLAG::VELOCITY, flag);
-					_draw();
-				}
-				break;
-
-				case static_cast<int>(_COM::PLAY) :
-				{
-					_updateFlag = !_updateFlag;
-					SetDlgItemText(hwnd, static_cast<int>(_COM::PLAY), _updateFlag ? L"бл" : L"в║");
-
-					EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::STOP)), true);
-					EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::NEXTSTEP)), !_updateFlag);
-				}
-				break;
-
-				case static_cast<int>(_COM::STOP) :
-				{
-					_dxApp->resetSimulationState();
-					_update();
-					_draw();
-				}
-				break;
-
-				case static_cast<int>(_COM::NEXTSTEP) :
-				{
-					if (!_updateFlag)
-					{
-						_update();
-						_draw();
-					}
-				}
-				break;
-
-				case static_cast<int>(_COM::LIQUID_RADIO) :
-				{
-					if (_sim->getI() != 2) _sim->setI(0);
-					_dxApp->resetSimulationState();
-					_update();
-					_draw();
-				}
-				break;
-				case static_cast<int>(_COM::GAS_RADIO) :
-				{
-					_sim->setI(1);
-					_dxApp->resetSimulationState();
-					_update();
-					_draw();
-				}
-				break;
-				case static_cast<int>(_COM::EULERIAN_RADIO) :
-				{
-					if (_sim->getI() == 2) _sim->setI(0);
-					_dxApp->resetSimulationState();
-					_update();
-					_draw();
-
-					EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::GAS_RADIO)), true);
-				}
-				break;
-				case static_cast<int>(_COM::PIC_RADIO) :
-				{
-					_sim->setI(2);
-					_dxApp->resetSimulationState();
-					_update();
-					_draw();
-
-					CheckRadioButton(hwnd, static_cast<int>(_COM::LIQUID_RADIO), static_cast<int>(_COM::GAS_RADIO), static_cast<int>(_COM::LIQUID_RADIO));
-					EnableWindow(GetDlgItem(hwnd, static_cast<int>(_COM::GAS_RADIO)), false);
-				}
-				break;
-			}
-		}
-		return 0;
-
-		//case WM_HSCROLL:
-		//{
-		//	switch (LOWORD(wParam))
-		//	{
-		//		case SB_THUMBTRACK:
-		//			cout << HIWORD(wParam) << endl;
-		//			//_sim[_simIndex]->
-		//			SetScrollPos((HWND)lParam, SB_CTL, HIWORD(wParam), TRUE);
-		//			break;
-		//	}
-		//}
-		//	return 0;
-
-		// WM_DESTROY is sent when the window is being destroyed.
-		case WM_DESTROY:
-			PostQuitMessage(0);
-			return 0;
-
-		case WM_MOVING:
-			_synchronizeWinPos(_WINDOW::MAIN);
-			return 0;
-
-		case WM_SIZE:
-			_switchWinState(_WINDOW::MAIN);
-			return 0;
 	
-	}
-
-	return DefWindowProc(hwnd, msg, wParam, lParam);
+	return _sim->iSubWndProc(hwnd, msg, wParam, lParam, _hInstance, _updateFlag, _dxApp);
 }
 
 int Win32App::run()
