@@ -19,6 +19,8 @@ public:
 	virtual void iCreateObjectParticle(std::vector<ConstantBuffer>& constantBuffer) = 0;
 	virtual void iSubWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) = 0;
 
+	virtual void iUpdateConstantBuffer(std::vector<ConstantBuffer>& constantBuffer, int i) = 0;
+
 	virtual int getI() = 0;
 	virtual void setI(int i) = 0;
 

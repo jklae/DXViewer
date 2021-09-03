@@ -584,29 +584,7 @@ void DX12App::update()
 	int size = _constantBuffer.size();
 	for (int i = 0; i < size; i++)
 	{
-																							
-		int objectEndIndex = _simulation->iGetObjectCount() * _simulation->iGetObjectCount();
-
-		
-		// Set object color					
-		if (i < objectEndIndex)
-		{													
-			_constantBuffer[i].color = _simulation->iGetColor(i);
-		}
-		// Set particle position
-		else if (i >= objectEndIndex && i < size - 1)
-		{												// Due to velocity field
-			int particleIndex = i - objectEndIndex;
-			XMFLOAT2 pos = _simulation->iGetParticlePos(particleIndex);
-
-			_constantBuffer[i].world._41 = pos.x;
-			_constantBuffer[i].world._42 = pos.y;
-
-		}// Set velocity
-		else
-		{
-
-		}
+		_simulation->iUpdateConstantBuffer(_constantBuffer, i);
 
 		XMMATRIX world = XMLoadFloat4x4(&_constantBuffer[i].world);
 		XMMATRIX worldViewProj = world * view * proj;
