@@ -14,7 +14,6 @@ public:
 	virtual std::vector<unsigned int> iGetIndice() = 0;
 	virtual DirectX::XMFLOAT4 iGetColor(int i) = 0;
 	virtual int iGetObjectCount() = 0;
-	virtual DirectX::XMFLOAT2 iGetParticlePos(int i) = 0;
 
 	virtual void iCreateObjectParticle(std::vector<ConstantBuffer>& constantBuffer) = 0;
 	virtual void iSubWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) = 0;
