@@ -16,8 +16,8 @@ public:
 	virtual int iGetObjectCount() = 0;
 
 	virtual void iCreateObjectParticle(std::vector<ConstantBuffer>& constantBuffer) = 0;
-	virtual void iSubWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, bool& updateFlag, DX12App* dxapp) = 0;
-	virtual void iSubWndProc2(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, bool& updateFlag, DX12App* dxapp) = 0;
+	virtual void iWMCreate(HWND hwnd, HINSTANCE hInstance) = 0;
+	virtual void iWMCommand(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, bool& updateFlag, DX12App* dxapp) = 0;
 
 	virtual void iUpdateConstantBuffer(std::vector<ConstantBuffer>& constantBuffer, int i) = 0;
 	virtual void iDraw(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& mCommandList, int size, UINT indexCount, int i) = 0;

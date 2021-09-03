@@ -139,13 +139,13 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 	{
-		_sim->iSubWndProc(hwnd, msg, wParam, lParam, _hInstance, _updateFlag, _dxApp);
+		_sim->iWMCreate(hwnd, _hInstance);
 	}
 	return 0;
 
 	case WM_COMMAND:
 	{
-		_sim->iSubWndProc2(hwnd, msg, wParam, lParam, _hInstance, _updateFlag, _dxApp);
+		_sim->iWMCommand(hwnd, msg, wParam, lParam, _hInstance, _updateFlag, _dxApp);
 	}
 	return 0;
 
