@@ -38,10 +38,6 @@ private:
     POINT _mLastMousePos;
 
 
-
-    void _update();
-    void _draw();
-
     // Convenience overrides for handling mouse input.
     void _onMouseDown(WPARAM btnState, int x, int y);
     void _onMouseUp(WPARAM btnState, int x, int y);

@@ -96,9 +96,9 @@ void DX12App::wMCreate(HWND hwnd, HINSTANCE hInstance)
 	_simulation->iWMCreate(hwnd, hInstance);
 }
 
-void DX12App::wMCommand(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, bool& updateFlag, DX12App* dxapp)
+void DX12App::wMCommand(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, bool& updateFlag)
 {
-	_simulation->iWMCommand(hwnd, msg, wParam, lParam, hInstance, updateFlag, dxapp);
+	_simulation->iWMCommand(hwnd, msg, wParam, lParam, hInstance, updateFlag, this);
 }
 
 

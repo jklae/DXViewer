@@ -145,7 +145,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	case WM_COMMAND:
 	{
-		_dxApp->wMCommand(hwnd, msg, wParam, lParam, _hInstance, _updateFlag, _dxApp);
+		_dxApp->wMCommand(hwnd, msg, wParam, lParam, _hInstance, _updateFlag);
 	}
 	return 0;
 
@@ -198,8 +198,8 @@ int Win32App::run()
         {	
 			if (_updateFlag)
 			{
-				_update();
-				_draw();
+				_dxApp->update();
+				_dxApp->draw();
 			}
         }
     }
@@ -217,16 +217,6 @@ void Win32App::initDirectX(DX12App* dxapp, ISimulation* sim)
 	_dxApp->setWindow(_kWidth, _kHeight, _mhWnd[0]);
 	_dxApp->setSimulation(sim);
 	_dxApp->initialize();
-}
-
-void Win32App::_update()
-{
-	_dxApp->update();
-}
-
-void Win32App::_draw()
-{
-	_dxApp->draw();
 }
 
 
