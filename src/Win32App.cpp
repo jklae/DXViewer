@@ -139,13 +139,13 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 	{
-		_sim->iWMCreate(hwnd, _hInstance);
+		_dxApp->wMCreate(hwnd, _hInstance);
 	}
 	return 0;
 
 	case WM_COMMAND:
 	{
-		_sim->iWMCommand(hwnd, msg, wParam, lParam, _hInstance, _updateFlag, _dxApp);
+		_dxApp->wMCommand(hwnd, msg, wParam, lParam, _hInstance, _updateFlag, _dxApp);
 	}
 	return 0;
 
@@ -213,7 +213,6 @@ void Win32App::initDirectX(DX12App* dxapp, ISimulation* sim)
 	assert(_mhWnd[0] != nullptr);
 
 	_dxApp = dxapp;
-	_sim = sim;
 
 	_dxApp->setWindow(_kWidth, _kHeight, _mhWnd[0]);
 	_dxApp->setSimulation(sim);
@@ -222,18 +221,12 @@ void Win32App::initDirectX(DX12App* dxapp, ISimulation* sim)
 
 void Win32App::_update()
 {
-	if (_dxApp)
-	{
-		_dxApp->update();
-	}
+	_dxApp->update();
 }
 
 void Win32App::_draw()
 {
-	if (_dxApp)
-	{
-		_dxApp->draw();
-	}
+	_dxApp->draw();
 }
 
 
@@ -242,12 +235,9 @@ void Win32App::_onMouseDown(WPARAM btnState, int x, int y)
 	_mLastMousePos.x = x;
 	_mLastMousePos.y = y;
 
-	if (_dxApp)
+	if ((btnState & MK_MBUTTON) != 0)
 	{
-		if ((btnState & MK_MBUTTON) != 0)
-		{
-			_dxApp->resetVirtualSphereAnglesRadius();
-		}
+		_dxApp->resetVirtualSphereAnglesRadius();
 	}
 
 	SetCapture(_mhWnd[0]);
@@ -260,20 +250,17 @@ void Win32App::_onMouseUp(WPARAM btnState, int x, int y)
 
 void Win32App::_onMouseMove(WPARAM btnState, int x, int y)
 {
-	if (_dxApp)
-	{
-		if ((btnState & MK_LBUTTON) != 0)
+	if ((btnState & MK_LBUTTON) != 0)
 		{
-			_dxApp->updateVirtualSphereAngles(_mLastMousePos, x, y);
-		}
-		else if ((btnState & MK_RBUTTON) != 0)
-		{
-			_dxApp->updateVirtualSphereRadius(_mLastMousePos, x, y);
-		}
-
-		_mLastMousePos.x = x;
-		_mLastMousePos.y = y;
+		_dxApp->updateVirtualSphereAngles(_mLastMousePos, x, y);
 	}
+	else if ((btnState & MK_RBUTTON) != 0)
+	{
+		_dxApp->updateVirtualSphereRadius(_mLastMousePos, x, y);
+	}
+
+	_mLastMousePos.x = x;
+	_mLastMousePos.y = y;
 }
 
 

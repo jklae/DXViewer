@@ -25,7 +25,10 @@ public:
 
     void updateVirtualSphereAngles(const POINT mLastMousePos, const int x, const int y);
     void updateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y);
+
     void resetVirtualSphereAnglesRadius();
+    void wMCreate(HWND hwnd, HINSTANCE hInstance);
+    void wMCommand(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, bool& updateFlag, DX12App* dxapp);
 
 private:
 

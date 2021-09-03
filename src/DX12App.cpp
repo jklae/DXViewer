@@ -91,6 +91,17 @@ void DX12App::resetSimulationState()
 	_simulation->iResetSimulationState(_constantBuffer);
 }
 
+void DX12App::wMCreate(HWND hwnd, HINSTANCE hInstance)
+{
+	_simulation->iWMCreate(hwnd, hInstance);
+}
+
+void DX12App::wMCommand(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, bool& updateFlag, DX12App* dxapp)
+{
+	_simulation->iWMCommand(hwnd, msg, wParam, lParam, hInstance, updateFlag, dxapp);
+}
+
+
 #pragma region Init1
 // ######################################## Init 1 ##########################################
 void DX12App::_checkMSAA()

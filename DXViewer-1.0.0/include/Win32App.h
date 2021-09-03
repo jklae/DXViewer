@@ -35,8 +35,6 @@ private:
     int _swState[2] = { 1, 1 };
     bool _updateFlag = true;
 
-    ISimulation* _sim = nullptr;
-
     POINT _mLastMousePos;
 
 
