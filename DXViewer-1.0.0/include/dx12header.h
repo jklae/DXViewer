@@ -74,4 +74,8 @@ enum class FLAG
 	VELOCITY
 };
 
+enum class STATE { FLUID, BOUNDARY, AIR };
+enum class VALUE { MIN, MAX };
+enum class AXIS { X, Y };
+
 #endif

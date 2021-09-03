@@ -6,9 +6,6 @@ struct ConstantBuffer;
 class ISimulation abstract
 {
 public:
-	enum class STATE { FLUID, BOUNDARY, AIR };
-	enum class VALUE { MIN, MAX };
-	enum class AXIS { X, Y };
 
 	virtual void iUpdate() = 0;
 	virtual void iResetSimulationState(std::vector<ConstantBuffer>& constantBuffer) = 0;
@@ -20,6 +17,10 @@ public:
 	virtual DirectX::XMFLOAT2 iGetParticlePos(int i) = 0;
 
 	virtual void iCreateObjectParticle(std::vector<ConstantBuffer>& constantBuffer) = 0;
+	virtual void iSubWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) = 0;
+
+	virtual int getI() = 0;
+	virtual void setI(int i) = 0;
 
 	virtual ~ISimulation() = 0 {};
 };

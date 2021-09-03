@@ -28,11 +28,6 @@ Win32App::Win32App(const int kWidth, const int KHeight)
 
 Win32App::~Win32App()
 {
-	for (auto& sim : _sim)
-	{
-		delete sim;
-	}
-
 	delete _dxApp;
 }
 
@@ -243,8 +238,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 				case static_cast<int>(_COM::LIQUID_RADIO) :
 				{
-					if (_simIndex != 2) _simIndex = 0;
-					_dxApp->setSimulation(_sim[_simIndex]);
+					if (_sim->getI() != 2) _sim->setI(0);
 					_dxApp->resetSimulationState();
 					_update();
 					_draw();
@@ -252,8 +246,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				break;
 				case static_cast<int>(_COM::GAS_RADIO) :
 				{
-					_simIndex = 1;
-					_dxApp->setSimulation(_sim[_simIndex]);
+					_sim->setI(1);
 					_dxApp->resetSimulationState();
 					_update();
 					_draw();
@@ -261,8 +254,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				break;
 				case static_cast<int>(_COM::EULERIAN_RADIO) :
 				{
-					if (_simIndex == 2) _simIndex = 0;
-					_dxApp->setSimulation(_sim[_simIndex]);
+					if (_sim->getI() == 2) _sim->setI(0);
 					_dxApp->resetSimulationState();
 					_update();
 					_draw();
@@ -272,8 +264,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 				break;
 				case static_cast<int>(_COM::PIC_RADIO) :
 				{
-					_simIndex = 2;
-					_dxApp->setSimulation(_sim[_simIndex]);
+					_sim->setI(2);
 					_dxApp->resetSimulationState();
 					_update();
 					_draw();
@@ -344,8 +335,7 @@ int Win32App::run()
 	return static_cast<int>(msg.wParam);
 }
 
-
-void Win32App::initDirectX(DX12App* dxapp, vector<ISimulation*> sim)
+void Win32App::initDirectX(DX12App* dxapp, ISimulation* sim)
 {
 	// Call after window init.
 	assert(_mhWnd[0] != nullptr);
@@ -354,7 +344,7 @@ void Win32App::initDirectX(DX12App* dxapp, vector<ISimulation*> sim)
 	_sim = sim;
 
 	_dxApp->setWindow(_kWidth, _kHeight, _mhWnd[0]);
-	_dxApp->setSimulation(sim[_simIndex]);
+	_dxApp->setSimulation(sim);
 	_dxApp->initialize();
 }
 
