@@ -22,10 +22,6 @@ public:
 	virtual void iUpdateConstantBuffer(std::vector<ConstantBuffer>& constantBuffer, int i) = 0;
 	virtual void iDraw(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& mCommandList, int size, UINT indexCount, int i) = 0;
 
-	virtual void setDrawFlag(FLAG flagType, bool flag) = 0;
-
-	virtual bool getDrawFlag(FLAG flagType) = 0;
-
 	virtual ~ISimulation() = 0 {};
 };
 
