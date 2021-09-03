@@ -182,18 +182,18 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			{
 				case static_cast<int>(_COM::GRID_BTN) :
 				{
-					bool flag = !_dxApp->getDrawFlag(FLAG::GRID);
+					bool flag = !_sim->getDrawFlag(FLAG::GRID);
 					SetDlgItemText(hwnd, static_cast<int>(_COM::GRID_BTN), flag ? L"Grid : ON " : L"Grid : OFF");
-					_dxApp->setDrawFlag(FLAG::GRID, flag);
+					_sim->setDrawFlag(FLAG::GRID, flag);
 					_draw();
 				}
 				break;
 
 				case static_cast<int>(_COM::PARTICLE_BTN) :
 				{
-					bool flag = !_dxApp->getDrawFlag(FLAG::PARTICLE);
+					bool flag = !_sim->getDrawFlag(FLAG::PARTICLE);
 					SetDlgItemText(hwnd, static_cast<int>(_COM::PARTICLE_BTN), flag ? L"Particle : ON " : L"Particle : OFF");
-					_dxApp->setDrawFlag(FLAG::PARTICLE, flag);
+					_sim->setDrawFlag(FLAG::PARTICLE, flag);
 					_draw();
 
 				}
@@ -201,9 +201,9 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 				case static_cast<int>(_COM::VELOCITY_BTN) :
 				{
-					bool flag = !_dxApp->getDrawFlag(FLAG::VELOCITY);
+					bool flag = !_sim->getDrawFlag(FLAG::VELOCITY);
 					SetDlgItemText(hwnd, static_cast<int>(_COM::VELOCITY_BTN), flag ? L"Velocity : ON " : L"Velocity : OFF");
-					_dxApp->setDrawFlag(FLAG::VELOCITY, flag);
+					_sim->setDrawFlag(FLAG::VELOCITY, flag);
 					_draw();
 				}
 				break;

@@ -47,17 +47,6 @@ void DX12App::setWindow(int kWidth, int kHeight, HWND mhMainWnd)
 	_mhMainWnd = mhMainWnd;
 }
 
-void DX12App::setDrawFlag(FLAG flagType, bool flag)
-{
-	int i = static_cast<int>(flagType);
-	_drawFlag[i] = flag;
-}
-
-bool DX12App::getDrawFlag(FLAG flagType)
-{
-	int i = static_cast<int>(flagType);
-	return _drawFlag[i];
-}
 
 bool DX12App::initialize()
 {
@@ -623,7 +612,6 @@ void DX12App::draw()
 	ID3D12DescriptorHeap* descriptorHeaps[] = { _mCbvHeap.Get() };
 	_mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-	int objectEndIndex = _simulation->iGetObjectCount() * _simulation->iGetObjectCount();
 	int size = _constantBuffer.size();
 	for (int i = 0; i < size; i++)
 	{
@@ -632,35 +620,7 @@ void DX12App::draw()
 
 		_mCommandList->SetGraphicsRootDescriptorTable(0, cbvHandle);
 
-		if (i < objectEndIndex)
-		{
-			if (getDrawFlag(FLAG::GRID))
-			{
-				_mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-				_mCommandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
-			}
-		}
-		else if (i >= objectEndIndex && i < size - 1)
-		{
-			if (getDrawFlag(FLAG::PARTICLE))
-			{
-				_mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-				_mCommandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
-			}
-		}
-		else
-		{
-			if (getDrawFlag(FLAG::VELOCITY))
-			{
-				_mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
-				_mCommandList->DrawIndexedInstanced(
-					_indexCount - 6, //count
-					1, 
-					6, //  index start 
-					4, //  vertex start
-					0);
-			}
-		}
+		_simulation->iDraw(_mCommandList, _constantBuffer, _indexCount, i);
 	}
 	// ------
 

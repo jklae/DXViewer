@@ -17,9 +17,6 @@ public:
     void setProjectionType(PROJ proj);
 
     void setWindow(const int kWidth, const int kHeight, HWND mhMainWnd);
-    void setDrawFlag(FLAG flagType, bool flag);
-
-    bool getDrawFlag(FLAG flagType);
 
     bool initialize();
     void resetSimulationState();
@@ -38,7 +35,6 @@ private:
     PROJ _proj = PROJ::PERSPECTIVE;
 
     std::vector<ConstantBuffer> _constantBuffer;
-    bool _drawFlag[3] = { true, true, false };
 
     int _kWidth;
     int _kHeight;
