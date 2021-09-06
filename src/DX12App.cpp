@@ -32,10 +32,9 @@ DX12App::~DX12App()
 	delete _simulation;
 }
 
-void DX12App::setSimulation(ISimulation* simulation, double timestep)
+void DX12App::setSimulation(ISimulation* simulation)
 {
 	_simulation = simulation;
-	_timestep = timestep;
 }
 
 void DX12App::setProjectionType(PROJ proj)
@@ -49,6 +48,7 @@ void DX12App::setWindow(int kWidth, int kHeight, HWND mhMainWnd)
 	_kHeight = kHeight;
 	_mhMainWnd = mhMainWnd;
 }
+
 
 bool DX12App::initialize()
 {
@@ -87,6 +87,22 @@ bool DX12App::initialize()
 
 	return true;
 }
+
+void DX12App::resetSimulationState()
+{
+	_simulation->iResetSimulationState(_constantBuffer);
+}
+
+void DX12App::wMCreate(HWND hwnd, HINSTANCE hInstance)
+{
+	_simulation->iWMCreate(hwnd, hInstance);
+}
+
+void DX12App::wMCommand(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, bool& updateFlag)
+{
+	_simulation->iWMCommand(hwnd, msg, wParam, lParam, hInstance, updateFlag, this);
+}
+
 
 #pragma region Init1
 // ######################################## Init 1 ##########################################
@@ -528,20 +544,20 @@ void DX12App::update()
 {
 	// ######### Update Vertex, Index buffer
 	// Change View size
-	_simulation->iUpdate(_timestep);
+	_simulation->iUpdate();
 
-	vector<Vertex> vertices = dvel? _simulation->iGetLineVertice() : _simulation->iGetVertice();
-	vector<unsigned int> indices = dvel? _simulation->iGetLineIndice() : _simulation->iGetIndice();
+	vector<Vertex> vertices = _simulation->iGetVertice();
+	vector<unsigned int> indices = _simulation->iGetIndice();
 
-	const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
+	const UINT vbByteSize = static_cast<UINT>(vertices.size()) * sizeof(Vertex);
 	_vbv.SizeInBytes = vbByteSize;
-	const UINT ibByteSize = (UINT)indices.size() * sizeof(unsigned int);
+	const UINT ibByteSize = static_cast<UINT>(indices.size()) * sizeof(unsigned int);
 	_ibv.SizeInBytes = ibByteSize;
 
 	// Update mapping data
 	memcpy(&_vMappedData[0], vertices.data(), sizeof(Vertex) * vertices.size());
 	memcpy(&_iMappedData[0], indices.data(), sizeof(unsigned int) * indices.size());
-	_indexCount = (UINT)indices.size();
+	_indexCount = static_cast<UINT>(indices.size());
 	// #########
 
 	// ######### Update Constant Buffer
@@ -567,36 +583,10 @@ void DX12App::update()
 
 	UINT mElementByteSize = computeBufferByteSize<ConstantBuffer>();
 
-	int size = dvel ? 1 : _constantBuffer.size();
+	int size = _constantBuffer.size();
 	for (int i = 0; i < size; i++)
 	{
-		int objectEndIndex = _simulation->iGetObjectCount() * _simulation->iGetObjectCount();
-
-		// Set object color
-		if (i < objectEndIndex)
-		{
-			_constantBuffer[i].color = _simulation->iGetColor(i);
-		}
-		// Set particle position
-		else
-		{
-			int particleStartindex = i - objectEndIndex;
-			XMFLOAT2 pos = _simulation->iGetParticlePos(particleStartindex);
-
-			if (pvel)
-			{
-				_constantBuffer[i].world._41 = pos.x;
-				_constantBuffer[i].world._42 = pos.y;
-
-			}
-			else
-			{
-
-				_constantBuffer[i].world._41 = 100.f;
-				_constantBuffer[i].world._42 = 100.f;
-			}
-
-		}
+		_simulation->iUpdateConstantBuffer(_constantBuffer, i);
 
 		XMMATRIX world = XMLoadFloat4x4(&_constantBuffer[i].world);
 		XMMATRIX worldViewProj = world * view * proj;
@@ -631,20 +621,19 @@ void DX12App::draw()
 
 	_mCommandList->IASetVertexBuffers(0, 1, &_vbv);
 	_mCommandList->IASetIndexBuffer(&_ibv);
-	_mCommandList->IASetPrimitiveTopology(dvel ? D3D11_PRIMITIVE_TOPOLOGY_LINELIST : D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	ID3D12DescriptorHeap* descriptorHeaps[] = { _mCbvHeap.Get() };
 	_mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
-	int size = dvel ? 1 : _constantBuffer.size();
-	if (dvel) _constantBuffer[0].world = transformMatrix(_constantBuffer[0].world._41, _constantBuffer[0].world._42, 0.0f, 1.0f);
+	int size = _constantBuffer.size();
 	for (int i = 0; i < size; i++)
 	{
 		auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(_mCbvHeap->GetGPUDescriptorHandleForHeapStart());
 		cbvHandle.Offset(i, _md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
 
 		_mCommandList->SetGraphicsRootDescriptorTable(0, cbvHandle);
-		_mCommandList->DrawIndexedInstanced(_indexCount, 1, 0, 0, 0);
+
+		_simulation->iDraw(_mCommandList, size, _indexCount, i);
 	}
 	// ------
 
@@ -675,14 +664,12 @@ void DX12App::updateVirtualSphereAngles(const POINT mLastMousePos, const int x, 
 	float dx = XMConvertToRadians(0.25f * static_cast<float>(x - mLastMousePos.x));
 	float dy = XMConvertToRadians(0.25f * static_cast<float>(y - mLastMousePos.y));
 
-	_simulation->iGetVel()[INDEX(5, 5)] = { 2.0f, 2.0f };
-
 	// Update angles based on input to orbit camera around box.
-	//_mTheta -= dx;
-	//_mPhi -= dy;
+	_mTheta -= dx;
+	_mPhi -= dy;
 
-	//// Restrict the angle mPhi.
-	//_mPhi = _clamp(_mPhi, 0.1f, 3.14f - 0.1f);
+	// Restrict the angle mPhi.
+	_mPhi = _clamp(_mPhi, 0.1f, 3.14f - 0.1f);
 }
 
 void DX12App::updateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y)

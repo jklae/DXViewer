@@ -67,4 +67,11 @@ enum class PROJ
 	ORTHOGRAPHIC
 };
 
+enum class FLAG
+{
+	GRID,
+	PARTICLE,
+	VELOCITY
+};
+
 #endif

@@ -10,30 +10,30 @@
 class DX12App
 {
 public:
-    bool dvel = false;
-    bool pvel = true;
-
     __declspec(dllexport) DX12App();
     __declspec(dllexport) ~DX12App();
 
-    __declspec(dllexport) void setSimulation(ISimulation* simulation, double timestep);
+    __declspec(dllexport) void setSimulation(ISimulation* simulation);
     void setProjectionType(PROJ proj);
 
     void setWindow(const int kWidth, const int kHeight, HWND mhMainWnd);
 
     bool initialize();
+    void resetSimulationState();
     void update();
     void draw();
 
     void updateVirtualSphereAngles(const POINT mLastMousePos, const int x, const int y);
     void updateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y);
+
     void resetVirtualSphereAnglesRadius();
+    void wMCreate(HWND hwnd, HINSTANCE hInstance);
+    void wMCommand(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, bool& updateFlag);
 
 private:
 
     // setSimulation()
     ISimulation* _simulation = nullptr;
-    double _timestep;
 
     PROJ _proj = PROJ::PERSPECTIVE;
 
