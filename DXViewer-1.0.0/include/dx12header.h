@@ -18,7 +18,6 @@
 
 #include "../../extern/d3dx12.h"
 
-
 inline DirectX::XMFLOAT4X4 transformMatrix(
     const float x, const float y, const float z, 
     const float scale = 1.0f)
@@ -73,5 +72,16 @@ enum class FLAG
 	PARTICLE,
 	VELOCITY
 };
+//
+//inline DirectX::XMFLOAT2 operator+(DirectX::XMFLOAT2 f1, DirectX::XMFLOAT2 f2)
+//{
+//	return DirectX::XMFLOAT2(f1.x + f2.x, f1.y + f2.y);
+//}
+
+inline void operator+=(DirectX::XMFLOAT2& f1, DirectX::XMFLOAT2 f2)
+{
+	f1.x += f2.x;
+	f1.y += f2.y;
+}
 
 #endif
