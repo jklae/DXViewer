@@ -72,11 +72,21 @@ enum class FLAG
 	PARTICLE,
 	VELOCITY
 };
-//
-//inline DirectX::XMFLOAT2 operator+(DirectX::XMFLOAT2 f1, DirectX::XMFLOAT2 f2)
-//{
-//	return DirectX::XMFLOAT2(f1.x + f2.x, f1.y + f2.y);
-//}
+
+inline DirectX::XMFLOAT2 operator+(DirectX::XMFLOAT2 f1, DirectX::XMFLOAT2 f2)
+{
+	return DirectX::XMFLOAT2(f1.x + f2.x, f1.y + f2.y);
+}
+
+inline DirectX::XMFLOAT2 operator-(DirectX::XMFLOAT2 f1, DirectX::XMFLOAT2 f2)
+{
+	return DirectX::XMFLOAT2(f1.x - f2.x, f1.y - f2.y);
+}
+
+inline DirectX::XMFLOAT2 operator*(DirectX::XMFLOAT2 f1, float f2)
+{
+	return DirectX::XMFLOAT2(f1.x * f2, f1.y * f2);
+}
 
 inline void operator+=(DirectX::XMFLOAT2& f1, DirectX::XMFLOAT2 f2)
 {
@@ -84,4 +94,9 @@ inline void operator+=(DirectX::XMFLOAT2& f1, DirectX::XMFLOAT2 f2)
 	f1.y += f2.y;
 }
 
+inline void operator+=(DirectX::XMFLOAT2& f1, float f2)
+{
+	f1.x += f2;
+	f1.y += f2;
+}
 #endif
