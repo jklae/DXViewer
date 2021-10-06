@@ -28,6 +28,7 @@ public:
     void resetVirtualSphereAnglesRadius();
     void wMCreate(HWND hwnd, HINSTANCE hInstance);
     void wMCommand(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, bool& updateFlag);
+    void wMHScroll(HWND hwnd, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance);
 
 private:
 

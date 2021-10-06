@@ -103,6 +103,11 @@ void DX12App::wMCommand(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINST
 	_simulation->iWMCommand(hwnd, msg, wParam, lParam, hInstance, updateFlag, this);
 }
 
+void DX12App::wMHScroll(HWND hwnd, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance)
+{
+	_simulation->iWMHScroll(hwnd, wParam, lParam, hInstance);
+}
+
 
 #pragma region Init1
 // ######################################## Init 1 ##########################################
