@@ -34,6 +34,7 @@ private:
     int _swState[2] = { 1, 1 };
     bool _updateFlag = true;
 
+    int _scrollPos;
     POINT _mLastMousePos;
 
 
