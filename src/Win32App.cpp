@@ -141,6 +141,10 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			_dxApp->wMCreate(hwnd, _hInstance);
 			return 0;
 
+		case WM_PAINT:
+			cout << "hi\n";
+			return 0;
+
 		case WM_COMMAND:
 			_dxApp->wMCommand(hwnd, msg, wParam, lParam, _hInstance, _updateFlag);
 			return 0;
