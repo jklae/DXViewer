@@ -103,9 +103,9 @@ void DX12App::wMCommand(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINST
 	_simulation->iWMCommand(hwnd, msg, wParam, lParam, hInstance, updateFlag, this);
 }
 
-void DX12App::wMHScroll(HWND hwnd, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance)
+void DX12App::wMHScroll(HWND hwnd, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, DX12App* dxapp)
 {
-	_simulation->iWMHScroll(hwnd, wParam, lParam, hInstance);
+	_simulation->iWMHScroll(hwnd, wParam, lParam, hInstance, dxapp);
 }
 
 void DX12App::wMTimer()

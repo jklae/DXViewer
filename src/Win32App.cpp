@@ -150,7 +150,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			return 0;
 
 		case WM_HSCROLL:
-			_dxApp->wMHScroll(hwnd, wParam, lParam, _hInstance);
+			_dxApp->wMHScroll(hwnd, wParam, lParam, _hInstance, _dxApp);
 			return 0;
 
 		// WM_DESTROY is sent when the window is being destroyed.
