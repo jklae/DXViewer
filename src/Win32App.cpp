@@ -146,7 +146,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			return 0;
 
 		case WM_TIMER:
-			_dxApp->wMTimer();
+			_dxApp->wMTimer(hwnd);
 			return 0;
 
 		case WM_HSCROLL:
