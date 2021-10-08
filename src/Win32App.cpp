@@ -141,12 +141,12 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			_dxApp->wMCreate(hwnd, _hInstance);
 			return 0;
 
-		case WM_PAINT:
-			cout << "hi\n";
-			return 0;
-
 		case WM_COMMAND:
 			_dxApp->wMCommand(hwnd, msg, wParam, lParam, _hInstance, _updateFlag);
+			return 0;
+
+		case WM_TIMER:
+			_dxApp->wMTimer();
 			return 0;
 
 		case WM_HSCROLL:
@@ -155,6 +155,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 		// WM_DESTROY is sent when the window is being destroyed.
 		case WM_DESTROY:
+			_dxApp->wMDestory(hwnd);
 			PostQuitMessage(0);
 			return 0;
 
@@ -187,12 +188,12 @@ int Win32App::run()
 		// Otherwise, do animation/game stuff.
 		else
         {	
-			if (_updateFlag)
-			{
-				_dxApp->update();
-				_dxApp->draw();
-			}
         }
+		if (_updateFlag)
+		{
+			_dxApp->update();
+			_dxApp->draw();
+		}
     }
 
 	return static_cast<int>(msg.wParam);

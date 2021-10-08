@@ -108,6 +108,15 @@ void DX12App::wMHScroll(HWND hwnd, WPARAM wParam, LPARAM lParam, HINSTANCE hInst
 	_simulation->iWMHScroll(hwnd, wParam, lParam, hInstance);
 }
 
+void DX12App::wMTimer()
+{
+	_simulation->iWMTimer();
+}
+
+void DX12App::wMDestory(HWND hwnd)
+{
+	_simulation->iWMDestory(hwnd);
+}
 
 #pragma region Init1
 // ######################################## Init 1 ##########################################
