@@ -10,20 +10,13 @@
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
 {
-    int width = 800;
-    int height = 800;
-
-    Win32App winApp(width, height);
-    winApp.initialize(hInstance);
-
-    AdhocSimulation* adhocsim = new AdhocSimulation();
-    adhocsim->iSetObjectCountXYZ(10, 10, 1);
-    adhocsim->iSetObjectScale(0.1f);
+    AdhocSimulation* fluidsim = new AdhocSimulation();
 
     DX12App* dxapp = new DX12App();
-    dxapp->setSimulation(adhocsim, 0.05);
+    dxapp->setProjectionType(PROJ::PERSPECTIVE);
 
-    winApp.initDirectX(dxapp);
+    Win32App winApp(800, 800);
+    winApp.initialize(hInstance, dxapp, fluidsim);
 
     return winApp.run();
 }
