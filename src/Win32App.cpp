@@ -5,105 +5,177 @@ using namespace std;
 using namespace DirectX;
 
 // Static variable is used to put the proc function into the class.
-Win32App* Win32App::instanceForProc = nullptr;
-Win32App* Win32App::GetinstanceForProc()
+Win32App* Win32App::_instanceForProc = nullptr;
+Win32App* Win32App::getinstanceForProc()
 {
-	return instanceForProc;
+	return _instanceForProc;
 }
-LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK directXWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	return Win32App::GetinstanceForProc()->WndProc(hwnd, msg, wParam, lParam);
+	return Win32App::getinstanceForProc()->mainWndProc(hwnd, msg, wParam, lParam);
+}
+LRESULT CALLBACK controllWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	return Win32App::getinstanceForProc()->subWndProc(hwnd, msg, wParam, lParam);
 }
 //
 
 Win32App::Win32App(const int kWidth, const int KHeight)
-	:kWidth(kWidth), kHeight(KHeight)
+	:_kWidth(kWidth), _kHeight(KHeight)
 {
-	instanceForProc = this;
+	_instanceForProc = this;
 }
 
 Win32App::~Win32App()
 {
-	delete dxApp;
+	delete _dxApp;
 }
 
-bool Win32App::Initialize(HINSTANCE hInstance)
+bool Win32App::initialize(HINSTANCE hInstance, DX12App* dxapp, ISimulation* sim)
 {
-	// Just call it once.
-	assert(mhMainWnd == nullptr);
+	int offsetX = 200;
+	int offsetY = 100;
 
-	WNDCLASS wc;
-	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = MainWndProc;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
-	wc.hInstance = hInstance;
-	wc.hIcon = LoadIcon(0, IDI_APPLICATION);
-	wc.hCursor = LoadCursor(0, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
-	wc.lpszMenuName = 0;
-	wc.lpszClassName = L"MainWnd";
+	_hInstance = hInstance;
 
-	if (!RegisterClass(&wc))
-	{
-		MessageBox(0, L"RegisterClass Failed.", 0, 0);
-		return false;
-	}
+	WNDCLASS wc[2];
+	wc[0].style = CS_HREDRAW | CS_VREDRAW;
+	wc[0].lpfnWndProc = directXWndProc;
+	wc[0].cbClsExtra = 0;
+	wc[0].cbWndExtra = 0;
+	wc[0].hInstance = hInstance;
+	wc[0].hIcon = LoadIcon(0, IDI_APPLICATION);
+	wc[0].hCursor = LoadCursor(0, IDC_ARROW);
+	wc[0].hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
+	wc[0].lpszMenuName = 0;
+	wc[0].lpszClassName = L"DirectXWnd";
+
+	RegisterClass(&wc[0]);
 
 
-	mhMainWnd = CreateWindow(L"MainWnd", L"d3d App",
+	_mhWnd[0] = CreateWindow(L"DirectXWnd", L"d3d App",
 		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
-		CW_USEDEFAULT, CW_USEDEFAULT, kWidth, kHeight,
-		0, 0, hInstance, 0);
+		offsetX, offsetY, _kWidth, _kHeight,
+		0, 0, _hInstance, 0);
 
-	if (!mhMainWnd)
+	initDirectX(dxapp, sim);
+
+
+
+	wc[1] = wc[0]; // Duplicate settings
+	wc[1].lpfnWndProc = controllWndProc;
+	wc[1].lpszClassName = L"ControllWnd";
+	wc[1].hbrBackground = (HBRUSH)CreateSolidBrush(RGB(225, 225, 225));
+
+	RegisterClass(&wc[1]);
+
+
+
+	_mhWnd[1] = CreateWindow(L"ControllWnd", L"Controller",
+		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
+		offsetX + _kWidth, offsetY, 300, _kHeight,
+		0, 0, _hInstance, 0);
+
+
+	for (int i = 0; i < 2; i++)
 	{
-		MessageBox(0, L"CreateWindow Failed.", 0, 0);
-		return false;
+		ShowWindow(_mhWnd[i], SW_SHOW);
+		UpdateWindow(_mhWnd[i]);
 	}
-
-	ShowWindow(mhMainWnd, SW_SHOW);
-	UpdateWindow(mhMainWnd);
-
-
+	
 	return true;
-}
+}                 
 
-
-LRESULT Win32App::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT Win32App::mainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
-
 		// WM_DESTROY is sent when the window is being destroyed.
 	case WM_DESTROY:
+		_dxApp->wMDestory(hwnd);
 		PostQuitMessage(0);
 		return 0;
-
+		
 	case WM_LBUTTONDOWN:
 	case WM_MBUTTONDOWN:
 	case WM_RBUTTONDOWN:
-		OnMouseDown(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		_onMouseDown(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 	case WM_LBUTTONUP:
 	case WM_MBUTTONUP:
 	case WM_RBUTTONUP:
-		OnMouseUp(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		_onMouseUp(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 	case WM_MOUSEMOVE:
-		OnMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		_onMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 		return 0;
 
+	case WM_KEYDOWN:
+		switch (wParam) 
+		{
+			// v
+		case 0x56:
+			break;
+		case VK_LEFT:
+			break;
+		}
+		return 0;
+
+	case WM_MOVING:
+		_synchronizeWinPos(_WINDOW::SUB);
+		return 0;
+
+	case WM_SIZE:
+		_switchWinState(_WINDOW::SUB);
+		return 0;
 	}
+	
 
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-
-
-int Win32App::Run()
+LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	assert(mhMainWnd != nullptr);
+	switch (msg)
+	{
+		case WM_CREATE:
+			_dxApp->wMCreate(hwnd, _hInstance);
+			return 0;
+
+		case WM_COMMAND:
+			_dxApp->wMCommand(hwnd, msg, wParam, lParam, _hInstance, _updateFlag);
+			return 0;
+
+		case WM_TIMER:
+			_dxApp->wMTimer(hwnd);
+			return 0;
+
+		case WM_HSCROLL:
+			_dxApp->wMHScroll(hwnd, wParam, lParam, _hInstance, _dxApp);
+			return 0;
+
+		// WM_DESTROY is sent when the window is being destroyed.
+		case WM_DESTROY:
+			_dxApp->wMDestory(hwnd);
+			PostQuitMessage(0);
+			return 0;
+
+		case WM_MOVING:
+			_synchronizeWinPos(_WINDOW::MAIN);
+			return 0;
+
+		case WM_SIZE:
+			_switchWinState(_WINDOW::MAIN);
+			return 0;
+
+		default:
+			return DefWindowProc(hwnd, msg, wParam, lParam);
+	}
+}
+
+int Win32App::run()
+{
+	assert(_mhWnd[0] != nullptr);
 
 	MSG msg = {0};
 	while(msg.message != WM_QUIT)
@@ -117,78 +189,84 @@ int Win32App::Run()
 		// Otherwise, do animation/game stuff.
 		else
         {	
-			Update();
-			Draw();
         }
+		if (_updateFlag)
+		{
+			_dxApp->update();
+			_dxApp->draw();
+		}
     }
 
-	return (int)msg.wParam;
+	return static_cast<int>(msg.wParam);
+}
+
+void Win32App::initDirectX(DX12App* dxapp, ISimulation* sim)
+{
+	// Call after window init.
+	assert(_mhWnd[0] != nullptr);
+
+	_dxApp = dxapp;
+
+	_dxApp->setWindow(_kWidth, _kHeight, _mhWnd[0]);
+	_dxApp->setSimulation(sim);
+	_dxApp->initialize();
 }
 
 
-void Win32App::InitDirectX(DX12App* dxapp_)
+void Win32App::_onMouseDown(WPARAM btnState, int x, int y)
 {
-	// Call after window init
-	assert(mhMainWnd != nullptr);
+	_mLastMousePos.x = x;
+	_mLastMousePos.y = y;
 
-	dxApp = dxapp_;
-
-	dxApp->SetWindow(kWidth, kHeight, mhMainWnd);
-	dxApp->Initialize();
-}
-
-void Win32App::Update()
-{
-	if (dxApp)
+	if ((btnState & MK_MBUTTON) != 0)
 	{
-		dxApp->Update();
+		_dxApp->resetVirtualSphereAnglesRadius();
 	}
+
+	SetCapture(_mhWnd[0]);
 }
 
-void Win32App::Draw()
-{
-	if (dxApp)
-	{
-		dxApp->Draw();
-	}
-}
-
-
-
-
-void Win32App::OnMouseDown(WPARAM btnState, int x, int y)
-{
-	mLastMousePos.x = x;
-	mLastMousePos.y = y;
-
-	SetCapture(mhMainWnd);
-}
-
-void Win32App::OnMouseUp(WPARAM btnState, int x, int y)
+void Win32App::_onMouseUp(WPARAM btnState, int x, int y)
 {
 	ReleaseCapture();
 }
 
-void Win32App::OnMouseMove(WPARAM btnState, int x, int y)
+void Win32App::_onMouseMove(WPARAM btnState, int x, int y)
 {
-	if (dxApp)
-	{
-		if ((btnState & MK_LBUTTON) != 0)
+	if ((btnState & MK_LBUTTON) != 0)
 		{
-			dxApp->UpdateVirtualSphereAngles(mLastMousePos, x, y);
-		}
-		else if ((btnState & MK_RBUTTON) != 0)
-		{
-			dxApp->UpdateVirtualSphereRadius(mLastMousePos, x, y);
-		}
-
-		mLastMousePos.x = x;
-		mLastMousePos.y = y;
+		_dxApp->updateVirtualSphereAngles(_mLastMousePos, x, y);
 	}
+	else if ((btnState & MK_RBUTTON) != 0)
+	{
+		_dxApp->updateVirtualSphereRadius(_mLastMousePos, x, y);
+	}
+
+	_mLastMousePos.x = x;
+	_mLastMousePos.y = y;
 }
 
 
-HWND Win32App::GetMhMainWnd()
+void Win32App::_synchronizeWinPos(_WINDOW state)
 {
-	return mhMainWnd;
+	int i = static_cast<int>(state);
+	int i_1 = (i + 1) % 2;
+	WINDOWINFO winfo;
+
+	GetWindowInfo(_mhWnd[i_1], &winfo);
+	SetWindowPos(_mhWnd[i], NULL,
+		// If _WINDOW::SUB,  (-1 + i * 2) == -1 + 2 == 1 
+		//			thus, winfo.rcWindow.left + _kWidth
+		// If _WINDOW::MAIN, (-1 + i * 2) == -1 + 0 == -1
+		//			thus, winfo.rcWindow.left - _kWidth
+		winfo.rcWindow.left + (-1 + i * 2) * _kWidth,
+		winfo.rcWindow.top,
+		0, 0, SWP_NOSIZE);
+}
+
+void Win32App::_switchWinState(_WINDOW state)
+{
+	int i = static_cast<int>(state);
+	ShowWindow(_mhWnd[i], _swState[i]); // SW_NORMAL = 1, SW_MINIMIZE = 6
+	_swState[i] = (_swState[i] * 6) % 35; //Repeat 0,6
 }
