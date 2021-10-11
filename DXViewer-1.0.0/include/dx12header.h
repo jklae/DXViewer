@@ -17,7 +17,7 @@
 #include <D3Dcompiler.h>
 #include <DirectXColors.h>
 
-#include "../../extern/d3dx12.h"
+#include "d3dx12.h"
 
 inline DirectX::XMFLOAT4X4 transformMatrix(
     const float x, const float y, const float z, 
