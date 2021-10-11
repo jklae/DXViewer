@@ -427,11 +427,11 @@ void DX12App::_compileShader()
 	};
 
 	// ..\\ext\\DXViewer\\shader\\vertexShader.hlsl
-	HRESULT vertexShaderCompile = D3DCompileFromFile(L"..\\..\\shader\\vertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &_mvsByteCode, 0);
-	HRESULT fragmentShaderCompile = D3DCompileFromFile(L"..\\..\\shader\\fragShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &_mpsByteCode, 0);
-	assert(SUCCEEDED(vertexShaderCompile) && SUCCEEDED(fragmentShaderCompile));
+	// HRESULT vertexShaderCompile = D3DCompileFromFile(L"..\\..\\shader\\vertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &_mvsByteCode, 0);
+	// HRESULT fragmentShaderCompile = D3DCompileFromFile(L"..\\..\\shader\\fragShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &_mpsByteCode, 0);
+	// assert(SUCCEEDED(vertexShaderCompile) && SUCCEEDED(fragmentShaderCompile));
 	
-	/*std::ifstream fin("vertexShader.cso", std::ios::binary);
+	std::ifstream fin("vertexShader.cso", std::ios::binary);
 
 	fin.seekg(0, std::ios_base::end);
 	std::ifstream::pos_type size = (int)fin.tellg();
@@ -443,7 +443,7 @@ void DX12App::_compileShader()
 	fin.read((char*)blob->GetBufferPointer(), size);
 	fin.close();
 
-	mvsByteCode = blob;
+	_mvsByteCode = blob;
 
 	std::ifstream fin2("fragShader.cso", std::ios::binary);
 
@@ -457,7 +457,7 @@ void DX12App::_compileShader()
 	fin2.read((char*)blob2->GetBufferPointer(), size2);
 	fin2.close();
 
-	mpsByteCode = blob2;*/
+	_mpsByteCode = blob2;
 }
 
 void DX12App::_createPSO()

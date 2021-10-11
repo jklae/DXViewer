@@ -12,15 +12,15 @@ public:
     __declspec(dllexport) DX12App();
     __declspec(dllexport) ~DX12App();
 
-    __declspec(dllexport) void setSimulation(ISimulation* simulation);
-    void setProjectionType(PROJ proj);
+    void setSimulation(ISimulation* simulation);
+    __declspec(dllexport) void setProjectionType(PROJ proj);
 
     void setWindow(const int kWidth, const int kHeight, HWND mhMainWnd);
 
     bool initialize();
-    void resetSimulationState();
-    void update();
-    void draw();
+    __declspec(dllexport) void resetSimulationState();
+    __declspec(dllexport) void update();
+    __declspec(dllexport) void draw();
 
     void updateVirtualSphereAngles(const POINT mLastMousePos, const int x, const int y);
     void updateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y);
