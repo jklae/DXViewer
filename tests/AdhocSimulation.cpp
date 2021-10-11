@@ -11,23 +11,32 @@ AdhocSimulation::~AdhocSimulation()
 {
 }
 
-void AdhocSimulation::iUpdate(double timestep)
+void AdhocSimulation::iUpdate()
 {
 	//cout << "timestep : " << timestep << endl;
+}
+
+void AdhocSimulation::iResetSimulationState(std::vector<ConstantBuffer>& constantBuffer)
+{
 }
 
 vector<Vertex> AdhocSimulation::iGetVertice()
 {
 	vector<Vertex> vertices =
 	{
-		Vertex({ XMFLOAT3(-1.0f, -1.0f, -1.0f) }),
-		Vertex({ XMFLOAT3(-1.0f, +1.0f, -1.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, +1.0f, -1.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, -1.0f, -1.0f) }),
-		Vertex({ XMFLOAT3(-1.0f, -1.0f, +1.0f) }),
-		Vertex({ XMFLOAT3(-1.0f, +1.0f, +1.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, +1.0f, +1.0f) }),
-		Vertex({ XMFLOAT3(+1.0f, -1.0f, +1.0f) }) //, XMFLOAT4(Colors::Black)
+		Vertex({ XMFLOAT3(-0.5f, -0.5f, 0.0f) }),
+		Vertex({ XMFLOAT3(-0.5f, +0.5f, 0.0f) }),
+		Vertex({ XMFLOAT3(+0.5f, +0.5f, 0.0f) }),
+		Vertex({ XMFLOAT3(+0.5f, -0.5f, 0.0f) })
+
+		//Vertex({ XMFLOAT3(-1.0f, -1.0f, -1.0f) }),
+		//Vertex({ XMFLOAT3(-1.0f, +1.0f, -1.0f) }),
+		//Vertex({ XMFLOAT3(+1.0f, +1.0f, -1.0f) }),
+		//Vertex({ XMFLOAT3(+1.0f, -1.0f, -1.0f) }),
+		//Vertex({ XMFLOAT3(-1.0f, -1.0f, +1.0f) }),
+		//Vertex({ XMFLOAT3(-1.0f, +1.0f, +1.0f) }),
+		//Vertex({ XMFLOAT3(+1.0f, +1.0f, +1.0f) }),
+		//Vertex({ XMFLOAT3(+1.0f, -1.0f, +1.0f) }) //, XMFLOAT4(Colors::Black)
 	};
 
 	return vertices;
@@ -41,80 +50,75 @@ vector<unsigned int> AdhocSimulation::iGetIndice()
 		0, 1, 2,
 		0, 2, 3,
 
-		// back face
-		4, 6, 5,
-		4, 7, 6,
+		//// back face
+		//4, 6, 5,
+		//4, 7, 6,
 
-		// left face
-		4, 5, 1,
-		4, 1, 0,
+		//// left face
+		//4, 5, 1,
+		//4, 1, 0,
 
-		// right face
-		3, 2, 6,
-		3, 6, 7,
+		//// right face
+		//3, 2, 6,
+		//3, 6, 7,
 
-		// top face
-		1, 5, 6,
-		1, 6, 2,
+		//// top face
+		//1, 5, 6,
+		//1, 6, 2,
 
-		// bottom face
-		4, 0, 3,
-		4, 3, 7
+		//// bottom face
+		//4, 0, 3,
+		//4, 3, 7
 	};
 
 	return indices;
 }
 
-vector<XMFLOAT4> AdhocSimulation::iGetColor()
-{
-	vector<XMFLOAT4> color;
-
-	for (int k = 0; k < _objectCount[2]; k++)
-	{
-		for (int j = 0; j < _objectCount[1]; j++)
-		{
-			for (int i = 0; i < _objectCount[0]; i++)
-			{
-				if (i == 1 && j == 0 && k == 0)
-					color.push_back(XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f));
-				else
-					color.push_back(XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
-			}
-		}
-	}
-
-	return color;
-}
-
-int* AdhocSimulation::iGetObjectCountXYZ()
+int AdhocSimulation::iGetObjectCount()
 {
 	return _objectCount;
 }
 
-float AdhocSimulation::iGetObjectScale()
+void AdhocSimulation::iCreateObjectParticle(std::vector<ConstantBuffer>& constantBuffer)
 {
-	return _objectScale;
+	struct ConstantBuffer objectCB;
+	// Multiply by a specific value to make a stripe
+	objectCB.world = transformMatrix(0.0f, 0.0f, 0.0f, 0.8f);
+	objectCB.worldViewProj = transformMatrix(0.0f, 0.0f, 0.0f);
+	objectCB.color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+
+	constantBuffer.push_back(objectCB);
 }
 
-float AdhocSimulation::iGetObjectSize()
+
+void AdhocSimulation::iWMCreate(HWND hwnd, HINSTANCE hInstance)
 {
-	return _objectSize;
 }
 
-void AdhocSimulation::iSetObjectCountXYZ(int xCount, int yCount, int zCount)
+void AdhocSimulation::iWMCommand(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, bool& updateFlag, DX12App* dxapp)
 {
-	// 0 is not allowed.
-	assert((xCount != 0) && (yCount != 0) && (zCount != 0));
-
-	_objectCount[0] = xCount;
-	_objectCount[1] = yCount;
-	_objectCount[2] = zCount;
 }
 
-void AdhocSimulation::iSetObjectScale(float objectScale)
+void AdhocSimulation::iWMHScroll(HWND hwnd, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, DX12App* dxapp)
 {
-	// 0 is not allowed.
-	assert(objectScale != 0.0f);
+}
 
-	_objectScale = objectScale;
+void AdhocSimulation::iWMTimer(HWND hwnd)
+{
+}
+
+void AdhocSimulation::iWMDestory(HWND hwnd)
+{
+}
+
+
+
+void AdhocSimulation::iUpdateConstantBuffer(std::vector<ConstantBuffer>& constantBuffer, int i)
+{
+}
+
+void AdhocSimulation::iDraw(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& mCommandList, int size, UINT indexCount, int i)
+{
+	mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	mCommandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }

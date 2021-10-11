@@ -8,21 +8,25 @@ public:
 	AdhocSimulation();
 	~AdhocSimulation();
 
-	void iUpdate(double timestep) override;
+	void iUpdate() override;
+	void iResetSimulationState(std::vector<ConstantBuffer>& constantBuffer) override;
+
 	std::vector<Vertex> iGetVertice() override;
 	std::vector<unsigned int> iGetIndice() override;
-	std::vector<DirectX::XMFLOAT4> iGetColor() override;
+	int iGetObjectCount() override;
 
-	int* iGetObjectCountXYZ() override;
-	float iGetObjectScale() override;
-	float iGetObjectSize() override;
+	void iCreateObjectParticle(std::vector<ConstantBuffer>& constantBuffer) override;
 
-	void iSetObjectCountXYZ(int xCount, int yCount, int zCount) override;
-	void iSetObjectScale(float objectScale) override;
+	void iWMCreate(HWND hwnd, HINSTANCE hInstance) override;
+	void iWMCommand(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, bool& updateFlag, DX12App* dxapp) override;
+	void iWMHScroll(HWND hwnd, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, DX12App* dxapp) override;
+	void iWMTimer(HWND hwnd) override;
+	void iWMDestory(HWND hwnd) override;
+
+	void iUpdateConstantBuffer(std::vector<ConstantBuffer>& constantBuffer, int i) override;
+	void iDraw(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& mCommandList, int size, UINT indexCount, int i) override;
 
 private:
-	int _objectCount[3] = { 0, 0, 0 };
-	float _objectScale = 0.0f;
-	float _objectSize = 2.0f;
+	int _objectCount = 1;
 };
 
