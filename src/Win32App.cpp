@@ -65,7 +65,7 @@ bool Win32App::initialize(HINSTANCE hInstance, DX12App* dxapp, ISimulation* sim)
 	wc[1] = wc[0]; // Duplicate settings
 	wc[1].lpfnWndProc = controllWndProc;
 	wc[1].lpszClassName = L"ControllWnd";
-	wc[1].hbrBackground = (HBRUSH)CreateSolidBrush(RGB(225, 225, 225));
+	wc[1].hbrBackground = (HBRUSH)CreateSolidBrush(RGB(240, 240, 240));
 
 	RegisterClass(&wc[1]);
 
