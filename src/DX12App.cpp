@@ -302,7 +302,7 @@ void DX12App::_createProjMatrix()
 void DX12App::_createVertexIndexBuffer()
 {
 	// 2, 3
-	const UINT descSize = 1000000;
+	const UINT descSize = 1'000'000;
 							//(UINT)vertices.size()
 	const UINT vbByteSize = descSize * sizeof(Vertex);
 							//(UINT)indices.size()
