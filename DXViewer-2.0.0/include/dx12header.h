@@ -67,13 +67,6 @@ enum class PROJ
 	ORTHOGRAPHIC
 };
 
-enum class FLAG
-{
-	GRID,
-	PARTICLE,
-	VELOCITY
-};
-
 // +
 inline DirectX::XMFLOAT2 operator+(DirectX::XMFLOAT2 f1, DirectX::XMFLOAT2 f2)
 {
