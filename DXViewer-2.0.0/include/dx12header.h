@@ -19,6 +19,8 @@
 
 #include "d3dx12.h"
 
+constexpr float EPS_FLOAT = 0.000001f;
+
 inline DirectX::XMFLOAT4X4 transformMatrix(
     const float x, const float y, const float z, 
     const float scale = 1.0f)
