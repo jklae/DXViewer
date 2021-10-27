@@ -91,6 +91,9 @@ bool DX12App::initialize()
 void DX12App::resetSimulationState()
 {
 	_simulation->iResetSimulationState(_constantBuffer);
+
+	// This is very important due to varying constantBuffer sizes.
+	_createConstantBuffer();
 }
 
 void DX12App::wMCreate(HWND hwnd, HINSTANCE hInstance)
