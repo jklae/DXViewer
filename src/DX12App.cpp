@@ -88,6 +88,7 @@ bool DX12App::initialize()
 	return true;
 }
 
+// ###### Adaptors of ISimuation ######
 void DX12App::resetSimulationState()
 {
 	_simulation->iResetSimulationState(_constantBuffer);
@@ -101,9 +102,9 @@ void DX12App::wMCreate(HWND hwnd, HINSTANCE hInstance)
 	_simulation->iWMCreate(hwnd, hInstance);
 }
 
-void DX12App::wMCommand(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, bool& updateFlag)
+void DX12App::wMCommand(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance)
 {
-	_simulation->iWMCommand(hwnd, msg, wParam, lParam, hInstance, updateFlag, this);
+	_simulation->iWMCommand(hwnd, msg, wParam, lParam, hInstance, this);
 }
 
 void DX12App::wMHScroll(HWND hwnd, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, DX12App* dxapp)
@@ -120,6 +121,12 @@ void DX12App::wMDestory(HWND hwnd)
 {
 	_simulation->iWMDestory(hwnd);
 }
+
+bool DX12App::isUpdated()
+{
+	return _simulation->iGetUpdateFlag();
+}
+// #####################################
 
 #pragma region Init1
 // ######################################## Init 1 ##########################################

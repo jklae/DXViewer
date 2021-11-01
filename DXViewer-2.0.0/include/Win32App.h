@@ -32,7 +32,6 @@ private:
 
     enum class _WINDOW { MAIN, SUB };
     int _swState[2] = { 1, 1 };
-    bool _updateFlag = true;
 
     POINT _mLastMousePos;
 

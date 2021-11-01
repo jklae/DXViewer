@@ -58,6 +58,7 @@ bool Win32App::initialize(HINSTANCE hInstance, DX12App* dxapp, ISimulation* sim)
 		offsetX, offsetY, _kWidth, _kHeight,
 		0, 0, _hInstance, 0);
 
+	// Initialize directX
 	initDirectX(dxapp, sim);
 
 
@@ -143,7 +144,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			return 0;
 
 		case WM_COMMAND:
-			_dxApp->wMCommand(hwnd, msg, wParam, lParam, _hInstance, _updateFlag);
+			_dxApp->wMCommand(hwnd, msg, wParam, lParam, _hInstance);
 			return 0;
 
 		case WM_TIMER:
@@ -190,7 +191,9 @@ int Win32App::run()
 		else
         {	
         }
-		if (_updateFlag)
+
+		// Declare it outside so that the animation goes on even when you adjust the scroll.
+		if (_dxApp->isUpdated())
 		{
 			_dxApp->update();
 			_dxApp->draw();

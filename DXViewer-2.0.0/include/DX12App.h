@@ -18,19 +18,22 @@ public:
     void setWindow(const int kWidth, const int kHeight, HWND mhMainWnd);
 
     bool initialize();
-    __declspec(dllexport) void resetSimulationState();
     __declspec(dllexport) void update();
     __declspec(dllexport) void draw();
 
     void updateVirtualSphereAngles(const POINT mLastMousePos, const int x, const int y);
     void updateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y);
-
     void resetVirtualSphereAnglesRadius();
+
+    // ###### Adaptors of ISimuation ######
+    __declspec(dllexport) void resetSimulationState();
     void wMCreate(HWND hwnd, HINSTANCE hInstance);
-    void wMCommand(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, bool& updateFlag);
+    void wMCommand(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance);
     void wMHScroll(HWND hwnd, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, DX12App* dxapp);
     void wMTimer(HWND hwnd);
     void wMDestory(HWND hwnd);
+    bool isUpdated();
+    // #####################################
 
 private:
 
