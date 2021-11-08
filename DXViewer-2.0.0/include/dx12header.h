@@ -20,6 +20,7 @@
 #include "d3dx12.h"
 
 constexpr float EPS_FLOAT = 0.000001f;
+constexpr float PI_FLOAT = 3.1415926535f;
 
 
 struct Vertex
