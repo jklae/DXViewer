@@ -119,6 +119,11 @@ inline DirectX::XMFLOAT2 __fabsf(DirectX::XMFLOAT2 f1)
 	return DirectX::XMFLOAT2(fabsf(f1.x), fabsf(f1.y));
 }
 
+inline DirectX::XMFLOAT2 max__(DirectX::XMFLOAT2 f1)
+{
+	return DirectX::XMFLOAT2(fabsf(f1.x), fabsf(f1.y));
+}
+
 
 // ################### XMFLOAT2 operator overloading ###################
 // +
