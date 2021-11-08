@@ -21,6 +21,31 @@
 
 constexpr float EPS_FLOAT = 0.000001f;
 
+
+struct Vertex
+{
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 nor;
+};
+
+
+struct ConstantBuffer
+{
+	DirectX::XMFLOAT4X4 worldViewProj;
+	DirectX::XMFLOAT4X4 world;
+	DirectX::XMFLOAT4 color;
+};
+
+enum class PROJ
+{
+	PERSPECTIVE,
+	ORTHOGRAPHIC
+};
+
+
+
+
+// Matrix
 inline DirectX::XMFLOAT4X4 transformMatrix(
     const float x, const float y, const float z, 
     const float scale = 1.0f)
@@ -49,26 +74,25 @@ inline UINT computeBufferByteSize()
 	return (sizeof(T) + 255) & ~255;
 }
 
-struct Vertex
+inline DirectX::XMFLOAT2 operator*(DirectX::XMFLOAT4X4 mat, DirectX::XMFLOAT2 vec)
 {
-	DirectX::XMFLOAT3 pos;
-	DirectX::XMFLOAT3 nor;
-};
+	// Load
+	DirectX::XMFLOAT4 vec4 = {vec.x, vec.y, 0.0f, 0.0f};
+	DirectX::XMVECTOR xmvector = XMLoadFloat4(&vec4);
+	DirectX::XMMATRIX xmmatrix = XMLoadFloat4x4(&mat);
+
+	// Compute
+	DirectX::XMVECTOR resultVec = XMVector4Transform(xmvector, xmmatrix);
+
+	// Store
+	DirectX::XMFLOAT2 resultFloat4;
+	XMStoreFloat2(&resultFloat4, resultVec);
+
+	return resultFloat4;
+}
 
 
-struct ConstantBuffer
-{
-	DirectX::XMFLOAT4X4 worldViewProj;
-	DirectX::XMFLOAT4X4 world;
-	DirectX::XMFLOAT4 color;
-};
-
-enum class PROJ 
-{
-	PERSPECTIVE,
-	ORTHOGRAPHIC
-};
-
+// XMFLOAT2 operator overloading
 // +
 inline DirectX::XMFLOAT2 operator+(DirectX::XMFLOAT2 f1, DirectX::XMFLOAT2 f2)
 {
