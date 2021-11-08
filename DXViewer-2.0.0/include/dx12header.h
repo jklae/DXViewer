@@ -81,7 +81,11 @@ inline UINT __computeBufferByteSize()
 // row major
 inline DirectX::XMFLOAT2 operator*(DirectX::XMFLOAT2 vec, DirectX::XMFLOAT4X4 mat)
 {
-	return {vec.x * (mat._11 + mat._21), vec.y * (mat._12 + mat._22) };
+	return 
+	{ 
+		(vec.x * mat._11) + (vec.y * mat._21), 
+		(vec.x * mat._12) + (vec.y * mat._22) 
+	};
 }
 
 //inline DirectX::XMFLOAT4X4 operator*(DirectX::XMFLOAT4X4 mat1, DirectX::XMFLOAT4X4 mat2)
