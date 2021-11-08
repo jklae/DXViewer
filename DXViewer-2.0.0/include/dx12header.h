@@ -47,7 +47,7 @@ enum class PROJ
 
 
 // Matrix
-inline DirectX::XMFLOAT4X4 __transformMatrix(
+inline DirectX::XMFLOAT4X4 transformMatrix__(
     const float x, const float y, const float z, 
     const float scale = 1.0f)
 {
@@ -60,7 +60,7 @@ inline DirectX::XMFLOAT4X4 __transformMatrix(
 }
 
 template <typename T>
-inline UINT __computeBufferByteSize()
+inline UINT computeBufferByteSize__()
 {
 	// Constant buffers must be a multiple of the minimum hardware
 	// allocation size (usually 256 bytes).  So round up to nearest
@@ -109,12 +109,12 @@ inline DirectX::XMFLOAT2 operator*(DirectX::XMFLOAT2 vec, DirectX::XMFLOAT4X4 ma
 
 
 // ################### XMFLOAT2 operator ###################
-inline float __length(DirectX::XMFLOAT2 f1)
+inline float length__(DirectX::XMFLOAT2 f1)
 {
 	return sqrtf(f1.x * f1.x + f1.y * f1.y);
 }
 
-inline DirectX::XMFLOAT2 __fabsf(DirectX::XMFLOAT2 f1)
+inline DirectX::XMFLOAT2 fabsf__(DirectX::XMFLOAT2 f1)
 {
 	return DirectX::XMFLOAT2(fabsf(f1.x), fabsf(f1.y));
 }

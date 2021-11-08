@@ -368,7 +368,7 @@ void DX12App::_createConstantBufferViewHeap()
 
 void DX12App::_createUploadBuffer()
 {
-	UINT mElementByteSize = __computeBufferByteSize<ConstantBuffer>();
+	UINT mElementByteSize = computeBufferByteSize__<ConstantBuffer>();
 
 	_md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
@@ -380,7 +380,7 @@ void DX12App::_createUploadBuffer()
 
 void DX12App::_createConstantBufferViews()
 {
-	UINT objCBByteSize = __computeBufferByteSize<ConstantBuffer>();
+	UINT objCBByteSize = computeBufferByteSize__<ConstantBuffer>();
 	for (int i = 0; i < _constantBuffer.size(); i++)
 	{
 		//obj.CreateConstantBuffer(mCbvHeap, i, counts);
@@ -605,7 +605,7 @@ void DX12App::update()
 
 	XMMATRIX proj = XMLoadFloat4x4(&_mProj);
 
-	UINT mElementByteSize = __computeBufferByteSize<ConstantBuffer>();
+	UINT mElementByteSize = computeBufferByteSize__<ConstantBuffer>();
 
 	int size = _constantBuffer.size();
 	for (int i = 0; i < size; i++)
