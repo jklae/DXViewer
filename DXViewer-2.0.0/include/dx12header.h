@@ -50,6 +50,7 @@ inline DirectX::XMFLOAT4X4 transformMatrix(
     const float x, const float y, const float z, 
     const float scale = 1.0f)
 {
+	// row major
     return DirectX::XMFLOAT4X4(
         scale, 0.0f, 0.0f, 0.0f,
         0.0f, scale, 0.0f, 0.0f,
@@ -74,7 +75,9 @@ inline UINT computeBufferByteSize()
 	return (sizeof(T) + 255) & ~255;
 }
 
-inline DirectX::XMFLOAT2 operator*(DirectX::XMFLOAT4X4 mat, DirectX::XMFLOAT2 vec)
+// Matrix multiplication operator overloading
+// row major
+inline DirectX::XMFLOAT2 operator*(DirectX::XMFLOAT2 vec, DirectX::XMFLOAT4X4 mat)
 {
 	// Load
 	DirectX::XMFLOAT4 vec4 = {vec.x, vec.y, 0.0f, 0.0f};
@@ -90,6 +93,23 @@ inline DirectX::XMFLOAT2 operator*(DirectX::XMFLOAT4X4 mat, DirectX::XMFLOAT2 ve
 
 	return resultFloat4;
 }
+
+//inline DirectX::XMFLOAT4X4 operator*(DirectX::XMFLOAT4X4 mat1, DirectX::XMFLOAT4X4 mat2)
+//{
+//	// Load
+//	DirectX::XMMATRIX xmmatrix1 = XMLoadFloat4x4(&mat1);
+//	DirectX::XMMATRIX xmmatrix2 = XMLoadFloat4x4(&mat2);
+//
+//	// Compute
+//	DirectX::XMMATRIX resultMat = xmmatrix1 * xmmatrix2;
+//
+//	// Store
+//	DirectX::XMFLOAT4X4 resultFloat4X4;
+//	XMStoreFloat4x4(&resultFloat4X4, resultMat);
+//
+//	return resultFloat4X4;
+//}
+
 
 
 // XMFLOAT2 operator overloading
