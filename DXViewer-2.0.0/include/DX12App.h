@@ -133,8 +133,8 @@ private:
     std::vector<D3D12_INPUT_ELEMENT_DESC> _mInputLayout;
 
 
-    DirectX::XMFLOAT4X4 _mView = transformMatrix__(0.0f, 0.0f, 0.0f);
-    DirectX::XMFLOAT4X4 _mProj = transformMatrix__(0.0f, 0.0f, 0.0f);
+    DirectX::XMFLOAT4X4 _mView = DXViewer::util::transformMatrix(0.0f, 0.0f, 0.0f);
+    DirectX::XMFLOAT4X4 _mProj = DXViewer::util::transformMatrix(0.0f, 0.0f, 0.0f);
 
 
     void _createObjectParticle();
