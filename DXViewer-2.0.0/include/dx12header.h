@@ -79,19 +79,7 @@ inline UINT computeBufferByteSize()
 // row major
 inline DirectX::XMFLOAT2 operator*(DirectX::XMFLOAT2 vec, DirectX::XMFLOAT4X4 mat)
 {
-	// Load
-	DirectX::XMFLOAT4 vec4 = {vec.x, vec.y, 0.0f, 0.0f};
-	DirectX::XMVECTOR xmvector = XMLoadFloat4(&vec4);
-	DirectX::XMMATRIX xmmatrix = XMLoadFloat4x4(&mat);
-
-	// Compute
-	DirectX::XMVECTOR resultVec = XMVector4Transform(xmvector, xmmatrix);
-
-	// Store
-	DirectX::XMFLOAT2 resultFloat4;
-	XMStoreFloat2(&resultFloat4, resultVec);
-
-	return resultFloat4;
+	return {vec.x * (mat._11 + mat._21), vec.y * (mat._12 + mat._22) };
 }
 
 //inline DirectX::XMFLOAT4X4 operator*(DirectX::XMFLOAT4X4 mat1, DirectX::XMFLOAT4X4 mat2)
