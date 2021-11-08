@@ -46,7 +46,7 @@ enum class PROJ
 
 
 // Matrix
-inline DirectX::XMFLOAT4X4 transformMatrix(
+inline DirectX::XMFLOAT4X4 __transformMatrix(
     const float x, const float y, const float z, 
     const float scale = 1.0f)
 {
@@ -59,7 +59,7 @@ inline DirectX::XMFLOAT4X4 transformMatrix(
 }
 
 template <typename T>
-inline UINT computeBufferByteSize()
+inline UINT __computeBufferByteSize()
 {
 	// Constant buffers must be a multiple of the minimum hardware
 	// allocation size (usually 256 bytes).  So round up to nearest
@@ -75,7 +75,9 @@ inline UINT computeBufferByteSize()
 	return (sizeof(T) + 255) & ~255;
 }
 
-// Matrix multiplication operator overloading
+
+
+// ###################  Matrix multiplication operator overloading ###################
 // row major
 inline DirectX::XMFLOAT2 operator*(DirectX::XMFLOAT2 vec, DirectX::XMFLOAT4X4 mat)
 {
@@ -100,7 +102,16 @@ inline DirectX::XMFLOAT2 operator*(DirectX::XMFLOAT2 vec, DirectX::XMFLOAT4X4 ma
 
 
 
-// XMFLOAT2 operator overloading
+
+// ################### XMFLOAT2 operator ###################
+inline float __length(DirectX::XMFLOAT2 f1)
+{
+	return sqrtf(f1.x * f1.x + f1.y * f1.y);
+}
+
+
+
+// ################### XMFLOAT2 operator overloading ###################
 // +
 inline DirectX::XMFLOAT2 operator+(DirectX::XMFLOAT2 f1, DirectX::XMFLOAT2 f2)
 {
@@ -127,6 +138,12 @@ inline DirectX::XMFLOAT2 operator-(DirectX::XMFLOAT2 f1, float f2)
 inline DirectX::XMFLOAT2 operator*(DirectX::XMFLOAT2 f1, float f2)
 {
 	return DirectX::XMFLOAT2(f1.x * f2, f1.y * f2);
+}
+
+// inner product
+inline float operator*(DirectX::XMFLOAT2 f1, DirectX::XMFLOAT2 f2)
+{
+	return (f1.x * f2.x) + (f1.y * f2.y);
 }
 
 // /
@@ -160,4 +177,7 @@ inline void operator-=(DirectX::XMFLOAT2& f1, float f2)
 	f1.x -= f2;
 	f1.y -= f2;
 }
+
+
+
 #endif
