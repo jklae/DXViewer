@@ -101,10 +101,11 @@ namespace DXViewer
 		// row major
 		inline DirectX::XMFLOAT2 operator*(DirectX::XMFLOAT2 vec, DirectX::XMFLOAT4X4 mat)
 		{
+			// XMFLOAT4(vec.x, vec.y, 0.0f, 1.0f)
 			return
 			{
-				(vec.x * mat._11) + (vec.y * mat._21),
-				(vec.x * mat._12) + (vec.y * mat._22)
+				(vec.x * mat._11) + (vec.y * mat._21) + (0.0f * mat._31) + (1.0f * mat._41),
+				(vec.x * mat._12) + (vec.y * mat._22) + (0.0f * mat._32) + (1.0f * mat._42)
 			};
 		}
 
