@@ -156,6 +156,11 @@ namespace DXViewer
 			return DirectX::XMFLOAT2(f1.x * f2, f1.y * f2);
 		}
 
+		inline DirectX::XMFLOAT2 operator*(float f1, DirectX::XMFLOAT2 f2)
+		{
+			return DirectX::XMFLOAT2(f1 * f2.x, f1 * f2.y);
+		}
+
 		// inner product
 		inline float operator*(DirectX::XMFLOAT2 f1, DirectX::XMFLOAT2 f2)
 		{
