@@ -30,3 +30,4 @@ This repo was developed in the following environment:
 If you build with cmake, you will get library files (.lib, .dll).
 
 ## Reference
+* Frank Luna. 2016. _Introduction to 3D Game Programming with DirectX 12_. Mercury Learning and Information.
