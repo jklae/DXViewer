@@ -201,6 +201,21 @@ namespace DXViewer
 
 	}
 
+	namespace xmfloat3
+	{
+		// ###################  Matrix multiplication operator overloading ###################
+		// row major
+		inline DirectX::XMFLOAT3 operator*(DirectX::XMFLOAT3 vec, DirectX::XMFLOAT4X4 mat)
+		{
+			// XMFLOAT4(vec.x, vec.y, 0.0f, 1.0f)
+			return
+			{
+				(vec.x * mat._11) + (vec.y * mat._21) + (vec.z * mat._31) + (1.0f * mat._41),
+				(vec.x * mat._12) + (vec.y * mat._22) + (vec.z * mat._32) + (1.0f * mat._42),
+				(vec.x * mat._13) + (vec.y * mat._23) + (vec.z * mat._33) + (1.0f * mat._43)
+			};
+		}
+	}
 	
 
 	
