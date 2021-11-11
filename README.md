@@ -1,6 +1,6 @@
 # DXViewer
 ## Overview
-DXViewer is a DirectX 12 framework. This viewer makes it easy to visualize your simulation.
+DXViewer is a DirectX 12 framework for physics simulation. This viewer makes it easy to visualize your simulation.
 
 ## Usage
 Use the contents in the DXViewer-x.x.x folder. The example files in the **example** folder show how to use them.
