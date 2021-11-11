@@ -27,7 +27,7 @@ This repo was developed in the following environment:
 * Microsoft Visual Studio 2019 on x64 platform (C++14)
 * CMake 3.19.0
 
-If you build with cmake, you will get library files (.lib, .dll).
+If you build with cmake, you will get library files (.lib, .dll) and shader files (.cso).
 
 ## Reference
 * Frank Luna. 2016. _Introduction to 3D Game Programming with DirectX 12_. Mercury Learning and Information.
