@@ -152,7 +152,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			return 0;
 
 		case WM_HSCROLL:
-			_dxApp->wMHScroll(hwnd, wParam, lParam, _hInstance, _dxApp);
+			_dxApp->wMHScroll(hwnd, wParam, lParam, _hInstance);
 			return 0;
 
 		// WM_DESTROY is sent when the window is being destroyed.
@@ -209,6 +209,7 @@ void Win32App::initDirectX(DX12App* dxapp, ISimulation* sim)
 	assert(_mhWnd[0] != nullptr);
 
 	_dxApp = dxapp;
+	sim->iSetDXApp(dxapp);
 
 	_dxApp->setWindow(_kWidth, _kHeight, _mhWnd[0]);
 	_dxApp->setSimulation(sim);

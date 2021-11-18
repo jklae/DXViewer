@@ -29,7 +29,7 @@ public:
     __declspec(dllexport) void resetSimulationState();
     void wMCreate(HWND hwnd, HINSTANCE hInstance);
     void wMCommand(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance);
-    void wMHScroll(HWND hwnd, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance, DX12App* dxapp);
+    void wMHScroll(HWND hwnd, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance);
     void wMTimer(HWND hwnd);
     void wMDestory(HWND hwnd);
     bool isUpdated();
