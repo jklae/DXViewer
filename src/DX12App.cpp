@@ -42,6 +42,11 @@ void DX12App::setProjectionType(PROJ proj)
 	_proj = proj;
 }
 
+void DX12App::setBackgroundColor(DirectX::XMVECTORF32 bgc)
+{
+	_backgroundColor = bgc;
+}
+
 void DX12App::setWindow(int kWidth, int kHeight, HWND mhMainWnd)
 {
 	_kWidth = kWidth;
@@ -632,7 +637,7 @@ void DX12App::draw()
 		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
 	// Clear the back buffer and depth buffer.
-	_mCommandList->ClearRenderTargetView(_currentBackBufferView(), Colors::DimGray, 0, nullptr);
+	_mCommandList->ClearRenderTargetView(_currentBackBufferView(), _backgroundColor, 0, nullptr);
 	_mCommandList->ClearDepthStencilView(_depthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	// Specify the buffers we are going to render to.

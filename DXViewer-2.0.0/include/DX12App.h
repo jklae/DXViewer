@@ -14,6 +14,7 @@ public:
 
     void setSimulation(ISimulation* simulation);
     __declspec(dllexport) void setProjectionType(PROJ proj);
+    __declspec(dllexport) void setBackgroundColor(DirectX::XMVECTORF32 bgc);
 
     void setWindow(const int kWidth, const int kHeight, HWND mhMainWnd);
 
@@ -41,6 +42,7 @@ private:
     ISimulation* _simulation = nullptr;
 
     PROJ _proj = PROJ::PERSPECTIVE;
+    DirectX::XMVECTORF32 _backgroundColor = DirectX::Colors::AliceBlue;
 
     std::vector<ConstantBuffer> _constantBuffer;
 
