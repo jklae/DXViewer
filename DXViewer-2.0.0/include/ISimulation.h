@@ -12,8 +12,8 @@ public:
 	virtual void iResetSimulationState(std::vector<ConstantBuffer>& constantBuffer) = 0;
 
 	// Mesh methods
-	virtual std::vector<Vertex> iGetVertice() = 0;
-	virtual std::vector<unsigned int> iGetIndice() = 0;
+	virtual std::vector<Vertex>& iGetVertice() = 0;
+	virtual std::vector<unsigned int>& iGetIndice() = 0;
 	virtual int iGetObjectCount() = 0;
 
 	// DirectX methods
