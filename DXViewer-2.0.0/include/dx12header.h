@@ -85,48 +85,6 @@ namespace DXViewer
 
 	namespace xmfloat2
 	{
-		// ################### XMFLOAT2 operator ###################
-		inline float f2_length(DirectX::XMFLOAT2 f1)
-		{
-			return sqrtf(f1.x * f1.x + f1.y * f1.y);
-		}
-
-		inline DirectX::XMFLOAT2 f2_fabsf(DirectX::XMFLOAT2 f1)
-		{
-			return DirectX::XMFLOAT2(fabsf(f1.x), fabsf(f1.y));
-		}
-
-
-		// ###################  Matrix multiplication operator overloading ###################
-		// row major
-		inline DirectX::XMFLOAT2 operator*(DirectX::XMFLOAT2 vec, DirectX::XMFLOAT4X4 mat)
-		{
-			// XMFLOAT4(vec.x, vec.y, 0.0f, 1.0f)
-			return
-			{
-				(vec.x * mat._11) + (vec.y * mat._21) + (0.0f * mat._31) + (1.0f * mat._41),
-				(vec.x * mat._12) + (vec.y * mat._22) + (0.0f * mat._32) + (1.0f * mat._42)
-			};
-		}
-
-		//inline DirectX::XMFLOAT4X4 operator*(DirectX::XMFLOAT4X4 mat1, DirectX::XMFLOAT4X4 mat2)
-		//{
-		//	// Load
-		//	DirectX::XMMATRIX xmmatrix1 = XMLoadFloat4x4(&mat1);
-		//	DirectX::XMMATRIX xmmatrix2 = XMLoadFloat4x4(&mat2);
-		//
-		//	// Compute
-		//	DirectX::XMMATRIX resultMat = xmmatrix1 * xmmatrix2;
-		//
-		//	// Store
-		//	DirectX::XMFLOAT4X4 resultFloat4X4;
-		//	XMStoreFloat4x4(&resultFloat4X4, resultMat);
-		//
-		//	return resultFloat4X4;
-		//}
-
-
-
 		// ################### XMFLOAT2 operator overloading ###################
 		// +
 		inline DirectX::XMFLOAT2 operator+(DirectX::XMFLOAT2 f1, DirectX::XMFLOAT2 f2)
@@ -200,23 +158,17 @@ namespace DXViewer
 		}
 
 	}
+	
 
-	namespace xmfloat3
+	namespace xmint2
 	{
-		// ###################  Matrix multiplication operator overloading ###################
-		// row major
-		inline DirectX::XMFLOAT3 operator*(DirectX::XMFLOAT3 vec, DirectX::XMFLOAT4X4 mat)
+		// ################### XMINT2 operator overloading ###################
+		// -
+		inline DirectX::XMINT2 operator-(DirectX::XMINT2 i1, int i2)
 		{
-			// XMFLOAT4(vec.x, vec.y, 0.0f, 1.0f)
-			return
-			{
-				(vec.x * mat._11) + (vec.y * mat._21) + (vec.z * mat._31) + (1.0f * mat._41),
-				(vec.x * mat._12) + (vec.y * mat._22) + (vec.z * mat._32) + (1.0f * mat._42),
-				(vec.x * mat._13) + (vec.y * mat._23) + (vec.z * mat._33) + (1.0f * mat._43)
-			};
+			return DirectX::XMINT2(i1.x - i2, i1.y - i2);
 		}
 	}
-	
 
 	
 }
