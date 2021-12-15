@@ -97,6 +97,11 @@ namespace DXViewer
 			return DirectX::XMFLOAT2(f1.x + f2, f1.y + f2);
 		}
 
+		inline DirectX::XMFLOAT2 operator+(float f1, DirectX::XMFLOAT2 f2)
+		{
+			return DirectX::XMFLOAT2(f1 + f2.x, f1 + f2.y);
+		}
+
 		// -
 		inline DirectX::XMFLOAT2 operator-(DirectX::XMFLOAT2 f1, DirectX::XMFLOAT2 f2)
 		{
@@ -162,6 +167,18 @@ namespace DXViewer
 
 	namespace xmint2
 	{
+		// ################### XMINT2 math function ###################
+		inline int max_element(DirectX::XMINT2 i1)
+		{
+			return i1.x > i1.y ? i1.x : i1.y;
+		}
+
+		// ################### XMINT2 casting ###################
+		inline DirectX::XMFLOAT2 int2_to_float2(DirectX::XMINT2 i1)
+		{
+			return DirectX::XMFLOAT2(static_cast<float>(i1.x), static_cast<float>(i1.y));
+		}
+
 		// ################### XMINT2 operator overloading ###################
 		// -
 		inline DirectX::XMINT2 operator-(DirectX::XMINT2 i1, int i2)

@@ -14,7 +14,7 @@ public:
 	// Mesh methods
 	virtual std::vector<Vertex>& iGetVertice() = 0;
 	virtual std::vector<unsigned int>& iGetIndice() = 0;
-	virtual int iGetObjectCount() = 0;
+	virtual DirectX::XMINT2 iGetObjectCount() = 0;
 
 	// DirectX methods
 	virtual void iCreateObjectParticle(std::vector<ConstantBuffer>& constantBuffer) = 0;

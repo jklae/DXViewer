@@ -4,6 +4,8 @@
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace std;
+using namespace DXViewer::xmfloat2;
+using namespace DXViewer::xmint2;
 
 DX12App::DX12App()
 {
@@ -293,7 +295,6 @@ void DX12App::_createObjectParticle()
 void DX12App::_createProjMatrix()
 {
 	XMMATRIX projMatrix;
-	float scale;
 
 	// Compute the projection matrix.
 	switch (_proj)
@@ -302,9 +303,12 @@ void DX12App::_createProjMatrix()
 		projMatrix = XMMatrixPerspectiveFovLH(0.25f * 3.14f, static_cast<float>(_kWidth) / _kHeight, 1.0f, 1000.0f);
 		break;
 	case PROJ::ORTHOGRAPHIC:
+	{
 		// Compensate for normalized simulation coordinates.		
-		scale = static_cast<float>(_simulation->iGetObjectCount()) * 0.0015f;
+		int maxElement = max_element(_simulation->iGetObjectCount());
+		float scale = static_cast<float>(maxElement) * 0.0015f;
 		projMatrix = XMMatrixOrthographicLH(_kWidth * scale, _kHeight * scale, 1.0f, 1000.0f);
+	}
 		break;
 	default:
 		projMatrix = XMMatrixIdentity();
@@ -592,8 +596,9 @@ void DX12App::update()
 	// ######### Update Constant Buffer
 	// Compensate for normalized simulation coordinates.				
 	//			Half of grid size = 0.5f						
-	float offset = -0.5f + static_cast<float>(_simulation->iGetObjectCount()) * 0.5f;
-	float scale = static_cast<float>(_simulation->iGetObjectCount());
+	XMFLOAT2 offset = -0.5f + int2_to_float2(_simulation->iGetObjectCount()) * 0.5f;
+	int maxElement = max_element(_simulation->iGetObjectCount());
+	float scale = static_cast<float>(maxElement);
 
 	// Convert Spherical to Cartesian coordinates.
 	float x = scale * _mRadius * sinf(_mPhi) * cosf(_mTheta);
@@ -601,8 +606,8 @@ void DX12App::update()
 	float y = scale * _mRadius * cosf(_mPhi);
 
 	// Build the view matrix.
-	XMVECTOR eye = XMVectorSet(x + offset, y + offset, z, 1.0f);
-	XMVECTOR at = XMVectorSet(offset, offset, 0.0f, 0.0f);
+	XMVECTOR eye = XMVectorSet(x + offset.x, y + offset.y, z, 1.0f);
+	XMVECTOR at = XMVectorSet(offset.x, offset.y, 0.0f, 0.0f);
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	XMMATRIX view = XMMatrixLookAtLH(eye, at, up);
