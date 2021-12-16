@@ -118,6 +118,8 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Resource> _indexBufferUploader = nullptr;
     BYTE* _iMappedData = nullptr;
 
+    std::vector<Vertex> vertices;
+    std::vector<unsigned int> indices;
     D3D12_VERTEX_BUFFER_VIEW _vbv;
     D3D12_INDEX_BUFFER_VIEW _ibv;
     UINT _indexCount = 0;

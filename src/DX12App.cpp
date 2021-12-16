@@ -579,8 +579,8 @@ void DX12App::update()
 	// Change View size
 	_simulation->iUpdate();
 
-	vector<Vertex> vertices = _simulation->iGetVertice();
-	vector<unsigned int> indices = _simulation->iGetIndice();
+	vertices = _simulation->iGetVertice();
+	indices = _simulation->iGetIndice();
 
 	const UINT vbByteSize = static_cast<UINT>(vertices.size()) * sizeof(Vertex);
 	_vbv.SizeInBytes = vbByteSize;
