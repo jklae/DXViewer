@@ -163,7 +163,22 @@ namespace DXViewer
 		}
 
 	}
-	
+
+	namespace xmfloat3
+	{
+		// ################### XMFLOAT2 operator overloading ###################
+		// +
+		inline DirectX::XMFLOAT3 operator+(float f1, DirectX::XMFLOAT3 f2)
+		{
+			return DirectX::XMFLOAT3(f1 + f2.x, f1 + f2.y, f1 + f2.z);
+		}
+
+		// *
+		inline DirectX::XMFLOAT3 operator*(DirectX::XMFLOAT3 f1, float f2)
+		{
+			return DirectX::XMFLOAT3(f1.x * f2, f1.y * f2, f1.z * f2);
+		}
+	}
 
 	namespace xmint2
 	{
@@ -187,6 +202,24 @@ namespace DXViewer
 		}
 	}
 
+	namespace xmint3
+	{
+		// ################### XMINT3 math function ###################
+		inline int max_element(DirectX::XMINT3 i1)
+		{
+			int temp = (i1.x > i1.y ? i1.x : i1.y);
+			return temp > i1.z ? temp : i1.z;
+		}
+
+		// ################### XMINT3 casting ###################
+		inline DirectX::XMFLOAT3 int3_to_float3(DirectX::XMINT3 i1)
+		{
+			return DirectX::XMFLOAT3(
+				static_cast<float>(i1.x), 
+				static_cast<float>(i1.y),
+				static_cast<float>(i1.z));
+		}
+	}
 	
 }
 

@@ -4,8 +4,8 @@
 using Microsoft::WRL::ComPtr;
 using namespace DirectX;
 using namespace std;
-using namespace DXViewer::xmfloat2;
-using namespace DXViewer::xmint2;
+using namespace DXViewer::xmfloat3;
+using namespace DXViewer::xmint3;
 
 DX12App::DX12App()
 {
@@ -592,7 +592,7 @@ void DX12App::update()
 	// ######### Update Constant Buffer
 	// Compensate for normalized simulation coordinates.				
 	//			Half of grid size = 0.5f						
-	XMFLOAT2 offset = -0.5f + int2_to_float2(_simulation->iGetDomainSize()) * 0.5f;
+	XMFLOAT3 offset = -0.5f + int3_to_float3(_simulation->iGetDomainSize()) * 0.5f;
 	int maxElement = max_element(_simulation->iGetDomainSize());
 	float scale = static_cast<float>(maxElement);
 
@@ -602,8 +602,8 @@ void DX12App::update()
 	float y = scale * _mRadius * cosf(_mPhi);
 
 	// Build the view matrix.
-	XMVECTOR eye = XMVectorSet(x + offset.x, y + offset.y, z, 1.0f);
-	XMVECTOR at = XMVectorSet(offset.x, offset.y, 0.0f, 0.0f);
+	XMVECTOR eye = XMVectorSet(x + offset.x, y + offset.y, z + offset.z, 1.0f);
+	XMVECTOR at = XMVectorSet(offset.x, offset.y, offset.z, 0.0f);
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	XMMATRIX view = XMMatrixLookAtLH(eye, at, up);
