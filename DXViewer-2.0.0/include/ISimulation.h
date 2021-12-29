@@ -17,7 +17,7 @@ public:
 	virtual DirectX::XMINT2 iGetObjectCount() = 0;
 
 	// DirectX methods
-	virtual void iCreateObjectParticle(std::vector<ConstantBuffer>& constantBuffer) = 0;
+	virtual void iCreateObject(std::vector<ConstantBuffer>& constantBuffer) = 0;
 	virtual void iUpdateConstantBuffer(std::vector<ConstantBuffer>& constantBuffer, int i) = 0;
 	virtual void iDraw(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& mCommandList, int size, UINT indexCount, int i) = 0;
 	virtual void iSetDXApp(DX12App* dxApp) = 0;

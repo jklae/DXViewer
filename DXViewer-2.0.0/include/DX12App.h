@@ -141,7 +141,7 @@ private:
     DirectX::XMFLOAT4X4 _mProj = DXViewer::util::transformMatrix(0.0f, 0.0f, 0.0f);
 
 
-    void _createObjectParticle();
+    void _createObject();
 
     void _createProjMatrix();
     void _createVertexIndexBuffer();
