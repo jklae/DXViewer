@@ -318,11 +318,10 @@ void DX12App::_createProjMatrix()
 void DX12App::_createVertexIndexBuffer()
 {
 	// 2, 3
-	const UINT descSize = 1'000'000;
 							//(UINT)vertices.size()
-	const UINT vbByteSize = descSize * sizeof(Vertex);
+	const UINT vbByteSize = _simulation->iGetVertexBufferSize() * sizeof(Vertex);
 							//(UINT)indices.size()
-	const UINT ibByteSize = descSize * sizeof(unsigned int);
+	const UINT ibByteSize = _simulation->iGetIndexBufferSize() * sizeof(unsigned int);
 
 	_md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
