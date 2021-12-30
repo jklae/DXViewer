@@ -16,6 +16,9 @@ public:
 	virtual std::vector<unsigned int>& iGetIndice() = 0;
 	virtual UINT iGetVertexBufferSize() = 0;
 	virtual UINT iGetIndexBufferSize() = 0;
+	virtual DirectX::XMINT3 iGetObjectCount() = 0;
+	virtual DirectX::XMFLOAT3 iGetObjectSize() = 0;
+	virtual DirectX::XMFLOAT3 iGetObjectPositionOffset() = 0;
 
 	// DirectX methods
 	virtual void iCreateObject(std::vector<ConstantBuffer>& constantBuffer) = 0;
@@ -23,8 +26,6 @@ public:
 	virtual void iDraw(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& mCommandList, int size, UINT indexCount, int i) = 0;
 	virtual void iSetDXApp(DX12App* dxApp) = 0;
 	virtual UINT iGetConstantBufferSize() = 0;
-	virtual DirectX::XMINT3 iGetObjectCount() = 0;
-	virtual DirectX::XMFLOAT3 iGetDomainSize() = 0;
 
 	// WndProc methods
 	virtual void iWMCreate(HWND hwnd, HINSTANCE hInstance) = 0;

@@ -184,6 +184,11 @@ namespace DXViewer
 			return DirectX::XMFLOAT3(-f1.x, -f1.y, -f1.z);
 		}
 
+		inline DirectX::XMFLOAT3 operator-(DirectX::XMFLOAT3 f1, float f2)
+		{
+			return DirectX::XMFLOAT3(f1.x - f2, f1.y - f2, f1.z - f2);
+		}
+
 		// *
 		inline DirectX::XMFLOAT3 operator*(DirectX::XMFLOAT3 f1, float f2)
 		{

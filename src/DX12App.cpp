@@ -590,11 +590,12 @@ void DX12App::update()
 	// #########
 
 	// ######### Update Constant Buffer
-	// Compensate for normalized simulation coordinates.				
-	//			Half of grid size = 0.5f	
-	XMFLOAT3 domainSize = _simulation->iGetDomainSize();
+	// Compensate for normalized simulation coordinates.		
 	XMFLOAT3 objectCount = int3_to_float3(_simulation->iGetObjectCount());
-	XMFLOAT3 offset = -domainSize + objectCount * 0.5f;
+	XMFLOAT3 objectSize = _simulation->iGetObjectSize();
+	XMFLOAT3 objectPosOffset = _simulation->iGetObjectPositionOffset();
+	//                  offset        +      half of count          *    size(width)
+	XMFLOAT3 offset = objectPosOffset + ((objectCount - 1.0f) * 0.5f) * objectSize;
 
 	int maxElement = max_element(_simulation->iGetObjectCount());
 	float scale = static_cast<float>(maxElement);
