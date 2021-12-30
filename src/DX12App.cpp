@@ -39,13 +39,9 @@ void DX12App::setSimulation(ISimulation* simulation)
 	_simulation = simulation;
 }
 
-void DX12App::setProjectionType(PROJ proj)
+void DX12App::setCameraProperties(PROJ proj, float mRadius)
 {
 	_proj = proj;
-}
-
-void DX12App::setCameraPosition(float mRadius)
-{
 	_constMRadius = mRadius;
 }
 

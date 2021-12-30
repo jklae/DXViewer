@@ -13,8 +13,7 @@ public:
     __declspec(dllexport) ~DX12App();
 
     void setSimulation(ISimulation* simulation);
-    __declspec(dllexport) void setProjectionType(PROJ proj);
-    __declspec(dllexport) void setCameraPosition(float mRadius);
+    __declspec(dllexport) void setCameraProperties(PROJ proj, float mRadius);
     __declspec(dllexport) void setBackgroundColor(DirectX::XMVECTORF32 bgc);
 
     void setWindow(const int kWidth, const int kHeight, HWND mhMainWnd);
