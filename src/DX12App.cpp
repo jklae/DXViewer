@@ -44,6 +44,11 @@ void DX12App::setProjectionType(PROJ proj)
 	_proj = proj;
 }
 
+void DX12App::setCameraPosition(float mRadius)
+{
+	_constMRadius = mRadius;
+}
+
 void DX12App::setBackgroundColor(DirectX::XMVECTORF32 bgc)
 {
 	_backgroundColor = bgc;
@@ -721,9 +726,9 @@ void DX12App::updateVirtualSphereRadius(const POINT mLastMousePos, const int x, 
 
 void DX12App::resetVirtualSphereAnglesRadius()
 {
-	_mTheta = 1.5f * 3.14f;
-	_mPhi = 3.14f / 2.0f;
-	_mRadius = 1.5f;
+	_mTheta = _constMTheta;
+	_mPhi = _constMPhi;
+	_mRadius = _constMRadius;
 }
 
 float DX12App::_clamp(const float x, const float low, const float high)

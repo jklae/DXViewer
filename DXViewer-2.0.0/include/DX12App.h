@@ -14,6 +14,7 @@ public:
 
     void setSimulation(ISimulation* simulation);
     __declspec(dllexport) void setProjectionType(PROJ proj);
+    __declspec(dllexport) void setCameraPosition(float mRadius);
     __declspec(dllexport) void setBackgroundColor(DirectX::XMVECTORF32 bgc);
 
     void setWindow(const int kWidth, const int kHeight, HWND mhMainWnd);
@@ -175,9 +176,9 @@ private:
 
 #pragma region Arcball
     // ####################################### Arcball ##########################################
-    float _mTheta;
-    float _mPhi;
-    float _mRadius;
+    float _mTheta, _constMTheta = 1.5f * 3.14f;
+    float _mPhi, _constMPhi = 3.14f / 2.0f;
+    float _mRadius, _constMRadius = 1.5f;
 
     float _clamp(const float x, const float low, const float high);
     // ##########################################################################################
