@@ -24,7 +24,7 @@ public:
 	virtual void iSetDXApp(DX12App* dxApp) = 0;
 	virtual UINT iGetConstantBufferSize() = 0;
 	virtual DirectX::XMINT3 iGetObjectCount() = 0;
-	//virtual float iGetDomainSize() = 0;
+	virtual DirectX::XMFLOAT3 iGetDomainSize() = 0;
 
 	// WndProc methods
 	virtual void iWMCreate(HWND hwnd, HINSTANCE hInstance) = 0;
