@@ -176,7 +176,7 @@ private:
 
 #pragma region Arcball
     // ####################################### Arcball ##########################################
-    float _orthoMRadius = 1.0f;
+    float _orthoDistance = 1.0f;
 
     float _mRadius, _constMRadius = 1.5f;
     float _mTheta, _constMTheta = 1.5f * PI_FLOAT;

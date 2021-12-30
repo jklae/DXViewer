@@ -39,11 +39,11 @@ void DX12App::setSimulation(ISimulation* simulation)
 	_simulation = simulation;
 }
 
-void DX12App::setCameraProperties(PROJ proj, float orthoMRadius, float mRadius, float mTheta, float mPhi)
+void DX12App::setCameraProperties(PROJ proj, float orthoDist, float mRadius, float mTheta, float mPhi)
 {
 	_proj = proj;
 
-	_orthoMRadius = orthoMRadius;
+	_orthoDistance = orthoDist;
 	_constMRadius = mRadius;
 	_constMTheta = mTheta + (1.5f * PI_FLOAT);
 	_constMPhi = mPhi + (PI_FLOAT / 2.0f);
@@ -307,7 +307,7 @@ void DX12App::_createProjMatrix()
 	case PROJ::ORTHOGRAPHIC:
 	{
 		// Compensate for normalized simulation coordinates.		
-		projMatrix = XMMatrixOrthographicLH(_kWidth * _orthoMRadius, _kHeight * _orthoMRadius, 1.0f, 1000.0f);
+		projMatrix = XMMatrixOrthographicLH(_kWidth * _orthoDistance, _kHeight * _orthoDistance, 1.0f, 1000.0f);
 	}
 		break;
 	default:
