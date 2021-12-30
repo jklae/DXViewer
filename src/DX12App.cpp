@@ -302,7 +302,7 @@ void DX12App::_createProjMatrix()
 	case PROJ::ORTHOGRAPHIC:
 	{
 		// Compensate for normalized simulation coordinates.		
-		int maxElement = max_element(_simulation->iGetDomainSize());
+		int maxElement = max_element(_simulation->iGetObjectCount());
 		float scale = static_cast<float>(maxElement) * 0.0015f;
 		projMatrix = XMMatrixOrthographicLH(_kWidth * scale, _kHeight * scale, 1.0f, 1000.0f);
 	}
@@ -591,9 +591,12 @@ void DX12App::update()
 
 	// ######### Update Constant Buffer
 	// Compensate for normalized simulation coordinates.				
-	//			Half of grid size = 0.5f						
-	XMFLOAT3 offset = -0.5f + int3_to_float3(_simulation->iGetDomainSize()) * 0.5f;
-	int maxElement = max_element(_simulation->iGetDomainSize());
+	//			Half of grid size = 0.5f	
+
+	// /그리드 사이즈를 바꿔야할듯 isimulation으로 받게?
+
+	XMFLOAT3 offset = -0.5f + int3_to_float3(_simulation->iGetObjectCount()) * 0.5f;
+	int maxElement = max_element(_simulation->iGetObjectCount());
 	float scale = static_cast<float>(maxElement);
 
 	// Convert Spherical to Cartesian coordinates.
