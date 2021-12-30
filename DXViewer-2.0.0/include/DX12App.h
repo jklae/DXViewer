@@ -13,7 +13,8 @@ public:
     __declspec(dllexport) ~DX12App();
 
     void setSimulation(ISimulation* simulation);
-    __declspec(dllexport) void setCameraProperties(PROJ proj, float orthoMRadius, float mRadius);
+    __declspec(dllexport) void setCameraProperties(
+        PROJ proj, float orthoMRadius, float mRadius, float mTheta, float mPhi);
     __declspec(dllexport) void setBackgroundColor(DirectX::XMVECTORF32 bgc);
 
     void setWindow(const int kWidth, const int kHeight, HWND mhMainWnd);
@@ -177,9 +178,9 @@ private:
     // ####################################### Arcball ##########################################
     float _orthoMRadius = 1.0f;
 
+    float _mRadius, _constMRadius = 1.5f;
     float _mTheta, _constMTheta = 1.5f * PI_FLOAT;
     float _mPhi, _constMPhi = PI_FLOAT / 2.0f;
-    float _mRadius, _constMRadius = 1.5f;
 
     float _clamp(const float x, const float low, const float high);
     // ##########################################################################################

@@ -39,12 +39,14 @@ void DX12App::setSimulation(ISimulation* simulation)
 	_simulation = simulation;
 }
 
-void DX12App::setCameraProperties(PROJ proj, float orthoMRadius, float mRadius)
+void DX12App::setCameraProperties(PROJ proj, float orthoMRadius, float mRadius, float mTheta, float mPhi)
 {
 	_proj = proj;
 
 	_orthoMRadius = orthoMRadius;
 	_constMRadius = mRadius;
+	_constMTheta = mTheta + (1.5f * PI_FLOAT);
+	_constMPhi = mPhi + (PI_FLOAT / 2.0f);
 }
 
 void DX12App::setBackgroundColor(DirectX::XMVECTORF32 bgc)
@@ -722,9 +724,9 @@ void DX12App::updateVirtualSphereRadius(const POINT mLastMousePos, const int x, 
 
 void DX12App::resetVirtualSphereAnglesRadius()
 {
+	_mRadius = _constMRadius;
 	_mTheta = _constMTheta;
 	_mPhi = _constMPhi;
-	_mRadius = _constMRadius;
 }
 
 float DX12App::_clamp(const float x, const float low, const float high)
