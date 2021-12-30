@@ -704,7 +704,7 @@ void DX12App::updateVirtualSphereAngles(const POINT mLastMousePos, const int x, 
 	_mPhi -= dy;
 
 	// Restrict the angle mPhi.
-	_mPhi = _clamp(_mPhi, 0.1f, 3.14f - 0.1f);
+	_mPhi = _clamp(_mPhi, 0.1f, PI_FLOAT - 0.1f);
 }
 
 void DX12App::updateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y)

@@ -177,8 +177,8 @@ private:
     // ####################################### Arcball ##########################################
     float _orthoMRadius = 1.0f;
 
-    float _mTheta, _constMTheta = 1.5f * 3.14f;
-    float _mPhi, _constMPhi = 3.14f / 2.0f;
+    float _mTheta, _constMTheta = 1.5f * PI_FLOAT;
+    float _mPhi, _constMPhi = PI_FLOAT / 2.0f;
     float _mRadius, _constMRadius = 1.5f;
 
     float _clamp(const float x, const float low, const float high);
