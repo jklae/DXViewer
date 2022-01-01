@@ -3,7 +3,7 @@
 DXViewer is a DirectX 12 framework for physics simulation. This viewer makes it easy to visualize your simulation.
 
 ## Usage
-Use the contents in the DXViewer-x.x.x folder. The example files in the **example** folder show how to use them.
+Use the contents in the DXViewer-x.x.x folder. The files in the **example** folder show how to use them.
 
 ### ISimulation
 ISimulation is an interface that makes your simulation class compatible with DXViewer. You should implement this interface using your simulation class. The following is the abstract methods that should be implemented.
