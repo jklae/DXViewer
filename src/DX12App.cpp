@@ -574,7 +574,7 @@ void DX12App::update()
 {
 	// ######### Update Vertex, Index buffer
 	// Update simulation
-	if (_simulation->iIsUpdate()) _simulation->iUpdate();
+	if (_simulation->iIsUpdated()) _simulation->iUpdate();
 
 	vertices = _simulation->iGetVertice();
 	indices = _simulation->iGetIndice();
