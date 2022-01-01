@@ -11,5 +11,5 @@ float4 main(float4 PosH  : SV_POSITION, float3 NormalW : NORMAL,
 
     float4 fragColor = float4(diff + ambient, 1.0f);
 
-    return fColor;
+    return fragColor;
 }

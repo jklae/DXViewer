@@ -627,9 +627,11 @@ void DX12App::update()
 
 		XMMATRIX world = XMLoadFloat4x4(&_constantBuffer[i].world);
 		XMMATRIX worldViewProj = world * view * proj;
+		XMMATRIX transInvWorld = XMMatrixTranspose(XMMatrixInverse(&XMMatrixDeterminant(world), world));
 
 		// Update the constant buffer with the latest worldViewProj matrix.
 		XMStoreFloat4x4(&_constantBuffer[i].worldViewProj, worldViewProj);
+		XMStoreFloat4x4(&_constantBuffer[i].transInvWorld, transInvWorld);
 		memcpy(&_mMappedData[i * mElementByteSize], &_constantBuffer[i], sizeof(ConstantBuffer));
 	}
 	// #########
