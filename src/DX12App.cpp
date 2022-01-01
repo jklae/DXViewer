@@ -133,11 +133,6 @@ void DX12App::wMDestory(HWND hwnd)
 {
 	_simulation->iWMDestory(hwnd);
 }
-
-bool DX12App::isUpdated()
-{
-	return _simulation->iGetUpdateFlag();
-}
 // #####################################
 
 #pragma region Init1
@@ -578,8 +573,8 @@ void DX12App::_flushCommandQueue()
 void DX12App::update()
 {
 	// ######### Update Vertex, Index buffer
-	// Change View size
-	_simulation->iUpdate();
+	// Update simulation
+	if (_simulation->iIsUpdate()) _simulation->iUpdate();
 
 	vertices = _simulation->iGetVertice();
 	indices = _simulation->iGetIndice();

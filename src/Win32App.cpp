@@ -193,11 +193,8 @@ int Win32App::run()
         }
 
 		// Declare it outside so that the animation goes on even when you adjust the scroll.
-		if (_dxApp->isUpdated())
-		{
-			_dxApp->update();
-			_dxApp->draw();
-		}
+		_dxApp->update();
+		_dxApp->draw();
     }
 
 	return static_cast<int>(msg.wParam);

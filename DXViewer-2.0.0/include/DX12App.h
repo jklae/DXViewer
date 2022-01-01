@@ -34,7 +34,6 @@ public:
     void wMHScroll(HWND hwnd, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance);
     void wMTimer(HWND hwnd);
     void wMDestory(HWND hwnd);
-    bool isUpdated();
     // #####################################
 
 private:

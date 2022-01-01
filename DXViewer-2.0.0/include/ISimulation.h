@@ -26,6 +26,7 @@ public:
 	virtual void iDraw(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>& mCommandList, int size, UINT indexCount, int i) = 0;
 	virtual void iSetDXApp(DX12App* dxApp) = 0;
 	virtual UINT iGetConstantBufferSize() = 0;
+	virtual bool iIsUpdate() = 0;
 
 	// WndProc methods
 	virtual void iWMCreate(HWND hwnd, HINSTANCE hInstance) = 0;
@@ -33,9 +34,6 @@ public:
 	virtual void iWMHScroll(HWND hwnd, WPARAM wParam, LPARAM lParam, HINSTANCE hInstance) = 0;
 	virtual void iWMTimer(HWND hwnd) = 0;
 	virtual void iWMDestory(HWND hwnd) = 0;
-
-	// Win32 methods
-	virtual bool iGetUpdateFlag() = 0;
 
 	// Destructor
 	virtual ~ISimulation() = 0 {};
