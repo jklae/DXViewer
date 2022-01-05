@@ -19,8 +19,21 @@
 
 #include "d3dx12.h"
 
-constexpr float EPS_FLOAT = 0.000001f;
-constexpr float PI_FLOAT = 3.1415926535f;
+constexpr float EPS_F = 0.000'001f;
+constexpr float PI_F = 3.141'593f;
+
+constexpr float FPS30_F = 0.033'333f;
+constexpr float FPS60_F = 0.016'667f;
+constexpr float FPS90_F = 0.011'111f;
+constexpr float FPS120_F = 0.008'333f;
+
+constexpr double EPS_D = 0.000000'000000'000001;
+constexpr double PI_D = 3.141592'741012'573242;
+
+constexpr double FPS30_D = 0.033333'333333'333333;
+constexpr double FPS60_D = 0.016666'666666'666667;
+constexpr double FPS90_D = 0.011111'111111'111111;
+constexpr double FPS120_D = 0.008333'333333'333333;
 
 
 struct Vertex

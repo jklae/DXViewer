@@ -45,11 +45,11 @@ void DX12App::setCameraProperties(PROJ proj, float orthoDist, float mRadius, flo
 
 	_orthoDistance = orthoDist;
 	_constMRadius = mRadius;
-	_constMTheta = mTheta + (1.5f * PI_FLOAT);
-	_constMPhi = mPhi + (PI_FLOAT / 2.0f);
+	_constMTheta = mTheta + (1.5f * PI_F);
+	_constMPhi = mPhi + (PI_F / 2.0f);
 
 	// Restrict the angle mPhi.
-	_constMPhi = _clamp(_constMPhi, 0.1f, PI_FLOAT - 0.1f);
+	_constMPhi = _clamp(_constMPhi, 0.1f, PI_F - 0.1f);
 }
 
 void DX12App::setBackgroundColor(DirectX::XMVECTORF32 bgc)
@@ -706,7 +706,7 @@ void DX12App::updateVirtualSphereAngles(const POINT mLastMousePos, const int x, 
 	_mPhi -= dy;
 
 	// Restrict the angle mPhi.
-	_mPhi = _clamp(_mPhi, 0.1f, PI_FLOAT - 0.1f);
+	_mPhi = _clamp(_mPhi, 0.1f, PI_F - 0.1f);
 }
 
 void DX12App::updateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y)

@@ -178,8 +178,8 @@ private:
     float _orthoDistance = 1.0f;
 
     float _mRadius, _constMRadius = 1.5f;
-    float _mTheta, _constMTheta = 1.5f * PI_FLOAT;
-    float _mPhi, _constMPhi = PI_FLOAT / 2.0f;
+    float _mTheta, _constMTheta = 1.5f * PI_F;
+    float _mPhi, _constMPhi = PI_F / 2.0f;
 
     float _clamp(const float x, const float low, const float high);
     // ##########################################################################################
