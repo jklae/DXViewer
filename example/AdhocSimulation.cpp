@@ -143,7 +143,7 @@ bool AdhocSimulation::iIsUpdated()
 	return true;
 }
 
-e
+
 void AdhocSimulation::iWMCreate(HWND hwnd, HINSTANCE hInstance)
 {
 }
