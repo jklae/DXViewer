@@ -13,7 +13,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
     AdhocSimulation* fluidsim = new AdhocSimulation();
 
     DX12App* dxapp = new DX12App();
-    dxapp->setProjectionType(PROJ::PERSPECTIVE);
+    dxapp->setCameraProperties(PROJ::PERSPECTIVE, 0.0f,
+        2.0f, 0.0f, 0.0f);
+    dxapp->setBackgroundColor(DirectX::Colors::LightSlateGray);
 
     Win32App winApp(800, 800);
     winApp.initialize(hInstance, dxapp, fluidsim);
