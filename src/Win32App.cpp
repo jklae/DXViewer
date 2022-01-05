@@ -31,6 +31,11 @@ Win32App::~Win32App()
 	delete _dxApp;
 }
 
+void Win32App::setWinName(LPCWSTR winName)
+{
+	_winName = winName;
+}
+
 bool Win32App::initialize(HINSTANCE hInstance, DX12App* dxapp, ISimulation* sim)
 {
 	int offsetX = 200;
@@ -53,7 +58,7 @@ bool Win32App::initialize(HINSTANCE hInstance, DX12App* dxapp, ISimulation* sim)
 	RegisterClass(&wc[0]);
 
 
-	_mhWnd[0] = CreateWindow(L"DirectXWnd", L"d3d App",
+	_mhWnd[0] = CreateWindow(L"DirectXWnd", _winName,
 		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
 		offsetX, offsetY, _kWidth, _kHeight,
 		0, 0, _hInstance, 0);
