@@ -16,11 +16,11 @@ set_property(SOURCE ${VS_SHD} PROPERTY VS_SHADER_TYPE Vertex)
 set_property(SOURCE ${PS_SHD} PROPERTY VS_SHADER_TYPE Pixel)
 
 # Set the header directory
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/../DXViewer-2.0.0/include)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/../DXViewer-3.0.0/include)
 
 # Collect source files
 FILE( GLOB SRC ${CMAKE_SOURCE_DIR}/../src/*.cpp ${CMAKE_SOURCE_DIR}/*.cpp)
-FILE( GLOB HDR ${CMAKE_SOURCE_DIR}/../DXViewer-2.0.0/include/*.h ${CMAKE_SOURCE_DIR}/*.h)
+FILE( GLOB HDR ${CMAKE_SOURCE_DIR}/../DXViewer-3.0.0/include/*.h ${CMAKE_SOURCE_DIR}/*.h)
 FILE( GLOB SHD ${VS_SHD} ${PS_SHD} )
 
 # Link Source files ('WIN32' keyword is used for win32 project)
