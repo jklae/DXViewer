@@ -7,9 +7,9 @@ float4 main(float4 PosH  : SV_POSITION, float3 NormalW : NORMAL,
     float3 normal = normalize(NormalW);
 
     float3 diff = max(dot(normal, light), 0.1f);
-    float3 ambient = fColor; //float3(0.3f, 0.8f, 0.9f) * 0.3;
+    float3 ambient = fColor.xyz;
 
-    float4 fragColor = float4(diff + ambient, 1.0f);
+    float4 fragColor = float4(diff + ambient, fColor.w);
 
     return fragColor;
 }
