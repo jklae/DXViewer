@@ -136,7 +136,6 @@ private:
     Microsoft::WRL::ComPtr<ID3DBlob> _mpsByteCode = nullptr;
     std::vector<D3D12_INPUT_ELEMENT_DESC> _mInputLayout;
 
-
     DirectX::XMFLOAT4X4 _mView = DXViewer::util::transformMatrix(0.0f, 0.0f, 0.0f);
     DirectX::XMFLOAT4X4 _mProj = DXViewer::util::transformMatrix(0.0f, 0.0f, 0.0f);
 
@@ -153,6 +152,7 @@ private:
     void _createRootSignature();
     //
     void _compileShader();
+    void _loadCSO(std::string csoDir, Microsoft::WRL::ComPtr<ID3DBlob>& blob);
     void _createPSO();
 
     // ##########################################################################################

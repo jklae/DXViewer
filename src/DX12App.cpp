@@ -441,39 +441,23 @@ void DX12App::_compileShader()
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
-
-	// ..\\ext\\DXViewer\\shader\\vertexShader.hlsl
-	/*HRESULT vertexShaderCompile = D3DCompileFromFile(L"..\\..\\shader\\vertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &_mvsByteCode, 0);
-	HRESULT fragmentShaderCompile = D3DCompileFromFile(L"..\\..\\shader\\fragShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &_mpsByteCode, 0);
-	assert(SUCCEEDED(vertexShaderCompile) && SUCCEEDED(fragmentShaderCompile));*/
 	
-	std::ifstream fin("vertexShader.cso", std::ios::binary);
+	_loadCSO("vertexShader.cso", _mvsByteCode);
+	_loadCSO("fragShader.cso", _mpsByteCode);
+}
+
+void DX12App::_loadCSO(std::string csoDir, Microsoft::WRL::ComPtr<ID3DBlob>& blob)
+{
+	std::ifstream fin(csoDir, std::ios::binary);
 
 	fin.seekg(0, std::ios_base::end);
 	std::ifstream::pos_type size = (int)fin.tellg();
 	fin.seekg(0, std::ios_base::beg);
 
-	ComPtr<ID3DBlob> blob;
 	D3DCreateBlob(size, blob.GetAddressOf());
 
 	fin.read((char*)blob->GetBufferPointer(), size);
 	fin.close();
-
-	_mvsByteCode = blob;
-
-	std::ifstream fin2("fragShader.cso", std::ios::binary);
-
-	fin2.seekg(0, std::ios_base::end);
-	std::ifstream::pos_type size2 = (int)fin2.tellg();
-	fin2.seekg(0, std::ios_base::beg);
-
-	ComPtr<ID3DBlob> blob2;
-	D3DCreateBlob(size2, blob2.GetAddressOf());
-
-	fin2.read((char*)blob2->GetBufferPointer(), size2);
-	fin2.close();
-
-	_mpsByteCode = blob2;
 }
 
 void DX12App::_createPSO()

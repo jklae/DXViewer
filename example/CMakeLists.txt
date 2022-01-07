@@ -1,7 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.19.0)
 
 # Set the project name
-SET( PROJECT_NAME DXViewer )
+SET( PROJECT_NAME AdhocSimulation )
 PROJECT(${PROJECT_NAME})
 
 # Define character set as Unicode
@@ -19,7 +19,7 @@ FILE(GLOB DLL ${CMAKE_SOURCE_DIR}/../DXViewer-3.0.0/bin/*.dll)
 FILE(COPY ${DLL} DESTINATION ${CMAKE_BINARY_DIR})
 
 # Copy CSOs
-FILE(GLOB CSO ${CMAKE_SOURCE_DIR}/../DXViewer-32.0.0/*.cso)
+FILE(GLOB CSO ${CMAKE_SOURCE_DIR}/../DXViewer-3.0.0/*.cso)
 FILE(COPY ${CSO} DESTINATION ${CMAKE_BINARY_DIR})
 
 # Collect source files
