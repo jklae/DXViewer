@@ -26,7 +26,7 @@ FILE(COPY ${CSO} DESTINATION ${CMAKE_BINARY_DIR})
 FILE( GLOB SRC ${CMAKE_SOURCE_DIR}/*.cpp )
 FILE( GLOB HDR ${CMAKE_SOURCE_DIR}/*.h )
 
-# Link Source files ('WIN32' keyword is used for win32 project)
+# Link Source files
 ADD_EXECUTABLE( ${PROJECT_NAME} WIN32 ${SRC} ${HDR} )
 
 # Set 'Additional Dependencies'
