@@ -11,7 +11,7 @@ ISimulation is an interface that makes your simulation class compatible with DXV
 #### Simulation methods
 * void iUpdate()
 * void iResetSimulationState(std::vector<ConstantBuffer>& constantBuffer)
-  
+
 #### Mesh methods
 * std::vector<Vertex>& iGetVertice()
 * std::vector<unsigned int>& iGetIndice()
@@ -43,6 +43,12 @@ This repo was developed in the following environment:
 * CMake 3.19.0
 
 If you build with cmake, you will get library files (.lib, .dll) and shader files (.cso).
+  
+## Application
+<a href="https://github.com/jklee95/GridLiquid2D" target="_blank">GridLiquid2D</a>|FLIPEngine3D
+:---:|:---:
+[<img src="docs/images/gridliquid2d.png" width="100%" height="100%">](https://github.com/jklee95/GridLiquid2D)|<img src="docs/images/flipengine3d.png" width="100%" height="100%">
+
 
 ## Reference
 * Frank Luna. 2016. _Introduction to 3D Game Programming with DirectX 12_. Mercury Learning and Information.
