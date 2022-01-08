@@ -19,7 +19,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
         2.0f, 0.0f, 0.0f);  // radius, theta, phi
     dxapp->setBackgroundColor(DirectX::Colors::LightSlateGray);
 
-    Win32App winApp(800, 800);
+    Win32App winApp(500, 500);
     winApp.setWinName(L"Adhoc Simulation");
     winApp.initialize(hInstance, dxapp, fluidsim);
 
