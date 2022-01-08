@@ -5,6 +5,26 @@ DXViewer is a DirectX 12 framework for physics simulation. This viewer makes it 
 ## Usage
 Use the contents in the DXViewer-x.x.x folder. The files in the **example** folder show how to use them.
 
+```c++
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
+{
+    AdhocSimulation* fluidsim = new AdhocSimulation();
+
+    DX12App* dxapp = new DX12App();
+    dxapp->setCameraProperties(
+        PROJ::PERSPECTIVE, 
+        0.0f,               // orthogonal distance
+        2.0f, 0.0f, 0.0f);  // radius, theta, phi
+    dxapp->setBackgroundColor(DirectX::Colors::LightSlateGray);
+
+    Win32App winApp(800, 800);
+    winApp.setWinName(L"Adhoc Simulation");
+    winApp.initialize(hInstance, dxapp, fluidsim);
+
+    return winApp.run();
+}
+```
+
 ### ISimulation
 ISimulation is an interface that makes your simulation class compatible with DXViewer. You should implement this interface using your simulation class. The following is the abstract methods that should be implemented.
 
@@ -42,7 +62,7 @@ This repo was developed in the following environment:
 * Microsoft Visual Studio 2019 on x64 platform (C++14)
 * CMake 3.19.0
 
-If you build with cmake, you will get library files (.lib, .dll) and shader files (.cso).
+There are already built files(.lib, .dll and .cso) in the **DXViewerx.x.x** folder, so use them.
   
 ## Application
 |[GridLiquid2D](https://github.com/jklee95/GridLiquid2D)|
