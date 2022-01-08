@@ -62,7 +62,7 @@ This repo was developed in the following environment:
 * Microsoft Visual Studio 2019 on x64 platform (C++14)
 * CMake 3.19.0
 
-There are already built files(.lib, .dll and .cso) in the **DXViewerx.x.x** folder, so use them.
+There are already built files(.lib, .dll and .cso) in the **DXViewer-x.x.x** folder, so use them.
   
 ## Application
 |[GridLiquid2D](https://github.com/jklee95/GridLiquid2D)|
