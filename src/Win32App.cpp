@@ -98,7 +98,7 @@ LRESULT Win32App::mainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	{
 		// WM_DESTROY is sent when the window is being destroyed.
 	case WM_DESTROY:
-		_dxApp->wMDestory(hwnd);
+		_dxApp->wMDestory(_mhWnd[1]);
 		PostQuitMessage(0);
 		return 0;
 		
@@ -153,7 +153,6 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			return 0;
 
 		case WM_TIMER:
-			_dxApp->wMTimer(hwnd);
 			return 0;
 
 		case WM_HSCROLL:
@@ -162,7 +161,7 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 		// WM_DESTROY is sent when the window is being destroyed.
 		case WM_DESTROY:
-			_dxApp->wMDestory(hwnd);
+			_dxApp->wMDestory(_mhWnd[1]);
 			PostQuitMessage(0);
 			return 0;
 
@@ -173,10 +172,9 @@ LRESULT Win32App::subWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		case WM_SIZE:
 			_switchWinState(_WINDOW::MAIN);
 			return 0;
-
-		default:
-			return DefWindowProc(hwnd, msg, wParam, lParam);
 	}
+
+	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
 int Win32App::run()
@@ -197,9 +195,10 @@ int Win32App::run()
         {	
         }
 
-		// Declare it outside so that the animation goes on even when you adjust the scroll.
+		// Declare it outside so that the animation goes on even when window messages are processed.
 		_dxApp->update();
 		_dxApp->draw();
+		_dxApp->wMTimer(_mhWnd[1]);
     }
 
 	return static_cast<int>(msg.wParam);
