@@ -93,6 +93,16 @@ namespace DXViewer
 				0.0f, 0.0f, scale, 0.0f,
 				x, y, z, 1.0f);
 		}
+
+
+		inline std::wstring int2wstring(int value)
+		{
+			// -2147483648\0
+			wchar_t wBuffer[12];
+			_itow_s(value, wBuffer, 12, 10);
+			return std::wstring(wBuffer);
+		}
+
 	}
 	
 
