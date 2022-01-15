@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <cfloat>
 #include <wrl.h>
 #include <dxgi1_4.h>
 #include <D3Dcompiler.h>
@@ -20,7 +21,6 @@
 
 #include "d3dx12.h"
 
-constexpr float EPS_F = 1e-7f;
 constexpr float PI_F = 3.141'5926f;
 
 constexpr float FPS30_F = 0.033'3333f;
@@ -28,7 +28,6 @@ constexpr float FPS60_F = 0.016'6667f;
 constexpr float FPS90_F = 0.011'1111f;
 constexpr float FPS120_F = 0.008'3333f;
 
-constexpr double EPS_D = 1e-15f;
 constexpr double PI_D = 3.141592'653589'7932;
 
 constexpr double FPS30_D = 0.033333'333333'3333;
