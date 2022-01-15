@@ -20,7 +20,7 @@ LRESULT CALLBACK controllWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
 }
 //
 
-Win32App::Win32App(const int kWidth, const int KHeight)
+Win32App::Win32App(int kWidth, int KHeight)
 	:_kWidth(kWidth), _kHeight(KHeight)
 {
 	_instanceForProc = this;
@@ -36,11 +36,14 @@ void Win32App::setWinName(LPCWSTR winName)
 	_winName = winName;
 }
 
+void Win32App::setWinOffset(int offsetX, int offsetY)
+{
+	_offsetX = offsetX;
+	_offsetY = offsetY;
+}
+
 bool Win32App::initialize(HINSTANCE hInstance, DX12App* dxapp, ISimulation* sim)
 {
-	int offsetX = 200;
-	int offsetY = 100;
-
 	_hInstance = hInstance;
 
 	WNDCLASS wc[2];
@@ -60,7 +63,7 @@ bool Win32App::initialize(HINSTANCE hInstance, DX12App* dxapp, ISimulation* sim)
 
 	_mhWnd[0] = CreateWindow(L"DirectXWnd", _winName,
 		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
-		offsetX, offsetY, _kWidth, _kHeight,
+		_offsetX, _offsetY, _kWidth, _kHeight,
 		0, 0, _hInstance, 0);
 
 	// Initialize directX
@@ -79,7 +82,7 @@ bool Win32App::initialize(HINSTANCE hInstance, DX12App* dxapp, ISimulation* sim)
 
 	_mhWnd[1] = CreateWindow(L"ControllWnd", L"Controller",
 		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
-		offsetX + _kWidth, offsetY, 300, _kHeight,
+		_offsetX + _kWidth, _offsetY, 300, _kHeight,
 		0, 0, _hInstance, 0);
 
 

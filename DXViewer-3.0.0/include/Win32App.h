@@ -14,6 +14,7 @@ public:
     __declspec(dllexport) ~Win32App();
 
     __declspec(dllexport) void setWinName(LPCWSTR winName);
+    __declspec(dllexport) void setWinOffset(int offsetX, int offsetY);
     __declspec(dllexport) bool initialize(HINSTANCE hInstance, DX12App* dxapp, ISimulation* sim);
     __declspec(dllexport) int run();
     __declspec(dllexport) void initDirectX(DX12App* dxapp, ISimulation* sim);
@@ -25,8 +26,8 @@ public:
 
 private:
     static Win32App* _instanceForProc;
-    const int _kWidth;
-    const int _kHeight;
+    int _kWidth, _kHeight;
+    int _offsetX, _offsetY;
     HWND _mhWnd[2] = { nullptr, nullptr }; // Main window handle
     HINSTANCE _hInstance;
     DX12App* _dxApp = nullptr;
