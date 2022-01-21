@@ -21,6 +21,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 
     Win32App winApp(500, 500);
     winApp.setWinName(L"Adhoc Simulation");
+    winApp.setWinOffset(400, 200);
     winApp.initialize(hInstance, dxapp, fluidsim);
 
     return winApp.run();
