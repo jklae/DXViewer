@@ -40,7 +40,6 @@ public:
 	// #######################################################################################
 
 private:
-	int _objectCount = 1;
 	DX12App* _dxApp = nullptr;
 
 	std::vector<Vertex> _vertices;
