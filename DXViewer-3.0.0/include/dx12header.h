@@ -100,6 +100,12 @@ namespace DXViewer
 
 	namespace xmfloat2
 	{
+		inline DirectX::XMFLOAT2 fabsxmf2(DirectX::XMFLOAT2 f1)
+		{
+			return DirectX::XMFLOAT2(fabsf(f1.x), fabsf(f1.y));
+		}
+
+
 		// ################### XMFLOAT2 operator overloading ###################
 		// +
 		inline DirectX::XMFLOAT2 operator+(DirectX::XMFLOAT2 f1, DirectX::XMFLOAT2 f2)
@@ -117,6 +123,11 @@ namespace DXViewer
 			return DirectX::XMFLOAT2(f1 + f2.x, f1 + f2.y);
 		}
 
+		inline DirectX::XMFLOAT2 operator+(DirectX::XMFLOAT2 f1)
+		{
+			return DirectX::XMFLOAT2(f1.x, f1.y);
+		}
+
 		// -
 		inline DirectX::XMFLOAT2 operator-(DirectX::XMFLOAT2 f1, DirectX::XMFLOAT2 f2)
 		{
@@ -126,6 +137,11 @@ namespace DXViewer
 		inline DirectX::XMFLOAT2 operator-(DirectX::XMFLOAT2 f1, float f2)
 		{
 			return DirectX::XMFLOAT2(f1.x - f2, f1.y - f2);
+		}
+
+		inline DirectX::XMFLOAT2 operator-(DirectX::XMFLOAT2 f1)
+		{
+			return DirectX::XMFLOAT2(-f1.x, -f1.y);
 		}
 
 		// *
@@ -149,6 +165,11 @@ namespace DXViewer
 		inline DirectX::XMFLOAT2 operator/(DirectX::XMFLOAT2 f1, float f2)
 		{
 			return DirectX::XMFLOAT2(f1.x / f2, f1.y / f2);
+		}
+
+		inline DirectX::XMFLOAT2 operator/(float f1, DirectX::XMFLOAT2 f2)
+		{
+			return DirectX::XMFLOAT2(f1 / f2.x, f1 / f2.y);
 		}
 
 		// +=
