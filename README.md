@@ -72,7 +72,13 @@ There are already built files(.lib, .dll and .cso) in the **DXViewer-x.x.x** fol
 |[FLIPEngine3D](https://github.com/jklee95/FLIPEngine3D)|
 |:---:|
 |<img src="docs/images/flipengine3d.png" width="100%" height="100%">|
+    
+|[CrystalGrowth](https://github.com/jklee95/CrystalGrowth)|
+|:---:|
+|<img src="docs/images/crystalgrowth.png" width="100%" height="100%">|
 
-
+|[PBDEnergyProjection](https://github.com/jklee95/PBDEnergyProjection)|
+|:---:|
+|<img src="docs/images/pbdenergyprojection.png" width="100%" height="100%">|
 ## Reference
 * Frank Luna. 2016. _Introduction to 3D Game Programming with DirectX 12_. Mercury Learning and Information.
