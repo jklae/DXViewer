@@ -479,8 +479,21 @@ void DX12App::_createPSO()
 	};
 	// 8
 	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	// 10
+	D3D12_RENDER_TARGET_BLEND_DESC blendDesc;
+	blendDesc.BlendEnable = true;
+	blendDesc.LogicOpEnable = false;
+	blendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	blendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	blendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+	blendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+	blendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+	blendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	blendDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
+	blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	psoDesc.BlendState.RenderTarget[0] = blendDesc;
 	//
-	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 	psoDesc.SampleMask = UINT_MAX;
 	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
