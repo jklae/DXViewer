@@ -676,7 +676,6 @@ void DX12App::draw()
 }
 
 
-inline int INDEX(int i, int j) { return (i + 64 * j); };
 
 
 #pragma region Arcball
