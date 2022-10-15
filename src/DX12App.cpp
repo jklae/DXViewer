@@ -34,11 +34,6 @@ DX12App::~DX12App()
 	delete _simulation;
 }
 
-void DX12App::setSimulation(ISimulation* simulation)
-{
-	_simulation = simulation;
-}
-
 void DX12App::setCameraProperties(PROJ proj, float orthoDist, float mRadius, float mTheta, float mPhi)
 {
 	_proj = proj;
@@ -55,6 +50,16 @@ void DX12App::setCameraProperties(PROJ proj, float orthoDist, float mRadius, flo
 void DX12App::setBackgroundColor(DirectX::XMVECTORF32 bgc)
 {
 	_backgroundColor = bgc;
+}
+
+void DX12App::setLightPosition(float x, float y, float z)
+{
+	_lightPos = { x, y, z, 1.0f };
+}
+
+void DX12App::setSimulation(ISimulation* simulation)
+{
+	_simulation = simulation;
 }
 
 void DX12App::setWindow(int kWidth, int kHeight, HWND mhMainWnd)
@@ -290,6 +295,11 @@ void DX12App::_setScissorRectangle()
 void DX12App::_createObject()
 {
 	_simulation->iCreateObject(_constantBuffer);
+
+	for (auto& cb : _constantBuffer)
+	{
+		cb.lightPos = _lightPos;
+	}
 }
 
 void DX12App::_createProjMatrix()
@@ -319,14 +329,11 @@ void DX12App::_createProjMatrix()
 void DX12App::_createVertexIndexBuffer()
 {
 	// 2, 3
-							//(UINT)vertices.size()
 	const UINT vbByteSize = _simulation->iGetVertexBufferSize() * sizeof(Vertex);
-							//(UINT)indices.size()
 	const UINT ibByteSize = _simulation->iGetIndexBufferSize() * sizeof(unsigned int);
 
 	_md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
-		// &CD3DX12_RESOURCE_DESC::Buffer(vbByteSize)
 		&CD3DX12_RESOURCE_DESC::Buffer(vbByteSize), D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr, IID_PPV_ARGS(_vertexBufferUploader.GetAddressOf()));
 
@@ -340,7 +347,6 @@ void DX12App::_createVertexIndexBuffer()
 
 	_md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
-		// &CD3DX12_RESOURCE_DESC::Buffer(ibByteSize)
 		&CD3DX12_RESOURCE_DESC::Buffer(ibByteSize), D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr, IID_PPV_ARGS(_indexBufferUploader.GetAddressOf()));
 
@@ -389,7 +395,6 @@ void DX12App::_createConstantBufferViews()
 	UINT objCBByteSize = DXViewer::util::computeBufferByteSize<ConstantBuffer>();
 	for (int i = 0; i < _simulation->iGetConstantBufferSize(); i++)
 	{
-		//obj.CreateConstantBuffer(mCbvHeap, i, counts);
 		auto handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(_mCbvHeap->GetCPUDescriptorHandleForHeapStart());
 		handle.Offset(i, _md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
 
@@ -425,7 +430,7 @@ void DX12App::_createRootSignature()
 	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(1, slotRootParameter, 0, nullptr,
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-	// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer
+	// Create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer.
 	ComPtr<ID3DBlob> serializedRootSig = nullptr;
 	D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1,
 		serializedRootSig.GetAddressOf(), 0);

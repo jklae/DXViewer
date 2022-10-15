@@ -12,11 +12,12 @@ public:
     __declspec(dllexport) DX12App();
     __declspec(dllexport) ~DX12App();
 
-    void setSimulation(ISimulation* simulation);
     __declspec(dllexport) void setCameraProperties(
         PROJ proj, float orthoMRadius, float mRadius, float mTheta, float mPhi);
     __declspec(dllexport) void setBackgroundColor(DirectX::XMVECTORF32 bgc);
+    __declspec(dllexport) void setLightPosition(float x, float y, float z);
 
+    void setSimulation(ISimulation* simulation);
     void setWindow(const int kWidth, const int kHeight, HWND mhMainWnd);
 
     bool initialize();
@@ -43,6 +44,7 @@ private:
 
     PROJ _proj = PROJ::PERSPECTIVE;
     DirectX::XMVECTORF32 _backgroundColor = DirectX::Colors::AliceBlue;
+    DirectX::XMFLOAT4 _lightPos;
 
     std::vector<ConstantBuffer> _constantBuffer;
 

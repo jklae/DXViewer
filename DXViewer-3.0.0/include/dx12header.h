@@ -49,6 +49,7 @@ struct ConstantBuffer
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMFLOAT4X4 transInvWorld;
 	DirectX::XMFLOAT4 color;
+	DirectX::XMFLOAT4 lightPos;
 };
 
 enum class PROJ
