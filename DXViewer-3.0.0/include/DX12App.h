@@ -13,6 +13,8 @@ public:
     __declspec(dllexport) ~DX12App();
 
     __declspec(dllexport) void setCameraProperties(
+        PROJ proj, float mRadius, float mTheta, float mPhi);
+    __declspec(dllexport) void setCameraProperties(
         PROJ proj, float orthoMRadius, float mRadius, float mTheta, float mPhi);
     __declspec(dllexport) void setBackgroundColor(DirectX::XMVECTORF32 bgc);
     __declspec(dllexport) void setLightPosition(float x, float y, float z);

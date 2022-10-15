@@ -34,6 +34,20 @@ DX12App::~DX12App()
 	delete _simulation;
 }
 
+// For the perspective coordinate 
+void DX12App::setCameraProperties(PROJ proj, float mRadius, float mTheta, float mPhi)
+{
+	_proj = proj;
+
+	_constMRadius = mRadius;
+	_constMTheta = mTheta + (1.5f * PI_F);
+	_constMPhi = mPhi + (PI_F / 2.0f);
+
+	// Restrict the angle mPhi.
+	_constMPhi = _clamp(_constMPhi, 0.1f, PI_F - 0.1f);
+}
+
+// For the orthographic coordinate
 void DX12App::setCameraProperties(PROJ proj, float orthoDist, float mRadius, float mTheta, float mPhi)
 {
 	_proj = proj;
