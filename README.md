@@ -8,17 +8,25 @@ Use the contents in the DXViewer-x.x.x folder. The files in the **example** fold
 ```c++
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd)
 {
+    // Simulation init
     AdhocSimulation* fluidsim = new AdhocSimulation();
 
+    // DirectX init
     DX12App* dxapp = new DX12App();
     dxapp->setCameraProperties(
         PROJ::PERSPECTIVE, 
-        0.0f,               // orthogonal distance
         2.0f, 0.0f, 0.0f);  // radius, theta, phi
+    /*dxapp->setCameraProperties(
+        PROJ::ORTHOGRAPHIC,
+        0.0032f,               // orthogonal distance
+        2.0f, 0.0f, 0.0f);  // radius, theta, phi     */
     dxapp->setBackgroundColor(DirectX::Colors::LightSlateGray);
+    dxapp->setLightPosition(1.0f, 1.0f, 1.0f);
 
+    // Window init
     Win32App winApp(500, 500);
     winApp.setWinName(L"Adhoc Simulation");
+    winApp.setWinOffset(400, 200);
     winApp.initialize(hInstance, dxapp, fluidsim);
 
     return winApp.run();
@@ -33,8 +41,8 @@ ISimulation is an interface that makes your simulation class compatible with DXV
 * void iResetSimulationState(std::vector<ConstantBuffer>& constantBuffer)
 
 #### Mesh methods
-* std::vector<Vertex>& iGetVertice()
-* std::vector<unsigned int>& iGetIndice()
+* std::vector<Vertex>& iGetVertices()
+* std::vector<unsigned int>& iGetIndices()
 * UINT iGetVertexBufferSize()
 * UINT iGetIndexBufferSize()
 * DirectX::XMINT3 iGetObjectCount()
