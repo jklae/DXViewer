@@ -126,7 +126,7 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
-!DXViewer-3.0.0/bin/
+!DXViewer-3.1.0/bin/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
