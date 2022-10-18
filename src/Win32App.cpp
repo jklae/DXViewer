@@ -81,7 +81,7 @@ bool Win32App::initialize(HINSTANCE hInstance, DX12App* dxapp, ISimulation* sim)
 
 
 	_mhWnd[1] = CreateWindow(L"ControllWnd", L"Controller",
-		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // disable resizing and maximzing 
+		(WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX)), // Disable resizing and maximzing 
 		_offsetX + _kWidth, _offsetY, 300, _kHeight,
 		0, 0, _hInstance, 0);
 
@@ -99,7 +99,6 @@ LRESULT Win32App::mainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
-		// WM_DESTROY is sent when the window is being destroyed.
 	case WM_DESTROY:
 		_dxApp->wMDestory(_mhWnd[1]);
 		PostQuitMessage(0);
@@ -117,17 +116,6 @@ LRESULT Win32App::mainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		return 0;
 	case WM_MOUSEMOVE:
 		_onMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-		return 0;
-
-	case WM_KEYDOWN:
-		switch (wParam) 
-		{
-			// v
-		case 0x56:
-			break;
-		case VK_LEFT:
-			break;
-		}
 		return 0;
 
 	case WM_MOVING:
@@ -187,13 +175,11 @@ int Win32App::run()
 	MSG msg = {0};
 	while(msg.message != WM_QUIT)
 	{
-		// If there are Window messages then process them.
 		if(PeekMessage( &msg, 0, 0, 0, PM_REMOVE ))
 		{
             TranslateMessage( &msg );
             DispatchMessage( &msg );
 		}
-		// Otherwise, do animation/game stuff.
 		else
         {	
         }
