@@ -17,7 +17,6 @@ AdhocSimulation::~AdhocSimulation()
 // Simulation methods
 void AdhocSimulation::iUpdate()
 {
-	//cout << "timestep : " << timestep << endl;
 }
 
 void AdhocSimulation::iResetSimulationState(std::vector<ConstantBuffer>& constantBuffer)
@@ -26,20 +25,21 @@ void AdhocSimulation::iResetSimulationState(std::vector<ConstantBuffer>& constan
 
 
 // Mesh methods
-vector<Vertex>& AdhocSimulation::iGetVertice()
+vector<Vertex>& AdhocSimulation::iGetVertices()
 {
 	_vertices =
 	{
-		Vertex({ XMFLOAT3(-0.5f, -0.5f, 0.0f) }),
-		Vertex({ XMFLOAT3(-0.5f, +0.5f, 0.0f) }),
-		Vertex({ XMFLOAT3(+0.5f, +0.5f, 0.0f) }),
-		Vertex({ XMFLOAT3(+0.5f, -0.5f, 0.0f) })
+		//              Position                 Normal
+		Vertex({ { -0.5f, -0.5f, 0.0f },  { 0.0f, 0.0f, 0.0f } }),
+		Vertex({ { -0.5f, +0.5f, 0.0f },  { 0.0f, 0.0f, 0.0f } }),
+		Vertex({ { +0.5f, +0.5f, 0.0f },  { 0.0f, 0.0f, 0.0f } }),
+		Vertex({ { +0.5f, -0.5f, 0.0f },  { 0.0f, 0.0f, 0.0f } })
 	};
 
 	return _vertices;
 }
 
-vector<unsigned int>& AdhocSimulation::iGetIndice()
+vector<unsigned int>& AdhocSimulation::iGetIndices()
 {
 	_indices =
 	{
