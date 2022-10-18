@@ -1,15 +1,20 @@
-
-
-float4 main(float4 PosH  : SV_POSITION, float3 NormalW : NORMAL,
-    float4 fColor : COLOR) : SV_Target
+struct FSInput
 {
-    float3 light = normalize(float3(1.0f, 1.0f ,1.0f));
-    float3 normal = normalize(NormalW);
+    float4 PosH     : SV_POSITION;
+    float3 NormalW  : NORMAL;
+    float4 fColor   : COLOR;
+    float3 lightPos	: POSITION;
+};
 
-    float3 diff = max(dot(normal, light), 0.1f);
-    float3 ambient = fColor.xyz;
+float4 main(FSInput fsIn) : SV_Target
+{
+    float3 light = normalize(fsIn.lightPos);
+    float3 normal = normalize(fsIn.NormalW);
 
-    float4 fragColor = float4(diff + ambient, fColor.w);
+    float3 diffuse = max(dot(normal, light), 0.1f);
+    float3 ambient = fsIn.fColor.xyz;
+
+    float4 fragColor = float4(diffuse + ambient, fsIn.fColor.w);
 
     return fragColor;
 }

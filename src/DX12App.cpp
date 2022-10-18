@@ -34,11 +34,19 @@ DX12App::~DX12App()
 	delete _simulation;
 }
 
-void DX12App::setSimulation(ISimulation* simulation)
+// For the perspective coordinate.
+void DX12App::setCameraProperties(PROJ proj, float mRadius, float mTheta, float mPhi)
 {
-	_simulation = simulation;
+	_proj = proj;
+
+	_constMRadius = mRadius;
+	_constMTheta = mTheta + (1.5f * PI_F);
+	_constMPhi = mPhi + (PI_F / 2.0f);
+
+	_constMPhi = _clamp(_constMPhi, 0.1f, PI_F - 0.1f);
 }
 
+// For the orthographic coordinate.
 void DX12App::setCameraProperties(PROJ proj, float orthoDist, float mRadius, float mTheta, float mPhi)
 {
 	_proj = proj;
@@ -48,13 +56,22 @@ void DX12App::setCameraProperties(PROJ proj, float orthoDist, float mRadius, flo
 	_constMTheta = mTheta + (1.5f * PI_F);
 	_constMPhi = mPhi + (PI_F / 2.0f);
 
-	// Restrict the angle mPhi.
 	_constMPhi = _clamp(_constMPhi, 0.1f, PI_F - 0.1f);
 }
 
 void DX12App::setBackgroundColor(DirectX::XMVECTORF32 bgc)
 {
 	_backgroundColor = bgc;
+}
+
+void DX12App::setLightPosition(float x, float y, float z)
+{
+	_lightPos = { x, y, z, 1.0f };
+}
+
+void DX12App::setSimulation(ISimulation* simulation)
+{
+	_simulation = simulation;
 }
 
 void DX12App::setWindow(int kWidth, int kHeight, HWND mhMainWnd)
@@ -70,7 +87,7 @@ bool DX12App::initialize()
 	// Call after simulation init
 	assert(_simulation != nullptr);
 
-	// set angles, radius of VirtualSphere
+	// Set the angles, radius of VirtualSphere
 	resetVirtualSphereAnglesRadius();
 
 	// Init1
@@ -139,72 +156,66 @@ void DX12App::wMDestory(HWND hwnd)
 // ######################################## Init 1 ##########################################
 void DX12App::_checkMSAA()
 {
-	// Check 4X MSAA quality support for our back buffer format.
-	// All Direct3D 11 capable devices support 4X MSAA for all render 
-	// target formats, so we only need to check quality support.
-
-	// // but it doesn't work.... so m4xMsaaState is set to false.
+	// 4X MSAA is not used.
 	_m4xMsaaState = false;
 	_m4xMsaaQuality = 0;
 }
 
 void DX12App::_createDevice()
 {
-	// DXGIFactory is used for swapchain interface creation and adapter enumeration.
 	CreateDXGIFactory1(IID_PPV_ARGS(&_mdxgiFactory));
-
-	// Try to create hardware device.		 // nullptr is default adapter
+					 // nullptr is default adapter
 	D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&_md3dDevice));
 }
 
 void DX12App::_createFence()
 {
-	// Fence
 	_md3dDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&_mFence));
 }
 
 void DX12App::_createCommandQueueAllocatorList()
 {
+	// For GPU
+	// Command Queue
 	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
 	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
 	_md3dDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&_mCommandQueue));
 
+	// For CPU
+	// Command Allocator
 	_md3dDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
-		IID_PPV_ARGS(_mDirectCmdListAlloc.GetAddressOf())); // output
+		IID_PPV_ARGS(_mDirectCmdListAlloc.GetAddressOf()));
 
+	// Command List
 	_md3dDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
-		_mDirectCmdListAlloc.Get(), // Associated command allocator
-		nullptr,                   // Initial PipelineStateObject
-		IID_PPV_ARGS(_mCommandList.GetAddressOf())); // output
+		_mDirectCmdListAlloc.Get(),
+		nullptr,                   
+		IID_PPV_ARGS(_mCommandList.GetAddressOf()));
 
-	// Start off in a closed state.  This is because the first time we refer 
-	// to the command list we will Reset it, and it needs to be closed before
-	// calling Reset.
 	_mCommandList->Close();
 }
 
 void DX12App::_createSwapChain()
 {
-	DXGI_SWAP_CHAIN_DESC sd;
-	sd.BufferDesc.Width = _kWidth;
-	sd.BufferDesc.Height = _kHeight;
-	sd.BufferDesc.RefreshRate.Numerator = 60;
-	sd.BufferDesc.RefreshRate.Denominator = 1;
-	sd.BufferDesc.Format = _mBackBufferFormat;
-	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	sd.SampleDesc.Count = _m4xMsaaState ? 4 : 1;
-	sd.SampleDesc.Quality = _m4xMsaaState ? (_m4xMsaaQuality - 1) : 0;
-	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sd.BufferCount = _swapChainBufferCount;
-	sd.OutputWindow = _mhMainWnd;                               // windowsApp
-	sd.Windowed = true;
-	sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+	DXGI_SWAP_CHAIN_DESC swapChainDesc;
+	swapChainDesc.BufferDesc.Width = _kWidth;
+	swapChainDesc.BufferDesc.Height = _kHeight;
+	swapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
+	swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
+	swapChainDesc.BufferDesc.Format = _mBackBufferFormat;
+	swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	swapChainDesc.SampleDesc.Count = _m4xMsaaState ? 4 : 1;
+	swapChainDesc.SampleDesc.Quality = _m4xMsaaState ? (_m4xMsaaQuality - 1) : 0;
+	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	swapChainDesc.BufferCount = _swapChainBufferCount;
+	swapChainDesc.OutputWindow = _mhMainWnd;                               // windowsApp
+	swapChainDesc.Windowed = true;
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-	// Note: Swap chain uses queue to perform flush.
-	_mdxgiFactory->CreateSwapChain(_mCommandQueue.Get(), &sd, _mSwapChain.GetAddressOf());
+	_mdxgiFactory->CreateSwapChain(_mCommandQueue.Get(), &swapChainDesc, _mSwapChain.GetAddressOf());
 }
 
 void DX12App::_createDescriptorHeap()
@@ -229,6 +240,7 @@ void DX12App::_createRTV()
 	_mRtvDescriptorSize = _md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV); // RTV
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle(_mRtvHeap->GetCPUDescriptorHandleForHeapStart());
 
+	// Bind the back buffers
 	for (UINT i = 0; i < _swapChainBufferCount; i++)
 	{
 		_mSwapChain->GetBuffer(i, IID_PPV_ARGS(&_mSwapChainBuffer[i]));
@@ -239,7 +251,6 @@ void DX12App::_createRTV()
 
 void DX12App::_createDSV()
 {
-	// Create the depth/stencil buffer and view.
 	D3D12_RESOURCE_DESC depthStencilDesc;
 	depthStencilDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 	depthStencilDesc.Alignment = 0;
@@ -259,11 +270,9 @@ void DX12App::_createDSV()
 		&depthStencilDesc, D3D12_RESOURCE_STATE_COMMON, 
 		nullptr, IID_PPV_ARGS(_mDepthStencilBuffer.GetAddressOf()));
 
-	// Create descriptor to mip level 0 of entire resource using the format of the resource.
 	CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHeapHandle(_depthStencilView());
 	_md3dDevice->CreateDepthStencilView(_mDepthStencilBuffer.Get(), nullptr, dsvHeapHandle);
 
-	// Transition the resource from its initial state to be used as a depth buffer.
 	_mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_mDepthStencilBuffer.Get(),
 		D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE));
 }
@@ -290,6 +299,12 @@ void DX12App::_setScissorRectangle()
 void DX12App::_createObject()
 {
 	_simulation->iCreateObject(_constantBuffer);
+
+	// Set the light position.
+	for (auto& cb : _constantBuffer)
+	{
+		cb.lightPos = _lightPos;
+	}
 }
 
 void DX12App::_createProjMatrix()
@@ -319,14 +334,13 @@ void DX12App::_createProjMatrix()
 void DX12App::_createVertexIndexBuffer()
 {
 	// 2, 3
-							//(UINT)vertices.size()
 	const UINT vbByteSize = _simulation->iGetVertexBufferSize() * sizeof(Vertex);
-							//(UINT)indices.size()
 	const UINT ibByteSize = _simulation->iGetIndexBufferSize() * sizeof(unsigned int);
 
+	// UPLOAD type is used for variable vertex/index buffers.
+	// Vertex Buffer
 	_md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
-		// &CD3DX12_RESOURCE_DESC::Buffer(vbByteSize)
 		&CD3DX12_RESOURCE_DESC::Buffer(vbByteSize), D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr, IID_PPV_ARGS(_vertexBufferUploader.GetAddressOf()));
 
@@ -337,10 +351,9 @@ void DX12App::_createVertexIndexBuffer()
 	_vbv.StrideInBytes = sizeof(Vertex);
 	_vbv.SizeInBytes = vbByteSize;
 
-
+	// Index Buffer
 	_md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
-		// &CD3DX12_RESOURCE_DESC::Buffer(ibByteSize)
 		&CD3DX12_RESOURCE_DESC::Buffer(ibByteSize), D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr, IID_PPV_ARGS(_indexBufferUploader.GetAddressOf()));
 
@@ -374,7 +387,7 @@ void DX12App::_createConstantBufferViewHeap()
 
 void DX12App::_createUploadBuffer()
 {
-	UINT mElementByteSize = DXViewer::util::computeBufferByteSize<ConstantBuffer>();
+	UINT mElementByteSize = DXViewer::util::convertConstantBufferSize<ConstantBuffer>();
 
 	_md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
@@ -386,10 +399,9 @@ void DX12App::_createUploadBuffer()
 
 void DX12App::_createConstantBufferViews()
 {
-	UINT objCBByteSize = DXViewer::util::computeBufferByteSize<ConstantBuffer>();
+	UINT objCBByteSize = DXViewer::util::convertConstantBufferSize<ConstantBuffer>();
 	for (int i = 0; i < _simulation->iGetConstantBufferSize(); i++)
 	{
-		//obj.CreateConstantBuffer(mCbvHeap, i, counts);
 		auto handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(_mCbvHeap->GetCPUDescriptorHandleForHeapStart());
 		handle.Offset(i, _md3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
 
@@ -407,25 +419,15 @@ void DX12App::_createConstantBufferViews()
 void DX12App::_createRootSignature()
 {
 	// 6-5
-	// Shader programs typically require resources as input (constant buffers,
-	// textures, samplers).  The root signature defines the resources the shader
-	// programs expect.  If we think of the shader programs as a function, and
-	// the input resources as function parameters, then the root signature can be
-	// thought of as defining the function signature.  
-
-	// Root parameter can be a table, root descriptor or root constants.
 	CD3DX12_ROOT_PARAMETER slotRootParameter[1];
 
-	// Create a single descriptor table of CBVs.
 	CD3DX12_DESCRIPTOR_RANGE cbvTable;
 	cbvTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
 	slotRootParameter[0].InitAsDescriptorTable(1, &cbvTable);
 
-	// A root signature is an array of root parameters.
 	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(1, slotRootParameter, 0, nullptr,
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-	// create a root signature with a single slot which points to a descriptor range consisting of a single constant buffer
 	ComPtr<ID3DBlob> serializedRootSig = nullptr;
 	D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1,
 		serializedRootSig.GetAddressOf(), 0);
@@ -436,12 +438,13 @@ void DX12App::_createRootSignature()
 
 void DX12App::_compileShader()
 {
+	// The input layout should match the vertex structure and the input parameters of the vertex shader.
 	_mInputLayout =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
-	
+
 	_loadCSO("vertexShader.cso", _mvsByteCode);
 	_loadCSO("fragShader.cso", _mpsByteCode);
 }
@@ -477,8 +480,21 @@ void DX12App::_createPSO()
 	};
 	// 8
 	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	// 10
+	D3D12_RENDER_TARGET_BLEND_DESC blendDesc;
+	blendDesc.BlendEnable = true;
+	blendDesc.LogicOpEnable = false;
+	blendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	blendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	blendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+	blendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+	blendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+	blendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	blendDesc.LogicOp = D3D12_LOGIC_OP_NOOP;
+	blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	psoDesc.BlendState.RenderTarget[0] = blendDesc;
 	//
-	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 	psoDesc.SampleMask = UINT_MAX;
 	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
@@ -497,30 +513,19 @@ void DX12App::_createPSO()
 
 void DX12App::_closeCommandList()
 {
-	// ############### 1. Close ################
-	// Done recording commands.
+	// 1. Close
 	_mCommandList->Close();
-
-	// ############### 2. Execute ################
-	// Add the command list to the queue for execution.
+	
+	// 2. Execute
 	ID3D12CommandList* cmdsLists[] = { _mCommandList.Get() };
 	_mCommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 
-	// ############### 3. Flush ################
-	// Wait until frame commands are complete.  This waiting is inefficient and is
-	// done for simplicity.  Later we will show how to organize our rendering code
-	// so we do not have to wait per frame.
+	// 3. Flush
 	_flushCommandQueue();
 
-	// ############### 4. Reset ################
-	// Reuse the memory associated with command recording.
-	// We can only reset when the associated command lists have finished execution on the GPU.
+	// 4. Reset
 	_mDirectCmdListAlloc->Reset();
-
-	// A command list can be reset after it has been added to the command queue via ExecuteCommandList.
-	// Reusing the command list reuses memory.
 	_mCommandList->Reset(_mDirectCmdListAlloc.Get(), _mPSO.Get());
-
 }
 
 
@@ -528,23 +533,15 @@ void DX12App::_closeCommandList()
 
 void DX12App::_flushCommandQueue()
 {
-	// Advance the fence value to mark commands up to this fence point.
 	_mCurrentFence++;
-
-	// Add an instruction to the command queue to set a new fence point.  Because we 
-	// are on the GPU timeline, the new fence point won't be set until the GPU finishes
-	// processing all the commands prior to this Signal().
 	_mCommandQueue->Signal(_mFence.Get(), _mCurrentFence);
 
-	// Wait until the GPU has completed commands up to this fence point.
 	if (_mFence->GetCompletedValue() < _mCurrentFence)
 	{
 		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
 
-		// Fire event when GPU hits current fence.  
 		_mFence->SetEventOnCompletion(_mCurrentFence, eventHandle);
 
-		// Wait until the GPU hits current fence event is fired.
 		WaitForSingleObject(eventHandle, INFINITE);
 		CloseHandle(eventHandle);
 	}
@@ -556,19 +553,19 @@ void DX12App::_flushCommandQueue()
 
 void DX12App::update()
 {
-	// ######### Update Vertex, Index buffer
-	// Update simulation
+	// Update simulation.
 	if (_simulation->iIsUpdated()) _simulation->iUpdate();
 
-	vertices = _simulation->iGetVertice();
-	indices = _simulation->iGetIndice();
+	// ######### Update Vertex, Index buffer
+	vertices = _simulation->iGetVertices();
+	indices = _simulation->iGetIndices();
 
 	const UINT vbByteSize = static_cast<UINT>(vertices.size()) * sizeof(Vertex);
 	_vbv.SizeInBytes = vbByteSize;
 	const UINT ibByteSize = static_cast<UINT>(indices.size()) * sizeof(unsigned int);
 	_ibv.SizeInBytes = ibByteSize;
-
-	// Update mapping data
+	
+	// Update mapping data.
 	memcpy(&_vMappedData[0], vertices.data(), sizeof(Vertex) * vertices.size());
 	memcpy(&_iMappedData[0], indices.data(), sizeof(unsigned int) * indices.size());
 	_indexCount = static_cast<UINT>(indices.size());
@@ -600,7 +597,7 @@ void DX12App::update()
 
 	XMMATRIX proj = XMLoadFloat4x4(&_mProj);
 
-	UINT mElementByteSize = DXViewer::util::computeBufferByteSize<ConstantBuffer>();
+	UINT mElementByteSize = DXViewer::util::convertConstantBufferSize<ConstantBuffer>();
 
 	int size = _constantBuffer.size();
 	for (int i = 0; i < size; i++)
@@ -624,15 +621,12 @@ void DX12App::draw()
 	_mCommandList->RSSetViewports(1, &_mScreenViewport);
 	_mCommandList->RSSetScissorRects(1, &_mScissorRect);
 
-	// Indicate a state transition on the resource usage.
 	_mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_currentBackBuffer(),
 		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
-	// Clear the back buffer and depth buffer.
 	_mCommandList->ClearRenderTargetView(_currentBackBufferView(), _backgroundColor, 0, nullptr);
 	_mCommandList->ClearDepthStencilView(_depthStencilView(), D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
-	// Specify the buffers we are going to render to.
 	_mCommandList->OMSetRenderTargets(1, &_currentBackBufferView(), true, &_depthStencilView());
 
 
@@ -658,51 +652,40 @@ void DX12App::draw()
 	}
 	// ------
 
-
-
-	// Indicate a state transition on the resource usage.
 	_mCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(_currentBackBuffer(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
-	// Done recording commands.
 	_closeCommandList();
 
 
-	// swap the back and front buffers
+	// Swap the buffers.
 	_mSwapChain->Present(0, 0);
 	_mCurrBackBuffer = (_mCurrBackBuffer + 1) % _swapChainBufferCount;
 }
 
 
-inline int INDEX(int i, int j) { return (i + 64 * j); };
 
 
 #pragma region Arcball
 // ####################################### Arcball ##########################################
 void DX12App::updateVirtualSphereAngles(const POINT mLastMousePos, const int x, const int y)
 {
-	// Make each pixel correspond to a quarter of a degree.
 	float dx = XMConvertToRadians(0.25f * static_cast<float>(x - mLastMousePos.x));
 	float dy = XMConvertToRadians(0.25f * static_cast<float>(y - mLastMousePos.y));
 
-	// Update angles based on input to orbit camera around box.
 	_mTheta -= dx;
 	_mPhi -= dy;
 
-	// Restrict the angle mPhi.
 	_mPhi = _clamp(_mPhi, 0.1f, PI_F - 0.1f);
 }
 
 void DX12App::updateVirtualSphereRadius(const POINT mLastMousePos, const int x, const int y)
 {
-	// Make each pixel correspond to 0.005 unit in the scene.
 	float dx = 0.005f * static_cast<float>(x - mLastMousePos.x);
 	float dy = 0.005f * static_cast<float>(y - mLastMousePos.y);
 
-	// Update the camera radius based on input.
 	_mRadius += dx - dy;
 
-	// Restrict the radius.
 	//_mRadius = _clamp(_mRadius, 3.0f, 15.0f);
 }
 

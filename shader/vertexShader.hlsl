@@ -1,23 +1,40 @@
-cbuffer cbPerObject : register(b0)
+cbuffer cbResource : register(b0)
 {
 	float4x4 gWorldViewProj;
 	float4x4 gWorld;
 	float4x4 gTransInvWorld;
 	float4 gColor;
+	float4 gLightPos;
 };
 
-
-void main(float3 iPosL  : POSITION, float3 iNormalL	: NORMAL,
-	out float4 oPosH  : SV_POSITION, out float3 oNormalW  : NORMAL,
-	out float4 oColor : COLOR)
+struct VSInput
 {
+	float3 iPosL	: POSITION;
+	float3 iNormalL : NORMAL;
+};
+
+struct VSOutput
+{
+	float4 oPosH		: SV_POSITION;
+	float3 oNormalW		: NORMAL;
+	float4 oColor		: COLOR;
+	float3 oLightPos	: POSITION;
+};
+
+VSOutput main(VSInput vsIn)
+{
+	VSOutput vsOut;
+
+	// Normalize the vertex normal
 	float3x3 transInvWorld = (float3x3) gTransInvWorld;
-	oNormalW = normalize(mul(transInvWorld, iNormalL));
-	//float4 posW = mul(gWorld, float4(iPosL, 1.0f));
+	vsOut.oNormalW = normalize(mul(transInvWorld, vsIn.iNormalL));
 
 	// Transform to homogeneous clip space.
-	oPosH = mul(gWorldViewProj, float4(iPosL, 1.0f));
+	vsOut.oPosH = mul(gWorldViewProj, float4(vsIn.iPosL, 1.0f));
 	
-	// Just pass vertex color into the pixel shader.
-	oColor = gColor;
+	// Just pass vertex color and light position into the fragment shader.
+	vsOut.oColor = gColor;
+	vsOut.oLightPos = gLightPos.xyz;
+
+	return vsOut;
 }
