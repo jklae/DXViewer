@@ -1,4 +1,4 @@
-cbuffer cbPerObject : register(b0)
+cbuffer cbResource : register(b0)
 {
 	float4x4 gWorldViewProj;
 	float4x4 gWorld;
