@@ -34,7 +34,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 ```
 
 ### ISimulation
-ISimulation is an interface that makes your simulation class compatible with DXViewer. You should implement this interface using your simulation class. The following is the abstract methods that should be implemented.
+ISimulation is an interface that makes your simulation class compatible with DXViewer. You should implement this interface using your simulation class. The following is the abstract methods that should be implemented. More details are described in <A href="https://github.com/jklee95/DXViewer/blob/master/DXViewer-3.1.0/include/ISimulation.h">ISimulation.h</A> and example files.
 
 #### Simulation methods
 * void iUpdate()
