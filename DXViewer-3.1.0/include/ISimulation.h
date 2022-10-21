@@ -23,6 +23,8 @@ public:
 	virtual std::vector<unsigned int>& iGetIndices() = 0;
 
 	// Method to get the vertex/index buffer size.
+	// Note that this version does not yet support variable buffer sizes.
+	// Therefore, use the maximum value of the number of vertices/indices as the return of these functions.
 	virtual UINT iGetVertexBufferSize() = 0;
 	virtual UINT iGetIndexBufferSize() = 0;
 
